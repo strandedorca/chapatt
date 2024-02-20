@@ -25,19 +25,19 @@ Our project aims to develop a web-based chat application inspired by popular pla
 * Backend: Prepared with Firebase.
 * Styling: Material UI (MUI) for React components andTailwind CSS for utility-first styling. 
 * Other Technologies:
-Formik: To handle forms and user inputs efficiently.
-Axios: For making HTTP requests to our backend services.
-Font Awesome: For icons and enhanced UI elements.
+    * Formik: To handle forms and user inputs efficiently.
+    * Axios: For making HTTP requests to our backend services.
+    *  Font Awesome: For icons and enhanced UI elements.
 
 ## Installation
 
 To run our Discord Clone project locally, follow these steps:
 
-    Clone the repository to your local machine.
-    Navigate to the project directory.
-    Install dependencies by running `npm install` or `yarn install`.
-    Start the development server using `npm start` or `yarn dev`.
-    Open your web browser and navigate to http://localhost:5371 to view the application.
+1. Clone the repository to your local machine.
+2. Navigate to the project directory.
+3. Install dependencies by running `npm install` or `yarn install`.
+4. Start the development server using `npm start` or `yarn dev`.
+5. Open your web browser and navigate to http://localhost:5371 to view the application.
 
 ## Contributors
 
