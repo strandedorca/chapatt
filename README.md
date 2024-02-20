@@ -37,7 +37,7 @@ To run our Discord Clone project locally, follow these steps:
 2. Navigate to the project directory.
 3. Install dependencies by running `npm install` or `yarn install`.
 4. Start the development server using `npm start` or `yarn dev`.
-5. Open your web browser and navigate to http://localhost:5371 to view the application.
+5. Open your web browser and navigate to http://localhost:5173 to view the application.
 
 ## Contributors
 
