@@ -2,13 +2,16 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  border: 1px solid white;
 }
 
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  border: 1px solid white;
 }
 
 .logo {
