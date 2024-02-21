@@ -4,7 +4,7 @@ import Header from './pages/login/Header'
 function App() {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
     </>
   )
 }
