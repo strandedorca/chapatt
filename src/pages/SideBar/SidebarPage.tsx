@@ -49,7 +49,7 @@ export default function SidebarPage() {
         <button>+</button>
         <div className="sb-conversation">
             {conversations.map((conversation)=>{
-                return <ConversationItem  props={conversation}/>
+                return <ConversationItem  {...conversation}/>
             })}
         </div>
       </div>
