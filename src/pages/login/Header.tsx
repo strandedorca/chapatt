@@ -20,23 +20,22 @@ import {
 // Styled components for search
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
     marginLeft: 0,
     width: 'auto',
+    height: 'auto',
     [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(1),
         width: 'auto',
     },
+    display: 'flex',
+    alignItems: 'center',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 1),
     height: '100%',
     position: 'absolute',
+    right: 0,
     pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
@@ -47,15 +46,17 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
-        padding: theme.spacing(1.5, 1, 1, 0),
+        padding: theme.spacing(0.15, 1),
         transition: 'all 0.3s',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: "#1E1F21",
         width: '50px',
         '&:focus': {
             width: '200px',
         },
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         [theme.breakpoints.up('md')]: {
-            width: '20ch',
+            width: '14ch',
         },
     },
 }));
@@ -90,16 +91,18 @@ const theme = createTheme({
 export default function Header() {
     return (
         <ThemeProvider theme={theme}>
-            <AppBar>
-                <Toolbar style={{ justifyContent: 'space-between' }}>
+            <AppBar >
+                <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between', }} >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar alt="Hieu Bui" src="#" />
-                        <Typography variant="h6" noWrap component="div" sx={{ px: 1 }}>
+                        <Avatar alt="Hieu Bui" src="#"
+                            sx={{ width: 24, height: 24 }}
+                        />
+                        <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem" }}>
                             Hieu Bui
                         </Typography>
                     </Box>
 
-                    <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex' }} color={"#b5bac1"}>
                         <IconButton color="inherit">
                             <WifiCalling3 />
                         </IconButton>
@@ -112,20 +115,20 @@ export default function Header() {
                         <IconButton color="inherit">
                             <PushPin />
                         </IconButton>
-                        <IconButton color="inherit">
+                        <IconButton style={{ color: "#fff" }}>
                             <CircleIcon>
                                 <AccountCircle />
                             </CircleIcon>
                         </IconButton>
 
                         <Search>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
                             <StyledInputBase
                                 placeholder="Search…"
                                 inputProps={{ 'aria-label': 'search' }}
                             />
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
                         </Search>
 
                         <IconButton color="inherit">
