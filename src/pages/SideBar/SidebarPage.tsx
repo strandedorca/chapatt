@@ -91,7 +91,6 @@ const SidebarPage: React.FC = () => {
       </div>
 
       <div>
-<<<<<<< HEAD
         {conversations.map((item) => (
           <ConversationItem key={item.id} icon={item.icon} name={item.name} button={item.button}/>
         ))}
@@ -110,18 +109,6 @@ const SidebarPage: React.FC = () => {
       <div className={styles.iosetting}>
         <button><IoIosSettings className={styles.settingIcon} /></button>
       </div>
-        
-        
-        
-=======
-        DIRECT MESSAGE
-        <button>+</button>
-        <div className="sb-conversation">
-            {conversations.map((conversation)=>{
-                return <ConversationItem  {...conversation}/>
-            })}
-        </div>
->>>>>>> f94e262d1d7a68ba66124b415b853ffb3998ab64
       </div>
     </div>
   );
