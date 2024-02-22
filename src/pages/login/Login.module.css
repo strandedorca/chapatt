@@ -1,0 +1,17 @@
+.container {
+  background-color: #313338;
+  padding: 50px 50px;
+  color: #fff;
+  border-radius: 15px;
+}
+
+body {
+  background-image: url(../src/aset/images/Blue\ Night\ Sky\ Cute\ Whale.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.typography {
+  color: #B5BAC1
+}
+
