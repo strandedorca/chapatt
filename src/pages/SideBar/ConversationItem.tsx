@@ -1,19 +1,21 @@
-import * as React from 'react';
+import React from 'react';
 import styles from './SideBar.module.css'
+import { CiUser } from "react-icons/ci";
 
-export interface IConversationItemProps {
+interface IConversationItemProps {
   name: string;
-  lastMessage: string;
-  timeStamp: string;
+  button: string;
+  icon: string;
 }
 
-export default function ConversationItem (props: IConversationItemProps) {
+const ConversationItem: React.FC<IConversationItemProps> = ({icon, name, button }) => {
   return (
     <div className={styles.container}>
-      <p className={styles.icon}>{props.name[0]}</p>
-      <p className={styles.title}>{props.name}</p>
-      <p className={styles.lastMessage}>{props.lastMessage}</p>
-      <p className={styles.timeStamp}>{props.timeStamp}</p>
+      <p>{<CiUser className={styles.userIcon}/>}</p>
+      <p>{name}</p>
+      <p className={styles.buttonX}>{button}</p>
     </div>
   );
-}
+};
+
+export default ConversationItem;

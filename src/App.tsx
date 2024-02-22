@@ -1,11 +1,19 @@
-import { Outlet, createBrowserRouter } from 'react-router-dom'
-import './App.css'
+
 import SidebarPage from './pages/SideBar/SidebarPage'
 
-const router = createBrowserRouter([
-  {path: "/", element: <Layout/> }
-])
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+
+
+function App() {
+  return (
+   <>
+    <SidebarPage/>
+   </>
+=======
+=======
+>>>>>>> f94e262d1d7a68ba66124b415b853ffb3998ab64
 function Layout () {
   
 }
@@ -13,12 +21,10 @@ function Layout () {
 function App() {
   return (
     <>
-<<<<<<< Updated upstream
       <SidebarPage/>
-=======
       <Outlet/>
->>>>>>> Stashed changes
     </>
+>>>>>>> f94e262d1d7a68ba66124b415b853ffb3998ab64
   )
 }
 
