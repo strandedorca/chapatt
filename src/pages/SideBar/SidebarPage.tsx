@@ -101,13 +101,13 @@ const SidebarPage: React.FC = () => {
         Account name
 
       <div className={styles.iomicrophone}>
-        <button><FaMicrophone className={styles.microphone}/></button>
+        <FaMicrophone className={styles.microphone}/>
       </div>
       <div className={styles.ioheadphone}>
-        <button><FaHeadphones className={styles.headphones}/></button>
+        <FaHeadphones className={styles.headphones}/>
       </div>
       <div className={styles.iosetting}>
-        <button><IoIosSettings className={styles.settingIcon} /></button>
+        <IoIosSettings className={styles.settingIcon} />
       </div>
       </div>
     </div>

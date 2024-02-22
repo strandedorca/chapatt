@@ -34,20 +34,20 @@
     color: #1e1f22;
 }
 
-/* .iomicrophone:hover{
+ .microphone:hover{
     background-color: #404249;
     color: #1e1f22;
 }
 
-.ioheadphone:hover{
+.headphones:hover{
     background-color: #404249;
     color: #1e1f22;
 }
 
-.iosetting:hover{
+.settingIcon:hover{
     background-color: #404249;
     color: #1e1f22;
-} */
+}
 
 .directMessages:hover{
     background-color: #404249;
@@ -125,16 +125,19 @@
 .microphone{
     width: 20px;
     height: 20px;
+    color: #b5bac1;
 }
 
 .headphones{
     width: 20px;
     height: 20px; 
+    color: #b5bac1;
 }
 
 .settingIcon{
     width: 20px;
     height: 20px;
+    color: #b5bac1;
 }
 
 
