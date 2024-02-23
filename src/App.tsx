@@ -1,5 +1,6 @@
 import { Box, PaletteMode, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
+import Chat from './pages/Chat'
 
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
@@ -47,7 +48,6 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
-
   )
 }
 
