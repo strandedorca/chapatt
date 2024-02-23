@@ -5,8 +5,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import { Avatar, Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Avatar, Box, Tooltip } from '@mui/material';
 import {
     AccountCircle,
     Help,
@@ -54,28 +54,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         '&:focus': {
             width: '200px',
         },
-        // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         [theme.breakpoints.up('md')]: {
             width: '14ch',
         },
-    },
-}));
-
-const CircleIcon = styled('div')(() => ({
-    position: 'relative',
-    '&::after': {
-        content: '""',
-        position: 'absolute',
-        bottom: '7px',
-        right: '-2px',
-        backgroundColor: '#fff',
-        borderRadius: '50%',
-        width: '1em',
-        height: '1em',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '0.75rem',
     },
 }));
 
@@ -83,7 +64,7 @@ const CircleIcon = styled('div')(() => ({
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#313338', // Set primary color to #313338
+            main: '#313338',
         },
     },
 });
@@ -92,33 +73,43 @@ export default function Header() {
     return (
         <ThemeProvider theme={theme}>
             <AppBar >
-                <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between', }} >
+                <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar alt="Hieu Bui" src="#"
                             sx={{ width: 24, height: 24 }}
                         />
-                        <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem" }}>
-                            Hieu Bui
-                        </Typography>
+                        <Tooltip title="Hieu Bui" arrow>
+                            <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem", cursor: 'pointer' }}>
+                                Hieu Bui
+                            </Typography>
+                        </Tooltip>
                     </Box>
 
                     <Box sx={{ display: 'flex' }} color={"#b5bac1"}>
-                        <IconButton color="inherit">
-                            <WifiCalling3 />
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Account" arrow>
+                                <WifiCalling3 />
+                            </Tooltip>
                         </IconButton>
-                        <IconButton color="inherit">
-                            <Videocam />
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Account" arrow>
+                                <Videocam />
+                            </Tooltip>
                         </IconButton>
-                        <IconButton color="inherit">
-                            <PersonAdd />
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Account" arrow>
+                                <PersonAdd />
+                            </Tooltip>
                         </IconButton>
-                        <IconButton color="inherit">
-                            <PushPin />
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Account" arrow>
+                                <PushPin />
+                            </Tooltip>
                         </IconButton>
-                        <IconButton style={{ color: "#fff" }}>
-                            <CircleIcon>
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Account" arrow>
                                 <AccountCircle />
-                            </CircleIcon>
+                            </Tooltip>
                         </IconButton>
 
                         <Search>
@@ -131,11 +122,15 @@ export default function Header() {
                             </SearchIconWrapper>
                         </Search>
 
-                        <IconButton color="inherit">
-                            <Inbox />
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Inbox" arrow>
+                                <Inbox />
+                            </Tooltip>
                         </IconButton>
-                        <IconButton color="inherit">
-                            <Help />
+                        <IconButton color="inherit" sx={{ '&:focus': { outline: 'none' }, '&:hover': { color: '#fff' } }}>
+                            <Tooltip title="Help" arrow>
+                                <Help />
+                            </Tooltip>
                         </IconButton>
                     </Box>
                 </Toolbar>
