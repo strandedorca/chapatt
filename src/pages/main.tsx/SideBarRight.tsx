@@ -14,6 +14,8 @@ type User = {
 };
 
 export const SideBarRight: React.FC = () => {
+  let isDarkMode = false;
+  if (isDarkMode) { }
   let userInfo: User[] = [
     {
       backgroundColorPersonal: "brown",
@@ -38,13 +40,20 @@ export const SideBarRight: React.FC = () => {
   const user: User = userInfo[0];
 
   return (
-    <div className="container" style={{ backgroundColor: "#232428", color:"white", height:"700px"}}>
+    <div
+      // className="container"
+      style={{ backgroundColor: "#313338", color: "#ffffff", height: "749px" }}
+    >
       <div className="row ">
         <UserInfo user={user}>
           <UserInfoDetail label="Name" value={user.name} />
+          <hr style={{ border: "1px solid white", width: "420px" }}></hr>
           <UserInfoDetail label="Nickname" value={user.nickname} />
+          <hr style={{ border: "1px solid white", width: "420px" }}></hr>
           <UserInfoDetail label="About Me" value={user.aboutMe} />
+          <hr style={{ border: "1px solid white", width: "420px" }}></hr>
           <UserInfoDetail label="Name Member Joined" value={user.dateJoined} />
+          <hr style={{ border: "1px solid white", width: "420px" }}></hr>
           <UserInfoDetail label="Note" value={user.note} />
         </UserInfo>
       </div>

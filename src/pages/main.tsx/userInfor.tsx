@@ -26,14 +26,13 @@ const UserInfo: React.FC<UserInfoProps> = ({ user, children }) => {
 
   // Return
   return (
-    <div className="col-md-2" >
+    <div className="col-md-2">
       <div className="row">
         <div className="col-md" style={{ height: "160px" }}>
           <div
             style={{
               width: "500px",
               height: "100px",
-              padding: "10px",
               backgroundColor: user.backgroundColorPersonal,
             }}
           ></div>
@@ -48,7 +47,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ user, children }) => {
                 position: "relative",
                 bottom: "60px",
                 left: "30px",
-                border: "5px solid white",
+                border: "7px solid #313338",
               }}
             />
             <div>
@@ -60,7 +59,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ user, children }) => {
                   position: "relative",
                   bottom: "88px",
                   left: "81px",
-                  border: "5px solid white",
+                  border: "5px solid #313338",
                   borderRadius: "50%",
                 }}
               ></i>
@@ -68,34 +67,57 @@ const UserInfo: React.FC<UserInfoProps> = ({ user, children }) => {
           </div>
         </div>
       </div>
-      <div
-        className="row rounded border border-secondary mx-auto"
-        style={{ width: "500px" }}
-      >
-        {children}
-      </div>
-      <div>
+      <div style={{ paddingLeft: "20px"}}>
+        <div
+          className="row rounded border border-0 mx-auto"
+          style={{
+            width: "460px",
+            paddingLeft: "20px",
+            backgroundColor: "#111214",
+            paddingTop: "16px",
+          }}
+        >
+          {children}
+        </div>
+
+        <div>
+          <button
+            type="button"
+            className="btn border-0"
+            style={{
+              width: "460px",
+              marginTop: "10px",
+              textAlign: "left",
+              color: "#b5bac1",
+              backgroundColor: "#111214",
+            }}
+          >
+            1 Mutual Server
+            <i
+              className="fa fa-arrow-right"
+              aria-hidden="true"
+              style={{ paddingLeft: "295px" }}
+            ></i>
+          </button>
+        </div>
         <button
           type="button"
-          className="btn btn-outline-secondary"
-          style={{ width: "500px", marginTop: "10px", textAlign: "left" }}
+          className="btn border-0"
+          style={{
+            width: "460px",
+            marginTop: "10px",
+            backgroundColor: "#111214",
+            color: "#b5bac1",
+          }}
         >
-          1 Mutual Server
-          <i className="fa fa-arrow-right" aria-hidden="true" style={{paddingLeft:"310px"}}></i>
+          <i
+            className="fa fa-gift"
+            aria-hidden="true"
+            style={{ paddingRight: "5px" }}
+          ></i>
+          Gift Nitro
         </button>
       </div>
-      <button
-        type="button"
-        className="btn btn-outline-secondary"
-        style={{ width: "500px", marginTop: "10px" }}
-      >
-        <i
-          className="fa fa-gift"
-          aria-hidden="true"
-          style={{ paddingRight: "5px" }}
-        ></i>
-        Gift Nitro
-      </button>
       <div></div>
     </div>
   );
