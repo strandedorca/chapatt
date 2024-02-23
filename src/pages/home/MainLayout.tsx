@@ -4,6 +4,7 @@ import Header from "./Header"
 import Chat from "./Chat"
 import { styled } from "@mui/system"
 import SidebarPage from "../sidebar/SidebarPage"
+import { SideBarRight } from "../main.tsx/SideBarRight"
 
 const FHBox = styled(Box)({
   height: '100%',
@@ -37,7 +38,7 @@ const MainLayout = () => {
             <Chat />
           </FHBox>
           <FHBox width="340px">
-            <ServerSidebar />
+            <SideBarRight />
           </FHBox>
         </FHBox>
 
