@@ -1,17 +1,9 @@
 *{
-    background-color: #2b2d31;
+    background-color: #313338;
 }
 
 .sidebarMain{
     height: 100%;
-}
-
-.container{
-   display: flex;
-   gap: 30px;
-   width: 208px;
-   justify-content: space-between;
-   color: #51555b;
 }
 
 .container:hover{
@@ -54,6 +46,14 @@
     color: #1e1f22;
 }
 
+.container{
+    display: flex;
+    gap: 30px;
+    width: 208px;
+    justify-content: space-between;
+    color: #b5bac1;
+ }
+
 .sidebarInput > input {
     width: 200px;
 }
@@ -62,13 +62,19 @@
     display: flex;
     gap: 47px;
     padding: 5px;
-    color: #51555b;
+    color: #b5bac1;
 
 }
 
 .sidebarInput{
     padding: 5px;
-    color: #51555b;
+    color:#b5bac1;
+}
+
+.sidebarInput > input {
+    height: 25px;
+    border: none;
+    color: #313338;
 }
 
 .sidebarFriends{
@@ -76,7 +82,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    color: #51555b;
+    color: #b5bac1;
 }
 
 .sidebarShop{
@@ -84,7 +90,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    color: #51555b;
+    color: #b5bac1;
 }
 
 .sidebarFriends > svg {
@@ -99,16 +105,16 @@
     left: 0;
     display: flex;
     height: 45px;
-    background-color: #1e1f22;
+    background-color: #232428;
     width: 225px;
     align-items: center;
     justify-content: space-between;
-    color: #51555b;
+    color: #b5bac1;
 }
 
 .discordIcon{
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     color: pink;
     border-radius: 50%;
 }
@@ -118,11 +124,27 @@
     height: 30px;
 }
 
-.add{
+.addButton{
     color: #b5bac1;
+    border: none;
+    background-color: #313338;
+}
+
+.buttonDelete{
+    color: #b5bac1;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-color: #313338;
 }
 
 .microphone{
+    width: 20px;
+    height: 20px;
+    color: #b5bac1;
+}
+
+.micOff{
     width: 20px;
     height: 20px;
     color: #b5bac1;
@@ -134,11 +156,44 @@
     color: #b5bac1;
 }
 
+.headphonesOff{
+    width: 20px;
+    height: 20px; 
+    color: #b5bac1;
+}
+
 .settingIcon{
     width: 20px;
     height: 20px;
     color: #b5bac1;
 }
+
+.iosetting > button{
+   border: none;
+   background-color: #232428;
+}
+
+.iomicrophone > button{
+    border: none;
+    background-color: #232428;
+}
+
+.ioheadphone > button {
+    border: none;
+    background-color: #232428;
+}
+
+.userItem{
+    width: 225px;
+}
+
+
+
+
+
+
+
+
 
 
 

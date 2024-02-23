@@ -4,16 +4,14 @@ import { CiUser } from "react-icons/ci";
 
 interface IConversationItemProps {
   name: string;
-  button: string;
   icon: string;
 }
 
-const ConversationItem: React.FC<IConversationItemProps> = ({icon, name, button }) => {
+const ConversationItem: React.FC<IConversationItemProps> = ({name }) => {
   return (
     <div className={styles.container}>
       <p>{<CiUser className={styles.userIcon}/>}</p>
       <p>{name}</p>
-      <p className={styles.buttonX}>{button}</p>
     </div>
   );
 };

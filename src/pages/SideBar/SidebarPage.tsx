@@ -5,24 +5,41 @@ import { FaDiscord } from "react-icons/fa";
 import { FaMicrophone } from "react-icons/fa";
 import { FaHeadphones } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
-
+import { IoMicOff } from "react-icons/io5";
+import { FaVolumeMute } from "react-icons/fa";
 
 interface IConversation {
   id: number;
   icon: string;
   name: string;
-  button: string;
 }
 
 const SidebarPage: React.FC = () => {
   const [conversations, setConversations] = useState<IConversation[]>([
-    { id: 1, icon: "Icon1", name: "Test#1", button: "X" },
-    { id: 2, icon: "Icon2", name: "Test#2", button: "X" },
-    { id: 3, icon: "Icon3", name: "Test#3", button: "X" },
-    { id: 4, icon: "Icon4", name: "Test#4", button: "X" },
-    { id: 5, icon: "Icon5", name: "Test#5", button: "X" },
-    { id: 6, icon: "Icon6", name: "Test#6", button: "X" },
+    { id: 1, icon: "Icon1", name: "Test#1" },
+    { id: 2, icon: "Icon2", name: "Test#2" },
+    { id: 3, icon: "Icon3", name: "Test#3" },
+    { id: 4, icon: "Icon4", name: "Test#4" },
+    { id: 5, icon: "Icon5", name: "Test#5" },
+    { id: 6, icon: "Icon6", name: "Test#6" },
   ]);
+
+  const [mute, setMute] = useState(false);
+
+  const handleMute = () => {
+    setMute(true);
+  };
+
+  const [deafen, setDeafen] = useState(false);
+
+  const handleDeafen = () => {
+    setDeafen(true);
+  };
+
+  const handleDelete = (id: number) => {
+    const updatedConversations = conversations.filter((item) => item.id !== id);
+    setConversations(updatedConversations);
+  };
 
   return (
     <div className={styles.sidebarMain}>
@@ -85,30 +102,58 @@ const SidebarPage: React.FC = () => {
 
       <div className={styles.directMessages}>
         DIRECT MESSAGES
-        <div className={styles.add}>
-         +
+        <div>
+          <button className={styles.addButton}>+</button>
         </div>
       </div>
 
-      <div>
+      <div className={styles.userItem}>
         {conversations.map((item) => (
-          <ConversationItem key={item.id} icon={item.icon} name={item.name} button={item.button}/>
+          <React.Fragment key={item.id}>
+            <ConversationItem icon={item.icon} name={item.name} />
+            <div>
+              <button
+                onClick={() => handleDelete(item.id)}
+                className={styles.buttonDelete}
+              >
+                X
+              </button>
+            </div>
+          </React.Fragment>
         ))}
       </div>
 
       <div className={styles.sidebarFooter}>
-      <FaDiscord className={styles.discordIcon}/>
+        <FaDiscord className={styles.discordIcon} />
         Account name
-
-      <div className={styles.iomicrophone}>
-        <FaMicrophone className={styles.microphone}/>
-      </div>
-      <div className={styles.ioheadphone}>
-        <FaHeadphones className={styles.headphones}/>
-      </div>
-      <div className={styles.iosetting}>
-        <IoIosSettings className={styles.settingIcon} />
-      </div>
+        <div className={styles.iomicrophone}>
+          {mute === false ? (
+            <button onClick={handleMute}>
+              {" "}
+              <FaMicrophone className={styles.microphone} />
+            </button>
+          ) : (
+            <button>
+              <IoMicOff className={styles.micOff} />
+            </button>
+          )}
+        </div>
+        <div className={styles.ioheadphone}>
+          {deafen === false ? (
+            <button onClick={handleDeafen}>
+              <FaHeadphones className={styles.headphones} />
+            </button>
+          ) : (
+            <button>
+              <FaVolumeMute className={styles.headphonesOff} />
+            </button>
+          )}
+        </div>
+        <div className={styles.iosetting}>
+          <button>
+            <IoIosSettings className={styles.settingIcon} />
+          </button>
+        </div>
       </div>
     </div>
   );
