@@ -1,5 +1,6 @@
 import { Box, PaletteMode, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
+
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
 import { getDesignTokens } from './theme';
@@ -26,6 +27,7 @@ function App() {
   // const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   return (
+
     // <ColorModeContext.Provider value={colorMode}>
     //   <ThemeProvider theme={theme}>
     //     <Box id="navigation-bar">
@@ -45,6 +47,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+
   )
 }
 
