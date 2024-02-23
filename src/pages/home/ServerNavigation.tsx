@@ -29,7 +29,7 @@ const NavigationSidebar = () => {
         gap: "10px",
     }}>
         <AddNewServer />
-        <Divider variant="middle" orientation="horizontal" flexItem sx={{ border: "1px solid #313338" }} />
+        <Divider variant="middle" orientation="horizontal" flexItem sx={{ border: "1px solid #404249" }} />
         {servers.map((server) => (
           <ServerNavigationItem 
             key={server.id}

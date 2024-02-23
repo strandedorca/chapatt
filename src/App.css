@@ -1,6 +1,7 @@
-
 html, body, #root {
   height: 100%;
+  background-color: #313338;
+  color: white;
 }
 
 *, *::before, *::after {
