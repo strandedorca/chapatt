@@ -453,9 +453,7 @@
 
 "@mui/icons-material@^5.15.10":
   version "5.15.10"
-
   resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.15.10.tgz#24f65945f8f02499e4da0213d6a12ac714305679"
-
   integrity sha512-9cF8oUHZKo9oQ7EQ3pxPELaZuZVmphskU4OI6NiJNDVN7zcuvrEsuWjYo1Zh4fLiC39Nrvm30h/B51rcUjvSGA==
   dependencies:
     "@babel/runtime" "^7.23.9"
@@ -1848,11 +1846,9 @@ react-router@6.22.1:
   dependencies:
     "@remix-run/router" "1.15.1"
 
-
-react-transition-group@^4.4.5:
-
+react-transition-group@^4.4.0, react-transition-group@^4.4.5:
   version "4.4.5"
-  resolved "https://registry.npmjs.org/react-transition-group/-/react-transition-group-4.4.5.tgz"
+  resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
   integrity sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==
   dependencies:
     "@babel/runtime" "^7.5.5"
