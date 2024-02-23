@@ -7,7 +7,7 @@ const Home = () => {
         <Box sx={{
             height: "100%",
         }}>
-            {/* NavBar */}
+            {/* Server NavBar */}
             <Box sx={{
                 display: { xs: 'none', md: 'block' },
                 height: "100%",
