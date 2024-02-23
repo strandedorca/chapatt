@@ -15,6 +15,13 @@ import MainLayout from './pages/home/MainLayout'
 
 // const ColorModeContext = createContext('dark')
 
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react";
+// import { SideBarRight } from './pages/main.tsx/sidebar-right';
+import { SideBarRight } from './pages/main.tsx/SideBarRight';
+
+
 function App() {
   // Dark/Light Mode Implementation
   // const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
@@ -45,6 +52,7 @@ function App() {
       </Routes>
     </BrowserRouter>
   )
+
 }
 
 
