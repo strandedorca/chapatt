@@ -1,32 +1,50 @@
-import { Container, Grid } from '@mui/material'
+import { Box, PaletteMode, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
+import { createContext, useMemo, useState } from 'react'
+import { getDesignTokens } from './theme';
+import { Update } from '@reduxjs/toolkit';
+import Login from './pages/login/Login';
+import Settings from './pages/settings/Settings';
+import Home from './pages/home/Home';
+import ServerIdPage from './pages/home/ServerPage';
+
+// const ColorModeContext = createContext('dark')
 
 function App() {
-  return (
-    <Container maxWidth={false}>
-      <Grid container spacing={2}>
-        <Grid id='channel-bar' lg={1}>
-          Channels
-        </Grid>
-        <Grid id='left-bar' lg={2}>
-          Channel Details
-        </Grid>
+  // Dark/Light Mode Implementation
+  // const [mode, setMode] = useState<PaletteMode>('dark');
+  // const colorMode = useMemo(
+  //   () => ({
+  //     toggleColorMode: () => {
+  //       setMode((prevMode: PaletteMode) =>
+  //         prevMode === 'light' ? 'dark' : 'light',
+  //       );
+  //     },
+  //   }), [],
+  // );
+  // const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
-        <Grid container lg={9}>
-          <Grid id="header" lg={12}>
-            Header
-          </Grid>
-          <Grid container lg={12}>
-            <Grid id="conversation" lg={8}>
-              Main
-            </Grid>
-            <Grid id="right-bar" lg={4}>
-              User information
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Container>
+  return (
+    // <ColorModeContext.Provider value={colorMode}>
+    //   <ThemeProvider theme={theme}>
+    //     <Box id="navigation-bar">
+    //     </Box>
+    //     <Box component="main">
+    //       <Outlet />
+    //     </Box>
+    //   </ThemeProvider>
+    // </ColorModeContext.Provider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />}>
+          <Route index element={<ServerIdPage />} />
+
+          <Route path="login" element={<Login />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
