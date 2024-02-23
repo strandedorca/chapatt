@@ -38,6 +38,7 @@ const MainLayout = () => {
           </FHBox>
           <FHBox width="340px">
             <RightSidebar />
+
           </FHBox>
         </FHBox>
 
