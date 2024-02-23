@@ -3,6 +3,7 @@ import ServerSidebar from "./ServerSidebar"
 import Header from "./Header"
 import Chat from "./Chat"
 import { styled } from "@mui/system"
+import SidebarPage from "../sidebar/SidebarPage"
 
 const FHBox = styled(Box)({
   height: '100%',
@@ -17,7 +18,7 @@ const MainLayout = () => {
         width="240px"
         position="fixed"
       >
-        <ServerSidebar />
+        <SidebarPage />
       </FHBox>
 
       {/* Main */}
