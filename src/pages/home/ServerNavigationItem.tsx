@@ -13,7 +13,7 @@ const ServerNavigationItem = ({ id, imgUrl, name }: ServerNavigationItemProps) =
         <CustomTooltip title={name}>
             <NavLink to={id}>
                 <ServerButton imgUrl={imgUrl}>
-                    {name[0]}
+                    <p>{name[0]}</p>
                 </ServerButton>
             </NavLink>
         </CustomTooltip>

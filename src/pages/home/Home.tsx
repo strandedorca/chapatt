@@ -11,7 +11,6 @@ const Home = () => {
             <Box sx={{
                 display: { xs: 'none', md: 'block' },
                 height: "100%",
-                // flexDirection: "column",
                 width: "72px",
                 position: "fixed",
             }}>

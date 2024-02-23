@@ -2,7 +2,7 @@ import { Box, PaletteMode, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
 import Chat from './pages/home/Chat'
 
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
 import { getDesignTokens } from './theme';
 import { Update } from '@reduxjs/toolkit';
@@ -43,8 +43,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />}>
+          <Route index element={<Navigate to="conversations" />} />
           <Route element={<MainLayout />}>
-            <Route path="messages" element={<DirectMessages />} />
+            <Route path="conversations" element={<DirectMessages />} />
             <Route path="servers" element={<ServerIdPage />} />
           </Route>
 

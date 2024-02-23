@@ -1,6 +1,10 @@
+import Chat from "./Chat"
+
 const DirectMessages = () => {
   return (
-    <div>DirectMessages</div>
+    <div>
+      
+    </div>
   )
 }
 

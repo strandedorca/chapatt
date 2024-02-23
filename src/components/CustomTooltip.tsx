@@ -8,7 +8,9 @@ interface CustomTooltipProp {
 const CustomTooltip = ({ children, title }: CustomTooltipProp) => {
   return (
     <Tooltip title={title} arrow placement="right">
+      <>
         {children}
+      </>
     </Tooltip>
   )
 }

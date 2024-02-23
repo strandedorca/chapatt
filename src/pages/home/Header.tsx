@@ -60,7 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-// Define your custom theme
+// TO BE CONTINUED..
 const theme = createTheme({
     palette: {
         primary: {
@@ -72,7 +72,7 @@ const theme = createTheme({
 export default function Header() {
     return (
         <ThemeProvider theme={theme}>
-            <AppBar >
+            <AppBar position='sticky'>
                 <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar alt="Hieu Bui" src="#"
