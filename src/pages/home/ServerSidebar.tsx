@@ -3,6 +3,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Avatar, Box } from "@mui/material"
 import avatar from './../../assets/avatar.jpg';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import CustomTooltip from "../../components/CustomTooltip";
 
 
 const SearchField = styled('input')({
@@ -53,7 +54,9 @@ const ServerSidebar = ({ users }: any) => {
                 </Button>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title>Direct messages</Title>
-                    <Button style={{ width: "auto" }}>+</Button>
+                    <CustomTooltip title="Create DM">
+                        <Button style={{ width: "auto" }}>+</Button>
+                    </CustomTooltip>
                 </Box>
                 <Box>
                     {users.map((user: any) => (

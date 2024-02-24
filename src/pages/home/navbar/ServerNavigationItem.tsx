@@ -4,16 +4,16 @@ import ServerButton from "../../../components/ServerButton"
 
 interface ServerNavigationItemProps {
     id: string,
-    imgUrl: string,
+    imgUrl?: string | null,
     name: string,
 }
 
 const ServerNavigationItem = ({ id, imgUrl, name }: ServerNavigationItemProps) => {
     return (
         <CustomTooltip title={name}>
-            <NavLink to={id}>
+            <NavLink to={id} style={{ textDecoration: "none" }}>
                 <ServerButton imgUrl={imgUrl}>
-                    <p>{name[0]}</p>
+                    <div>{name[0]}</div>
                 </ServerButton>
             </NavLink>
         </CustomTooltip>

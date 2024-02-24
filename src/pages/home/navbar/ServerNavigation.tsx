@@ -2,17 +2,18 @@ import { Box } from "@mui/system"
 import AddNewServer from "./AddNewServer"
 import { Divider } from "@mui/material"
 import ServerNavigationItem from "./ServerNavigationItem"
+import avatar from './../../../assets/avatar.jpg';
 
 const NavigationSidebar = () => {
   const servers = [
     {
       id: "1",
-      imgUrl: "#",
+      imgUrl: null,
       name: "Example Server",
     },
     {
       id: "2",
-      imgUrl: "#",
+      imgUrl: null,
       name: "Example Server",
     }
   ];
@@ -28,7 +29,11 @@ const NavigationSidebar = () => {
         flexDirection: "column",
         gap: "10px",
     }}>
-        <AddNewServer />
+        <ServerNavigationItem 
+          id="conversations"
+          name="Me"
+          imgUrl={avatar}
+        />
         <Divider variant="middle" orientation="horizontal" flexItem sx={{ border: "1px solid #404249" }} />
         {servers.map((server) => (
           <ServerNavigationItem 
@@ -38,6 +43,7 @@ const NavigationSidebar = () => {
             imgUrl={server.imgUrl}
           />
         ))}
+        <AddNewServer />
     </Box>
   )
 }
