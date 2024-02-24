@@ -1,6 +1,6 @@
 import { Box, PaletteMode, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
-import Chat from './pages/home/Chat'
+import Chat from './pages/home/main/Chat'
 
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
@@ -10,7 +10,7 @@ import Login from './pages/login/Login';
 import Settings from './pages/settings/Settings';
 import Home from './pages/home/Home';
 import ServerIdPage from './pages/home/ServerIdPage';
-import DirectMessages from './pages/home/DirectMessages'
+import DirectMessages from './pages/home/main/DirectMessages'
 import MainLayout from './pages/home/MainLayout'
 
 // const ColorModeContext = createContext('dark')

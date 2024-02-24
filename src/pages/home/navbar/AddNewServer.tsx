@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
-import CustomTooltip from "../../components/CustomTooltip";
-import ServerButton from "../../components/ServerButton";
+import CustomTooltip from "../../../components/CustomTooltip";
+import ServerButton from "../../../components/ServerButton";
 
 const NavigationAction = () => {
   return (

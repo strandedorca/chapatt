@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom"
-import CustomTooltip from "../../components/CustomTooltip"
-import ServerButton from "../../components/ServerButton"
+import CustomTooltip from "../../../components/CustomTooltip"
+import ServerButton from "../../../components/ServerButton"
 
 interface ServerNavigationItemProps {
     id: string,

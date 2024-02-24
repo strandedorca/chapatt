@@ -1,6 +1,6 @@
 import { Box } from "@mui/system"
 import { Outlet } from "react-router-dom"
-import ServerNavigation from "./ServerNavigation"
+import ServerNavigation from "./navbar/ServerNavigation"
 
 const Home = () => {
     return (

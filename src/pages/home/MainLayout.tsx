@@ -1,9 +1,11 @@
 import { Box } from "@mui/system"
 import Header from "./Header"
-import Chat from "./Chat"
+import Chat from "./main/Chat"
 import { styled } from "@mui/system"
-import SidebarPage from "../sidebar/SidebarPage"
+import SidebarPage from "./server-sidebar/SidebarPage"
 import RightSidebar from "./RightSidebar"
+import Messages from "./Messages"
+import ServerSidebar from "./ServerSidebar"
 
 const FHBox = styled(Box)({
   height: '100%',
@@ -18,6 +20,7 @@ const MainLayout = () => {
         width="240px"
         position="fixed"
       >
+        {/* <ServerSidebar /> */}
         <SidebarPage />
       </FHBox>
 
@@ -34,7 +37,7 @@ const MainLayout = () => {
         {/* Convo + Right Sidebar */}
         <FHBox display="flex">
           <FHBox flexGrow={1}>
-            <Chat />
+            <Messages />
           </FHBox>
           <FHBox width="340px">
             <RightSidebar />
