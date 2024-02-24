@@ -1,11 +1,14 @@
 import { TextField, styled } from "@material-ui/core"
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Avatar, Box } from "@mui/material"
+import avatar from './../../assets/avatar.jpg';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+
 
 const SearchField = styled('input')({
     backgroundColor: "#232428",
     border: "none",
-    color: "grey",
+    color: "#d3d3d3",
     width: "100%",
     padding: "2px 5px",
     fontSize: ".9em"
@@ -13,40 +16,67 @@ const SearchField = styled('input')({
 const Button = styled('button')({
     backgroundColor: "#2b2d31",
     border: "none",
-    color: "grey",
+    borderRadius: "5px",
+    color: "#d3d3d3",
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    gap: "20px",
+    justifyContent: "flex-start",
+    gap: "15px",
+    width: "100%",
+    padding: "10px",
+    "&:hover": {
+        backgroundColor: "#36373d",
+        color: "white"
+    }
 })
 const Title = styled('p')({
     textTransform: "uppercase",
-    marginTop: "10px",
     margin: "0",
     fontSize: ".8em",
-    color: "grey"
+    color: "#d3d3d3"
 })
 
-const ServerSidebar = () => {
+const ServerSidebar = ({ users }: any) => {
   return (
-    <Box>
-        <Box sx={{ height: "48px" }} padding="10px">
-            <SearchField placeholder="Find or start a conversation"/>
-        </Box>
-        <Box padding="10px 20px" >
-            <Button>
-                <PeopleAltIcon />
-                Friends
-            </Button>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mt="20px">
-                <Title>Direct messages</Title>
-                <Button>+</Button>
+    <Box
+        height="100%" 
+        display="flex" justifyContent="space-between" flexDirection="column"
+    >
+        <div>
+            <Box sx={{ height: "48px" }} padding="10px">
+                <SearchField placeholder="Find or start a conversation"/>
             </Box>
-            <Box>
+            <Box padding="10px" >
                 <Button>
-                    <Avatar sx={{ width: "30px", height: "30px" }}/>
+                    <PeopleAltIcon />
+                    Friends
                 </Button>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Title>Direct messages</Title>
+                    <Button style={{ width: "auto" }}>+</Button>
+                </Box>
+                <Box>
+                    {users.map((user: any) => (
+                        <Button>
+                            <Avatar sx={{ width: "32px", height: "32px" }}/>
+                            <div>{user.name}</div>
+                        </Button>
+                    ))}
+                </Box>
             </Box>
+        </div>
+        <Box sx={{
+            backgroundColor: "#1e1f22",
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+        }}>
+            <Box display="flex" gap="10px">
+                <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>
+                <div style={{ color: "#d3d3d3" }}>strandedorca</div>
+            </Box>
+            <SettingsRoundedIcon />
         </Box>
     </Box>
   )

@@ -11,6 +11,18 @@ const FHBox = styled(Box)({
   height: '100%',
 })
 
+const users = [
+  {
+    name: "Nhung",
+  },
+  {
+    name: "Brendyn",
+  },
+  { 
+    name: "Demon Lord"
+  }
+]
+
 const MainLayout = () => {
   return (
     <FHBox>
@@ -20,8 +32,8 @@ const MainLayout = () => {
         width="240px"
         position="fixed"
       >
-        {/* <ServerSidebar /> */}
-        <SidebarPage />
+        <ServerSidebar users={users}/>
+        {/* <SidebarPage /> */}
       </FHBox>
 
       {/* Main */}
