@@ -3,9 +3,10 @@ import Header from "./Header"
 import Chat from "./main/Chat"
 import { styled } from "@mui/system"
 import SidebarPage from "./server-sidebar/SidebarPage"
-import RightSidebar from "./RightSidebar"
-import Messages from "./Messages"
-import ServerSidebar from "./ServerSidebar"
+import RightSidebar from "./right-sidebar/RightSidebar"
+import Messages from "./main-huyen/Messages"
+import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
+import { Outlet } from "react-router"
 
 const FHBox = styled(Box)({
   height: '100%',
@@ -13,12 +14,15 @@ const FHBox = styled(Box)({
 
 const users = [
   {
+    id: "1",
     name: "Nhung",
   },
   {
+    id: "2",
     name: "Brendyn",
   },
   { 
+    id: "3",
     name: "Demon Lord"
   }
 ]
@@ -49,7 +53,8 @@ const MainLayout = () => {
         {/* Convo + Right Sidebar */}
         <FHBox display="flex">
           <FHBox flexGrow={1}>
-            <Messages />
+            {/* <Messages /> */}
+            <Outlet />
           </FHBox>
           <FHBox width="340px">
             <RightSidebar />

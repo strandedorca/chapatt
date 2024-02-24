@@ -11,7 +11,11 @@ interface ServerNavigationItemProps {
 const ServerNavigationItem = ({ id, imgUrl, name }: ServerNavigationItemProps) => {
     return (
         <CustomTooltip title={name}>
-            <NavLink to={id} style={{ textDecoration: "none" }}>
+            {/* NavLink to personal conversations / a group */}
+            <NavLink 
+                to={id === "me" ? 'me' : `servers/${id}`} 
+                style={{ textDecoration: "none" }}
+            >
                 <ServerButton imgUrl={imgUrl}>
                     <div>{name[0]}</div>
                 </ServerButton>

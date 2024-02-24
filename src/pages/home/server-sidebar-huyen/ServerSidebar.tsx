@@ -1,9 +1,10 @@
 import { TextField, styled } from "@material-ui/core"
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Avatar, Box } from "@mui/material"
-import avatar from './../../assets/avatar.jpg';
+import avatar from './../../../assets/avatar.jpg';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
-import CustomTooltip from "../../components/CustomTooltip";
+import CustomTooltip from "../../../components/CustomTooltip";
+import { useNavigate } from "react-router";
 
 
 const SearchField = styled('input')({
@@ -38,7 +39,8 @@ const Title = styled('p')({
 })
 
 const ServerSidebar = ({ users }: any) => {
-  return (
+    const navigate = useNavigate();
+    return (
     <Box
         height="100%" 
         display="flex" justifyContent="space-between" flexDirection="column"
@@ -60,7 +62,7 @@ const ServerSidebar = ({ users }: any) => {
                 </Box>
                 <Box>
                     {users.map((user: any) => (
-                        <Button>
+                        <Button onClick={() => { navigate(`/conversations/${user.id}`) }}>
                             <Avatar sx={{ width: "32px", height: "32px" }}/>
                             <div>{user.name}</div>
                         </Button>
@@ -79,7 +81,14 @@ const ServerSidebar = ({ users }: any) => {
                 <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>
                 <div style={{ color: "#d3d3d3" }}>strandedorca</div>
             </Box>
-            <SettingsRoundedIcon />
+            <Button onClick={() => { navigate("/settings")}}
+            style={{
+                backgroundColor: "transparent",
+                width: "30px",
+                marginRight: "10px"
+            }}>
+                <SettingsRoundedIcon />
+            </Button>
         </Box>
     </Box>
   )

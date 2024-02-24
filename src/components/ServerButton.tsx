@@ -3,9 +3,10 @@ import { Button } from "@mui/material"
 interface ServerButtonProp {
     imgUrl?: string | null,
     children?: React.ReactElement,
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const ServerButton = ({ imgUrl, children }: ServerButtonProp) => {
+const ServerButton = ({ imgUrl, children, onClick }: ServerButtonProp) => {
     return (
         <div>
             <Button sx={{
@@ -27,7 +28,9 @@ const ServerButton = ({ imgUrl, children }: ServerButtonProp) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-            }}>
+            }}
+                onClick={onClick}
+            >
                 {!imgUrl ? children : null}
             </Button>
         </div>

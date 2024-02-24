@@ -1,5 +1,5 @@
 import { Box, styled } from "@mui/system"
-import avatar from './../../assets/avatar.jpg';
+import avatar from './../../../assets/avatar.jpg';
 import { Button, Divider, Typography } from "@mui/material";
 import { Speaker } from "@mui/icons-material";
 // import { Speaker } from "@material-ui/icons";

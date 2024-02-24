@@ -2,7 +2,7 @@ import { Box, PaletteMode, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
 import Chat from './pages/home/main/Chat'
 
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
 import { getDesignTokens } from './theme';
 import { Update } from '@reduxjs/toolkit';
@@ -16,9 +16,14 @@ import MainLayout from './pages/home/MainLayout'
 
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import React from "react";
+import Messages from './pages/home/main-huyen/Messages'
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const handleLogIn = () => {
+    setIsLoggedIn(!isLoggedIn);
+  }
+
   // Dark/Light Mode Implementation
   // const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
@@ -35,15 +40,19 @@ function App() {
     // </ColorModeContext.Provider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />}>
-          <Route index element={<Navigate to="conversations" />} />
+        <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login"/>}>
+          <Route index element={<Navigate to="me" />} />
           <Route element={<MainLayout />}>
-            <Route path="conversations" element={<DirectMessages />} />
+            <Route path="me" element={<Messages />}>
+              <Route path=":userId" element={<Messages />}/>
+            </Route>
+            <Route path="servers" element={<Messages />}>
+              <Route path=":serverId" element/>
+            R</Route>
           </Route>
-
-          <Route path="login" element={<Login />} />
-          <Route path="settings" element={<Settings />} />
         </Route>
+        <Route path="login" element={<Login onLogIn={handleLogIn}/>} />
+        <Route path="settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   )
