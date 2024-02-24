@@ -17,9 +17,10 @@ import MainLayout from './pages/home/MainLayout'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Messages from './pages/home/main-huyen/Messages'
+import FriendsPage from './pages/home/main-huyen/FriendsPage'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const handleLogIn = () => {
     setIsLoggedIn(!isLoggedIn);
   }
@@ -42,14 +43,19 @@ function App() {
       <Routes>
         <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login"/>}>
           <Route index element={<Navigate to="me" />} />
+          {/* Homepage */}
           <Route element={<MainLayout />}>
-            <Route path="me" element={<Messages />}>
+
+            <Route path="me" element={<FriendsPage />}>
               <Route path=":userId" element={<Messages />}/>
             </Route>
+
             <Route path="servers" element={<Messages />}>
               <Route path=":serverId" element/>
-            R</Route>
+            </Route>
+
           </Route>
+
         </Route>
         <Route path="login" element={<Login onLogIn={handleLogIn}/>} />
         <Route path="settings" element={<Settings />} />

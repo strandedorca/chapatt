@@ -12,6 +12,7 @@ const FHBox = styled(Box)({
   height: '100%',
 })
 
+// PLACEHOLDER
 const users = [
   {
     id: "1",
@@ -37,10 +38,8 @@ const MainLayout = () => {
         position="fixed"
       >
         <ServerSidebar users={users}/>
-        {/* <SidebarPage /> */}
       </FHBox>
 
-      {/* Main */}
       <FHBox 
         paddingLeft={{ md: "240px" }}
         display="flex"
@@ -50,15 +49,13 @@ const MainLayout = () => {
         <Box>
           <Header />
         </Box>
-        {/* Convo + Right Sidebar */}
+        {/* Main + Right Sidebar */}
         <FHBox display="flex">
           <FHBox flexGrow={1}>
-            {/* <Messages /> */}
             <Outlet />
           </FHBox>
           <FHBox width="340px">
             <RightSidebar />
-
           </FHBox>
         </FHBox>
 
