@@ -11,6 +11,16 @@
   text-align: center;
 }
 
+.container {
+  width: 80%;
+  background-color: #313338;
+  padding: 50px 50px;
+  color: #fff;
+  border-radius: 15px;
+  
+}
+
+
 .logo {
   height: 6em;
   padding: 1.5em;
