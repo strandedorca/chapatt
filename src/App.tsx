@@ -1,5 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import './App.css'
+import Settings from './pages/settings/Settings'
 
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
