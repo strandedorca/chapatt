@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material"
+import { IconButton, TextField } from "@mui/material"
 import { Box, styled } from "@mui/system"
 import { Button } from "react-bootstrap"
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
@@ -90,7 +90,7 @@ const Messages = () => {
         >
             <Box id="messages" sx={{ flexGrow: "1", overflowY: "scroll" }}>
                 {fakeMessages.map(message => {
-                    return <Message name={message.from} timestamp={message.timestamp} content={message.content}/>
+                    return <Message key={message.content} name={message.from} timestamp={message.timestamp} content={message.content}/>
                 })}
             </Box>
             <Box 
@@ -101,16 +101,16 @@ const Messages = () => {
                 borderRadius="8px"
                 sx={{ backgroundColor: "#383a40 "}}
             >
-                <TransparentBtn>
+                <IconButton>
                     <AddCircleRoundedIcon />
-                </TransparentBtn>
+                </IconButton>
                 <TransparentInput type="text" placeholder="Enter message"/>
-                <TransparentBtn>
+                <IconButton>
                     <GifBoxRoundedIcon />
-                </TransparentBtn>
-                <TransparentBtn>
+                </IconButton>
+                <IconButton>
                     <AddReactionRoundedIcon />
-                </TransparentBtn>
+                </IconButton>
             </Box>
         </Box>
     )

@@ -1,11 +1,15 @@
-import { TextField, styled } from "@material-ui/core"
+import { styled } from "@material-ui/core"
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Avatar, Box } from "@mui/material"
+import { Avatar, Box, Divider, IconButton } from "@mui/material"
 import avatar from './../../../assets/avatar.jpg';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CustomTooltip from "../../../components/CustomTooltip";
-import { useNavigate } from "react-router";
-
+import { useLocation, useNavigate } from "react-router";
+import Title from "../../../components/Title";
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
+import { Channel } from "../../../types";
+import TagRoundedIcon from '@mui/icons-material/TagRounded';
+import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 
 const SearchField = styled('input')({
     backgroundColor: "#232428",
@@ -15,7 +19,7 @@ const SearchField = styled('input')({
     padding: "2px 5px",
     fontSize: ".9em"
 })
-const Button = styled('button')({
+const NavButton = styled('button')({
     backgroundColor: "#2b2d31",
     border: "none",
     borderRadius: "5px",
@@ -31,45 +35,127 @@ const Button = styled('button')({
         color: "white"
     }
 })
-const Title = styled('p')({
-    textTransform: "uppercase",
-    margin: "0",
-    fontSize: ".8em",
-    color: "#d3d3d3"
-})
 
 const ServerSidebar = ({ users }: any) => {
     const navigate = useNavigate();
+    const location = useLocation();
+    let content;
+    console.log(location);
+
+    // PLACEHOLDER
+    const channels: Channel[] = [
+        {
+            type: "voice",
+            name: "ABC",
+            id: "1"
+        }, 
+        {
+            type: "text",
+            name: "BCD",
+            id: "2"
+        },
+        {
+            type: "text",
+            name: "BCD",
+            id: "3"
+        },
+        {
+            type: "voice",
+            name: "BCD",
+            id: "4"
+        },
+    ]
+    const textChannels = channels.filter(channel => channel.type === "text");
+    const voiceChannels = channels.filter(channel => channel.type === "voice");
+
+    if (location.pathname === "/me") {
+        content = (
+            <Box>
+                {/* SearchBar */}
+                <Box sx={{ height: "48px", borderBottom: "1px white solid"}} padding="10px">
+                    <SearchField placeholder="Find or start a conversation"/>
+                </Box>
+                <Box padding="10px" >
+                    <NavButton onClick={() => {
+                        navigate('/me')
+                    }}>
+                        <PeopleAltIcon />
+                        Friends
+                    </NavButton>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Title content="Direct messages" />
+                        <CustomTooltip title="Create DM">
+                            <NavButton style={{ width: "auto" }}>+</NavButton>
+                        </CustomTooltip>
+                    </Box>
+                    <Box>
+                        {users.map((user: any) => (
+                            <NavButton key={user.id} onClick={() => { navigate(`/conversations/${user.id}`) }}>
+                                <Avatar sx={{ width: "32px", height: "32px" }}/>
+                                <div>{user.name}</div>
+                            </NavButton>
+                        ))}
+                    </Box>
+                </Box>
+            </Box>
+        )
+    }  else {
+        content = (
+            <Box padding="10px">
+                <NavButton onClick={() => {
+                    navigate('/i')
+                }}>
+                    <InfoRoundedIcon />
+                    <div>Information</div>
+                </NavButton>
+
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Title content="Text Channels" />
+                    <CustomTooltip title="New text channel">
+                        <NavButton style={{ width: "auto" }}>+</NavButton>
+                    </CustomTooltip>
+                </Box>
+                {textChannels.map((channel: Channel) => {
+                    return (
+                        <NavButton onClick={() => {
+                            navigate(`${channel.id}`)
+                        }}>
+                            <TagRoundedIcon />
+                            <div>Information</div>
+                        </NavButton>
+                    )
+                })}
+
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Title content="Voice Channels" />
+                    <CustomTooltip title="New voice channel">
+                        <NavButton style={{ width: "auto" }}>+</NavButton>
+                    </CustomTooltip>
+                </Box>
+                {voiceChannels.map((channel: Channel) => {
+                    return (
+                        <NavButton onClick={() => {
+                            navigate(`${channel.id}`)
+                        }}>
+                            <VolumeDownRoundedIcon />
+                            <div>{channel.name}</div>
+                        </NavButton>
+                    )
+                })}
+            </Box>
+        )
+    }
+
     return (
     <Box
         height="100%" 
-        display="flex" justifyContent="space-between" flexDirection="column"
+        display="flex" 
+        justifyContent="space-between" 
+        flexDirection="column"
     >
-        <div>
-            <Box sx={{ height: "48px" }} padding="10px">
-                <SearchField placeholder="Find or start a conversation"/>
-            </Box>
-            <Box padding="10px" >
-                <Button>
-                    <PeopleAltIcon />
-                    Friends
-                </Button>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Title>Direct messages</Title>
-                    <CustomTooltip title="Create DM">
-                        <Button style={{ width: "auto" }}>+</Button>
-                    </CustomTooltip>
-                </Box>
-                <Box>
-                    {users.map((user: any) => (
-                        <Button onClick={() => { navigate(`/conversations/${user.id}`) }}>
-                            <Avatar sx={{ width: "32px", height: "32px" }}/>
-                            <div>{user.name}</div>
-                        </Button>
-                    ))}
-                </Box>
-            </Box>
-        </div>
+        {/* Main */}
+        {content}
+        {/* Footer - always shown */}
         <Box sx={{
             backgroundColor: "#1e1f22",
             padding: "10px",
@@ -77,18 +163,16 @@ const ServerSidebar = ({ users }: any) => {
             justifyContent: "space-between",
             alignItems: "center",
         }}>
-            <Box display="flex" gap="10px">
+            <Box display="flex" gap="10px" alignItems="center">
                 <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>
-                <div style={{ color: "#d3d3d3" }}>strandedorca</div>
+                <div style={{ color: "#d3d3d3" }}>
+                    <div>strandedorca</div>
+                    <div>Invisible</div>
+                </div>
             </Box>
-            <Button onClick={() => { navigate("/settings")}}
-            style={{
-                backgroundColor: "transparent",
-                width: "30px",
-                marginRight: "10px"
-            }}>
+            <IconButton onClick={() => { navigate("/settings")}}>
                 <SettingsRoundedIcon />
-            </Button>
+            </IconButton>
         </Box>
     </Box>
   )
