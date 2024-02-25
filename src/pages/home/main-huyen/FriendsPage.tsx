@@ -2,7 +2,7 @@ import { Box, styled } from "@mui/system";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Title from "../../../components/Title";
 import { User } from './../../../types.tsx';
-import { Avatar, IconButton, Typography, useTheme } from "@mui/material";
+import { Avatar, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
 import TextField from "@mui/material";

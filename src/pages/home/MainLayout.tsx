@@ -1,4 +1,3 @@
-import { Box } from "@mui/system"
 import Header from "./Header"
 import Chat from "./main/Chat"
 import { styled } from "@mui/system"
