@@ -1,8 +1,9 @@
 import { Box } from "@mui/system"
 import AddNewServer from "./AddNewServer"
-import { Divider } from "@mui/material"
+import { Button, Divider } from "@mui/material"
 import ServerNavigationItem from "./ServerNavigationItem"
 import avatar from './../../../assets/avatar.jpg';
+import { auth } from "../../../firebase";
 
 const NavigationSidebar = () => {
   // PLACEHOLDER
@@ -27,6 +28,10 @@ const NavigationSidebar = () => {
     gap: "10px",
   }
 
+  const handleGoogleLogout = () => {
+    auth.signOut();
+  }
+
   return (
     <Box sx={boxStyle}>
         <ServerNavigationItem 
@@ -44,6 +49,7 @@ const NavigationSidebar = () => {
           />
         ))}
         <AddNewServer />
+        <Button onClick={handleGoogleLogout}>Log out google</Button>
     </Box>
   )
 }

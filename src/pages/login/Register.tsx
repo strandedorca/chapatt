@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Button, TextField, Typography, Link, Container } from "@mui/material";
 import styles from "./Login.module.css";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase";
+
 
 interface RegisterProps {
   onSwitch: () => void;
@@ -16,6 +19,16 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log({ email, displayName, username, password, dateOfBirth });
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   };
 
   return (

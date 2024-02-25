@@ -9,21 +9,22 @@ import MainLayout from './pages/home/MainLayout'
 import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
 import AuthPage from './pages/login/AuthPage';
-
-const ColorModeContext = createContext('dark')
+import { auth } from './firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const handleLogIn = () => {
-    setIsLoggedIn(!isLoggedIn);
-  }
-
+  // const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // const handleLogIn = () => {
+  //   setIsLoggedIn(!isLoggedIn);
+  // }
+  // Login State
+  const [user] = useAuthState(auth)
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login"/>}>
+          <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}>
             <Route index element={<Navigate to="me" />} />
             {/* Homepage */}
             <Route element={<MainLayout />}>
