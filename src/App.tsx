@@ -1,16 +1,14 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import './App.css'
-import Settings from './pages/settings/Settings'
-
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { createContext, useMemo, useState } from 'react'
 import { darkTheme } from './theme';
-import Login from './pages/login/Login';
 import Settings from './pages/settings/Settings';
 import Home from './pages/home/Home';
 import MainLayout from './pages/home/MainLayout'
 import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
+import AuthPage from './pages/login/AuthPage';
 
 const ColorModeContext = createContext('dark')
 
@@ -41,7 +39,7 @@ function App() {
             </Route>
 
           </Route>
-          <Route path="login" element={<Login onLogIn={handleLogIn}/>} />
+          <Route path="login" element={<AuthPage />} />
           <Route path="settings" element={<Settings />} />
         </Routes>
       </BrowserRouter>

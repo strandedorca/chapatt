@@ -6,7 +6,7 @@ import RightSidebar from "./right-sidebar/RightSidebar"
 import Messages from "./main-huyen/Messages"
 import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
 import { Outlet } from "react-router"
-import { Button } from "@mui/material"
+import { Button, Box } from "@mui/material"
 
 const FHBox = styled(Box)({
   height: '100%',
