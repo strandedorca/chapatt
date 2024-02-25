@@ -6,9 +6,10 @@ import validator from "validator"; // Import validator library for email validat
 
 interface LoginProps {
   onSwitch: () => void;
+  onForgotPassword: () => void;
 }
 
-function Login({ onSwitch }: LoginProps) {
+function Login({ onSwitch, onForgotPassword }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -60,8 +61,24 @@ function Login({ onSwitch }: LoginProps) {
           fullWidth
           sx={{
             marginTop: "20px",
-            backgroundColor: "black",
-            textColor: "white",
+            backgroundColor: "#1E1F22",
+            ".MuiOutlinedInput-root": {
+              // Áp dụng style cho phần root của OutlinedInput
+              borderRadius: "15px", // Bo tròn viền
+              "& fieldset": {
+                // Áp dụng style cho phần viền của OutlinedInput
+                borderColor: "#555", // Màu viền
+              },
+              "&:hover fieldset": {
+                // Khi hover
+                borderColor: "#1976d2", // Thay đổi màu viền
+              },
+              "&.Mui-focused fieldset": {
+                // Khi field được focus
+                borderColor: "#1976d2", // Thay đổi màu viền
+              },
+            },
+            borderRadius: "15px",
             input: { color: "#B5BAC1" },
           }}
           InputLabelProps={{
@@ -79,8 +96,24 @@ function Login({ onSwitch }: LoginProps) {
           fullWidth
           sx={{
             marginTop: "20px",
-            backgroundColor: "black",
-            textColor: "white",
+            backgroundColor: "#1E1F22",
+            ".MuiOutlinedInput-root": {
+              // Áp dụng style cho phần root của OutlinedInput
+              borderRadius: "15px", // Bo tròn viền
+              "& fieldset": {
+                // Áp dụng style cho phần viền của OutlinedInput
+                borderColor: "#555", // Màu viền
+              },
+              "&:hover fieldset": {
+                // Khi hover
+                borderColor: "#1976d2", // Thay đổi màu viền
+              },
+              "&.Mui-focused fieldset": {
+                // Khi field được focus
+                borderColor: "#1976d2", // Thay đổi màu viền
+              },
+            },
+            borderRadius: "15px",
             input: { color: "#B5BAC1" },
           }}
           InputLabelProps={{
@@ -88,8 +121,9 @@ function Login({ onSwitch }: LoginProps) {
           }}
         />
         <Link
-          href="#"
-          sx={{ display: "block", marginTop: "10px", textAlign: "left" }}
+          component="button"
+          onClick={onForgotPassword}
+          sx={{ cursor: "pointer" }}
         >
           Forgot your password?
         </Link>
@@ -97,7 +131,7 @@ function Login({ onSwitch }: LoginProps) {
           type="submit"
           variant="contained"
           fullWidth
-          sx={{ marginTop: "25px" }}
+          sx={{ marginTop: "25px", borderRadius: "10px" }}
         >
           Log In
         </Button>
