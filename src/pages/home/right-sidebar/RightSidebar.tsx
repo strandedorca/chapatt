@@ -2,7 +2,7 @@ import { Box, styled } from "@mui/system"
 import avatar from './../../../assets/avatar.jpg';
 import { Button, Divider, Typography } from "@mui/material";
 import Title from "../../../components/Title";
-import Avatar from "../../../components/Avatar";
+import Avatar from '@mui/material/Avatar';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -18,18 +18,20 @@ const RightSidebar = () => {
         }
     }, [location.pathname])
     
-    const Section = styled(Box)({
+    // Styled components
+    const Section = styled(Box)(({ theme } ) => ({
         width: "100%",
         borderRadius: "8px",
         marginBottom: "15px",
-    });
+        backgroundColor: theme.palette.background.paper,
+    }));
     const Content = styled('p')({
         margin: "0",
         fontSize: ".8em",
     })
     const WhiteDivider = styled(Divider)({
         borderColor: "white",
-        margin: "15px 0 10px"
+        margin: "15px 0"
     })
 
     return (
@@ -49,7 +51,7 @@ const RightSidebar = () => {
                 transform: "translate(15px, -40%)", 
                 padding: "0",
             }}>
-                <Avatar imgUrl={avatar} size={94} unit="px" />
+                <Avatar src={avatar} sx={{ width: 94, height: 94 }} />
             </Box>
 
             <Box paddingTop="60px" paddingX="15px">

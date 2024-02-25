@@ -1,7 +1,6 @@
-import { styled } from "@material-ui/core"
-import { Button } from '@mui/material'
+import { styled } from "@mui/system";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Avatar, Box, Divider, IconButton } from "@mui/material"
+import { Avatar, Box, IconButton } from "@mui/material"
 import avatar from './../../../assets/avatar.jpg';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CustomTooltip from "../../../components/CustomTooltip";
@@ -11,29 +10,30 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import { Channel } from "../../../types";
 import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
+import { useTheme } from "@emotion/react";
+import { TextField } from "@mui/material";
 
-const SearchField = styled('input')({
-    border: "none",
-    width: "100%",
-    padding: "2px 5px",
-    fontSize: ".9em"
-})
-
-const NavButton = styled(Button)(({ theme }) =>({
+const Button = styled('button')(({ theme }) =>({
+    fontFamily: 'Inter',
     border: "none",
     borderRadius: "5px",
-    color: theme.palette.text.primary,
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
+    backgroundColor: "transparent",
+    color: "#fff",
     gap: "15px",
+    fontSize: "1rem",
     width: "100%",
     padding: "10px",
-    "&:hover": {
+    cursor: "pointer",
+    '&:hover': {
+        backgroundColor: theme.palette.background.default,
     }
 }));
 
 const ServerSidebar = ({ users }: any) => {
+    const theme: any = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     let content;
@@ -69,28 +69,29 @@ const ServerSidebar = ({ users }: any) => {
         content = (
             <Box>
                 {/* SearchBar */}
-                <Box sx={{ height: "48px", borderBottom: "1px white solid"}} padding="10px">
-                    <SearchField placeholder="Find or start a conversation"/>
+                <Box padding="10px">
+                    <TextField variant="standard" placeholder="Find or start a conversation" fullWidth size="small"
+                    />
                 </Box>
                 <Box padding="10px" >
-                    <NavButton onClick={() => {
+                    <Button onClick={() => {
                         navigate('/me')
                     }}>
                         <PeopleAltIcon />
                         Friends
-                    </NavButton>
+                    </Button>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Title content="Direct messages" />
                         <CustomTooltip title="Create DM">
-                            <NavButton style={{ width: "auto" }}>+</NavButton>
+                            <Button style={{ width: "auto" }}>+</Button>
                         </CustomTooltip>
                     </Box>
                     <Box>
                         {users.map((user: any) => (
-                            <NavButton key={user.id} onClick={() => { navigate(`/conversations/${user.id}`) }}>
+                            <Button key={user.id} onClick={() => { navigate(`/conversations/${user.id}`) }}>
                                 <Avatar sx={{ width: "32px", height: "32px" }}/>
                                 <div>{user.name}</div>
-                            </NavButton>
+                            </Button>
                         ))}
                     </Box>
                 </Box>
@@ -99,44 +100,44 @@ const ServerSidebar = ({ users }: any) => {
     }  else {
         content = (
             <Box padding="10px">
-                <NavButton onClick={() => {
+                <Button onClick={() => {
                     navigate('/i')
                 }}>
                     <InfoRoundedIcon />
                     <div>Information</div>
-                </NavButton>
+                </Button>
 
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title content="Text Channels" />
                     <CustomTooltip title="New text channel">
-                        <NavButton style={{ width: "auto" }}>+</NavButton>
+                        <Button style={{ width: "auto" }}>+</Button>
                     </CustomTooltip>
                 </Box>
                 {textChannels.map((channel: Channel) => {
                     return (
-                        <NavButton onClick={() => {
+                        <Button onClick={() => {
                             navigate(`${channel.id}`)
                         }}>
                             <TagRoundedIcon />
                             <div>Information</div>
-                        </NavButton>
+                        </Button>
                     )
                 })}
 
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title content="Voice Channels" />
                     <CustomTooltip title="New voice channel">
-                        <NavButton style={{ width: "auto" }}>+</NavButton>
+                        <Button style={{ width: "auto" }}>+</Button>
                     </CustomTooltip>
                 </Box>
                 {voiceChannels.map((channel: Channel) => {
                     return (
-                        <NavButton onClick={() => {
+                        <Button onClick={() => {
                             navigate(`${channel.id}`)
                         }}>
                             <VolumeDownRoundedIcon />
                             <div>{channel.name}</div>
-                        </NavButton>
+                        </Button>
                     )
                 })}
             </Box>
@@ -149,6 +150,9 @@ const ServerSidebar = ({ users }: any) => {
         display="flex" 
         justifyContent="space-between" 
         flexDirection="column"
+        sx={{
+            backgroundColor: theme.palette.background.paper,
+        }}
     >
         {/* Main */}
         {content}
@@ -158,6 +162,7 @@ const ServerSidebar = ({ users }: any) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            backgroundColor: theme.palette.background.default,
         }}>
             <Box display="flex" gap="10px" alignItems="center">
                 <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>

@@ -8,6 +8,8 @@ interface ServerButtonProp {
 
 const ServerButton = ({ imgUrl, children, onClick }: ServerButtonProp) => {
     const Button = styled('button')(({ theme }) => ({
+        cursor: "pointer",
+        fontFamily: 'Inter',
         height: "48px",
         width: "48px",
         border: "none",

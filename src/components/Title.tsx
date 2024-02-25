@@ -5,6 +5,7 @@ const TitleComponent = styled('p')({
     marginTop: "10px",
     margin: "0",
     fontSize: ".8em",
+    fontWeight: "500"
 })
 
 const Title = ({ content }: any) => {

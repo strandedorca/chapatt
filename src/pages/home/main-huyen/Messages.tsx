@@ -1,19 +1,13 @@
-import { IconButton, Button } from "@mui/material"
+import { IconButton, Button, TextField } from "@mui/material"
 import { Box, styled } from "@mui/system"
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddReactionRoundedIcon from '@mui/icons-material/AddReactionRounded';
 import GifBoxRoundedIcon from '@mui/icons-material/GifBoxRounded';
 import Message from "./Message";
+import { useTheme } from "@emotion/react";
 
 const Messages = () => {
-    const TransparentInput = styled('input')({
-        // backgroundColor: "transparent",
-        border: "none",
-        flexGrow: "1",
-        "&:focus": {
-            border: "none",
-        }
-    })
+    const theme: any = useTheme();
     const fakeMessages = [
         {
             from: 'user1',
@@ -72,24 +66,37 @@ const Messages = () => {
             height="100%" 
             display="flex"
             flexDirection="column"
-            padding="20px 15px"
+            padding="20px"
+            paddingRight="0"
         >
-            <Box id="messages" sx={{ flexGrow: "1", overflowY: "scroll" }}>
+            {/* Messages Sent */}
+            <Box id="messages" sx={{ 
+                flexGrow: "1", 
+                overflowY: "scroll",
+                mb: "15px",
+            }}>
                 {fakeMessages.map(message => {
-                    return <Message key={message.content} name={message.from} timestamp={message.timestamp} content={message.content}/>
+                    return <Message 
+                        key={message.content} 
+                        name={message.from} 
+                        timestamp={message.timestamp} 
+                        content={message.content}
+                    />
                 })}
             </Box>
+            {/* Message Input */}
             <Box 
                 id="input" 
                 width="100%"
-                height="48px"
                 display="flex"
                 borderRadius="8px"
+                padding="10px"
+                sx={{ backgroundColor: theme.palette.background.paper }}
             >
                 <IconButton>
                     <AddCircleRoundedIcon />
                 </IconButton>
-                <TransparentInput type="text" placeholder="Enter message"/>
+                <TextField variant="standard" type="text" placeholder="Enter message" fullWidth/>
                 <IconButton>
                     <GifBoxRoundedIcon />
                 </IconButton>

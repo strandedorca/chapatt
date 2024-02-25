@@ -5,14 +5,17 @@ import { User } from './../../../types.tsx';
 import { Avatar, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
+import TextField from "@mui/material";
 
-const SearchBar = styled('input')({
+const SearchBar = styled('input')(({theme}) => ({
     width: "100%",
     border: "none",
     borderRadius: "5px",
     height: "36px",
     padding: "10px",
-});
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+}));
 const boxStyle = {
     display: "flex",
     flexDirection: "column",
@@ -25,6 +28,7 @@ const UserBox = styled(Box)({
     borderTop: "1px white solid"
 })
 
+// PLACEHOLDER
 const onlineUsers = [
     {
         id: "1",
@@ -50,16 +54,17 @@ const FriendsPage = () => {
         padding="20px 30px"
         position="relative"
     >
+        {/* Searchbar */}
         <Box>
             <SearchBar type="text" placeholder="Search" />
             <SearchRoundedIcon
                 sx={{ position: "absolute",
-                    top: "25px",
-                    right: "35px"
+                    top: "26px",
+                    right: "40px"
                 }}
             />
         </Box>
-        <Box paddingY="10px">
+        <Box paddingY="20px">
             <Title content="online" />
         </Box>
         <Box sx={boxStyle}>
