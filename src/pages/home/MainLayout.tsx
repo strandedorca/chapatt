@@ -1,4 +1,3 @@
-import { Box } from "@mui/system"
 import Header from "./Header"
 import Chat from "./main/Chat"
 import { styled } from "@mui/system"
@@ -7,6 +6,7 @@ import RightSidebar from "./right-sidebar/RightSidebar"
 import Messages from "./main-huyen/Messages"
 import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
 import { Outlet } from "react-router"
+import { Button } from "@mui/material"
 
 const FHBox = styled(Box)({
   height: '100%',
