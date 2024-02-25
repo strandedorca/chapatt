@@ -1,4 +1,4 @@
-import { Button } from "@mui/material"
+import { styled, useTheme } from "@mui/system";
 
 interface ServerButtonProp {
     imgUrl?: string | null,
@@ -7,30 +7,28 @@ interface ServerButtonProp {
 }
 
 const ServerButton = ({ imgUrl, children, onClick }: ServerButtonProp) => {
+    const Button = styled('button')(({ theme }) => ({
+        height: "48px",
+        width: "48px",
+        border: "none",
+        color: theme.palette.text.primary,
+        borderRadius: "24px",
+        backgroundColor: theme.palette.background.paper,
+        backgroundImage: `url(${imgUrl})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        "&:hover": {
+            borderRadius: "16px",
+            backgroundColor: theme.palette.primary.main,
+        },
+        transition: "all 0.3s ease",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    }))
     return (
         <div>
-            <Button sx={{
-                height: "48px",
-                minWidth: "0",
-                width: "48px",
-                borderRadius: "24px",
-                color: "#d3d3d3",
-                backgroundColor: "#313338",
-                backgroundImage: `url(${imgUrl})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                "&:hover": {
-                    borderRadius: "16px",
-                    backgroundColor: "#5865f2",
-                    backgroundImage: {imgUrl},
-                },
-                transition: "all 0.3s ease",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-                onClick={onClick}
-            >
+            <Button onClick={onClick}>
                 {!imgUrl ? children : null}
             </Button>
         </div>

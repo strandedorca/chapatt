@@ -1,4 +1,5 @@
 import { styled } from "@material-ui/core"
+import { Button } from '@mui/material'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Avatar, Box, Divider, IconButton } from "@mui/material"
 import avatar from './../../../assets/avatar.jpg';
@@ -12,18 +13,16 @@ import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 
 const SearchField = styled('input')({
-    backgroundColor: "#232428",
     border: "none",
-    color: "#d3d3d3",
     width: "100%",
     padding: "2px 5px",
     fontSize: ".9em"
 })
-const NavButton = styled('button')({
-    backgroundColor: "#2b2d31",
+
+const NavButton = styled(Button)(({ theme }) =>({
     border: "none",
     borderRadius: "5px",
-    color: "#d3d3d3",
+    color: theme.palette.text.primary,
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -31,16 +30,13 @@ const NavButton = styled('button')({
     width: "100%",
     padding: "10px",
     "&:hover": {
-        backgroundColor: "#36373d",
-        color: "white"
     }
-})
+}));
 
 const ServerSidebar = ({ users }: any) => {
     const navigate = useNavigate();
     const location = useLocation();
     let content;
-    console.log(location);
 
     // PLACEHOLDER
     const channels: Channel[] = [
@@ -65,6 +61,7 @@ const ServerSidebar = ({ users }: any) => {
             id: "4"
         },
     ]
+
     const textChannels = channels.filter(channel => channel.type === "text");
     const voiceChannels = channels.filter(channel => channel.type === "voice");
 
@@ -157,7 +154,6 @@ const ServerSidebar = ({ users }: any) => {
         {content}
         {/* Footer - always shown */}
         <Box sx={{
-            backgroundColor: "#1e1f22",
             padding: "10px",
             display: "flex",
             justifyContent: "space-between",
@@ -165,7 +161,7 @@ const ServerSidebar = ({ users }: any) => {
         }}>
             <Box display="flex" gap="10px" alignItems="center">
                 <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>
-                <div style={{ color: "#d3d3d3" }}>
+                <div>
                     <div>strandedorca</div>
                     <div>Invisible</div>
                 </div>

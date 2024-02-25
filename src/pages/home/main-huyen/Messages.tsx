@@ -1,26 +1,13 @@
-import { IconButton, TextField } from "@mui/material"
+import { IconButton, Button } from "@mui/material"
 import { Box, styled } from "@mui/system"
-import { Button } from "react-bootstrap"
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddReactionRoundedIcon from '@mui/icons-material/AddReactionRounded';
 import GifBoxRoundedIcon from '@mui/icons-material/GifBoxRounded';
 import Message from "./Message";
 
 const Messages = () => {
-    const TransparentBtn = styled(Button)({
-        backgroundColor: "transparent",
-        border: "none",
-        "&:hover": {
-            backgroundColor: "transparent",
-            border: "none",
-        },
-        "&:active": {
-            backgroundColor: "transparent",
-            border: "none",
-        }
-    })
     const TransparentInput = styled('input')({
-        backgroundColor: "transparent",
+        // backgroundColor: "transparent",
         border: "none",
         flexGrow: "1",
         "&:focus": {
@@ -86,7 +73,6 @@ const Messages = () => {
             display="flex"
             flexDirection="column"
             padding="20px 15px"
-            sx={{ backgroundColor: "#313338" }}
         >
             <Box id="messages" sx={{ flexGrow: "1", overflowY: "scroll" }}>
                 {fakeMessages.map(message => {
@@ -99,7 +85,6 @@ const Messages = () => {
                 height="48px"
                 display="flex"
                 borderRadius="8px"
-                sx={{ backgroundColor: "#383a40 "}}
             >
                 <IconButton>
                     <AddCircleRoundedIcon />

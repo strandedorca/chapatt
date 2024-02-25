@@ -2,7 +2,7 @@ import { Box, styled } from "@mui/system";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Title from "../../../components/Title";
 import { User } from './../../../types.tsx';
-import { Avatar, Button, IconButton, Typography } from "@mui/material";
+import { Avatar, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
 
@@ -12,8 +12,6 @@ const SearchBar = styled('input')({
     borderRadius: "5px",
     height: "36px",
     padding: "10px",
-    backgroundColor: "black",
-    color: "white",
 });
 const boxStyle = {
     display: "flex",

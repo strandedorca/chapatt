@@ -19,8 +19,6 @@ const NavigationSidebar = () => {
     }
   ];
   const boxStyle = {
-    backgroundColor: "#232428",
-    color: "white",
     height: "100%",
     display: "flex",
     alignItems: "center",

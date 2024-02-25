@@ -19,8 +19,6 @@ const RightSidebar = () => {
     }, [location.pathname])
     
     const Section = styled(Box)({
-        backgroundColor: "#111214", 
-        color: "white",
         width: "100%",
         borderRadius: "8px",
         marginBottom: "15px",
@@ -36,7 +34,6 @@ const RightSidebar = () => {
 
     return (
         <Box height="100%" position="relative" 
-            sx={{ backgroundColor: "#222328"}}
         >
             {/* Banner */}
             <Box id="banner" sx={{ 

@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { Button } from "react-bootstrap";
+import { Button } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 
 interface LoginProp {
