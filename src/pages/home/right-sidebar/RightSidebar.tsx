@@ -22,7 +22,6 @@ const RightSidebar = () => {
 
     // Get currentUser state
     const user = useSelector(selectCurrentUser);
-    console.log(user);
     
     // Styled components
     const Section = styled(Box)(({ theme } ) => ({
@@ -59,7 +58,9 @@ const RightSidebar = () => {
                 <Avatar 
                     src={user.photoURL} 
                     sx={{ width: 94, height: 94 }} 
-                />
+                >
+                    {/* {user.displayName[0]} */}
+                </Avatar>
             </Box>
 
             <Box paddingTop="60px" paddingX="15px">

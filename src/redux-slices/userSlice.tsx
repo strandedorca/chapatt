@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit/react";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
 // import { User } from "../types";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
 import { User, deleteUser } from "firebase/auth";
 import { darkTheme } from "../theme";
@@ -23,8 +23,9 @@ const userSlice = createSlice({
         addFriend(state, action) {
 
         },
-        updateUserDocument(state, action) {
-
+        updateCurrentUser(state: any, action: any) {
+            const { field, value } = action.payload;
+            state[field] = value;
         },
         setCurrentUser(state, action) { 
             state.uid = action.payload.uid;
@@ -95,6 +96,20 @@ export const getUserDocument = (user: User) => {
     }
 }
 
-export const { setCurrentUser } = userSlice.actions;
+export const updateUserDocument = (payload: any) => {
+    return async (dispatch: any) => {
+        const user = payload.user;
+        const userRef = doc(db, 'users', user.uid);
+        const field = Object.keys(payload)[1];
+        const value = payload[field];
+        await updateDoc(userRef, {
+            [field]: value
+        })
+        dispatch(updateCurrentUser({ field, value } as any));
+        console.log('User updated successfully');
+    }
+}
+
+export const { setCurrentUser, updateCurrentUser } = userSlice.actions;
 export const selectCurrentUser = (state: any) : any => (state.currentUser);
 export default userSlice.reducer

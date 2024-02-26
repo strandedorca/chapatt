@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Button, TextField, Typography, Link, Container } from "@mui/material";
 import styles from "./Login.module.css";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useDispatch } from "react-redux";
-import { addUserDocument } from "../../redux-slices/userSlice";
+import { addUserDocument, updateUserDocument } from "../../redux-slices/userSlice";
 
 interface RegisterProps {
   onSwitch: () => void;
@@ -26,8 +26,11 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
       // If registered successfully
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
         dispatch(addUserDocument(user) as any);
+        updateProfile(user, {
+          displayName
+        });
+        dispatch(updateUserDocument({ user, displayName }) as any);
       })
       .catch((error) => {
         const errorCode = error.code;
