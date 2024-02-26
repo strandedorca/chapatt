@@ -11,10 +11,9 @@ interface LoginProps {
 }
 
 function Login({ onSwitch, onForgotPassword }: LoginProps) {
+  // Google Login setup
   const [signInWithGoogle, _user, _loading, _error] = useSignInWithGoogle(auth);
-  const signIn = () => {
-    signInWithGoogle();
-  };
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -132,6 +131,8 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
         >
           Forgot your password?
         </Link>
+
+        {/* Login with email + password */}
         <Button
           type="submit"
           variant="contained"
@@ -140,7 +141,12 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
         >
           Log In
         </Button>
-        <Button variant="contained" onClick={signIn}>
+        
+        {/* Login with Google */}
+        <Button 
+          variant="contained" 
+          onClick={() => { signInWithGoogle() }}
+        >
           Sign in with Google
         </Button>
       </form>
