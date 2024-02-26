@@ -3,7 +3,7 @@ import AddNewServer from "./AddNewServer"
 import { Button, Divider } from "@mui/material"
 import ServerNavigationItem from "./ServerNavigationItem"
 import avatar from './../../../assets/avatar.jpg';
-import { auth } from "../../../firebase";
+import { auth } from "../../../firebase/firebase";
 
 const NavigationSidebar = () => {
   // PLACEHOLDER

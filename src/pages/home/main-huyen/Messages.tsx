@@ -7,7 +7,7 @@ import SendIcon from '@mui/icons-material/Send';
 import Message from "./Message";
 import { useTheme } from "@emotion/react";
 import { FormEvent, MouseEventHandler, useState } from "react";
-import { auth, db } from "../../../firebase";
+import { auth, db } from "../../../firebase/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const Messages = () => {

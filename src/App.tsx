@@ -10,19 +10,19 @@ import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
 import AuthPage from './pages/login/AuthPage';
 
-import { auth } from './firebase';
+import { auth } from './firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
         
 export const WidthContext = createContext('240px');
         
 function App() {
   const [user] = useAuthState(auth)
-// const ColorModeContext = createContext('dark')
+//const ColorModeContext = createContext('dark')
 
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
-//   const handleLogIn = () => {
-//     setIsLoggedIn(!isLoggedIn);
-//   }
+// const [isLoggedIn, setIsLoggedIn] = useState(false);
+// const handleLogIn = () => {
+//   setIsLoggedIn(!isLoggedIn);
+// }
   const modalWidth = '240px';
 
   return (
