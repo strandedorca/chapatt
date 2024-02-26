@@ -14,7 +14,7 @@ import AuthPage from './pages/login/AuthPage';
 export const WidthContext = createContext('240px');
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const handleLogIn = () => {
     setIsLoggedIn(!isLoggedIn);
   }
