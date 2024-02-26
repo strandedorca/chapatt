@@ -1,13 +1,18 @@
-import { IconButton, Button, TextField } from "@mui/material"
-import { Box, styled } from "@mui/system"
+import { IconButton, TextField, FormControl } from "@mui/material"
+import { Box } from "@mui/system"
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddReactionRoundedIcon from '@mui/icons-material/AddReactionRounded';
 import GifBoxRoundedIcon from '@mui/icons-material/GifBoxRounded';
+import SendIcon from '@mui/icons-material/Send';
 import Message from "./Message";
 import { useTheme } from "@emotion/react";
+import { FormEvent, MouseEventHandler, useState } from "react";
+import { auth, db } from "../../../firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const Messages = () => {
     const theme: any = useTheme();
+    const [message, setMessage] = useState('');
     const fakeMessages = [
         {
             from: 'user1',
@@ -60,6 +65,23 @@ const Messages = () => {
         //     content: 'Sounds like a great plan!',
         // },
     ];
+    const handleSubmit = async (e: any ) => {
+        e.preventDefault();
+        if (message.trim() === '') {
+            return;
+        }
+        if (auth.currentUser) {
+            const { uid, email, photoURL } = auth.currentUser;
+            await addDoc(collection(db, 'messages'), {
+                text: message,
+                email: email,
+                avatar: photoURL,
+                createdAt: serverTimestamp(),
+                uid,
+            });
+        }
+        setMessage("");
+    }
 
     return (
         <Box
@@ -96,7 +118,24 @@ const Messages = () => {
                 <IconButton>
                     <AddCircleRoundedIcon />
                 </IconButton>
-                <TextField variant="standard" type="text" placeholder="Enter message" fullWidth/>
+                <form 
+                    style={{ width: "100%", marginRight: "5px" }}
+                    onSubmit={e => { handleSubmit(e) }}
+                >
+                    <TextField
+                        id="messageInput"
+                        name="messageInput"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        type="text"
+                        placeholder="Enter message"
+                        variant="standard"
+                        fullWidth
+                    />
+                </form>
+                <IconButton onClick={e => { handleSubmit(e) }}>
+                    <SendIcon />
+                </IconButton>
                 <IconButton>
                     <GifBoxRoundedIcon />
                 </IconButton>
