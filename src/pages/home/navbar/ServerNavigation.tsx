@@ -49,7 +49,7 @@ const NavigationSidebar = () => {
           />
         ))}
         <AddNewServer />
-        <Button onClick={handleGoogleLogout}>Log out google</Button>
+        <Button onClick={handleGoogleLogout}>Log out</Button>
     </Box>
   )
 }
