@@ -1,7 +1,9 @@
 export interface User {
-    id: string,
-    name: string,
-    avatarUrl: string | null,
+    uid: string,
+    email: string,
+    displayName?: string | null,
+    photoUrl?: string | null,
+    password?: string | null,
 }
 
 export interface Channel {

@@ -3,6 +3,8 @@ import { Button, TextField, Typography, Link, Container } from "@mui/material";
 import styles from "./Login.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
+import { useDispatch } from "react-redux";
+import { addUserDocument } from "../../redux-slices/userSlice";
 
 
 interface RegisterProps {
@@ -10,6 +12,7 @@ interface RegisterProps {
 }
 
 const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -18,11 +21,12 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ email, displayName, username, password, dateOfBirth });
     createUserWithEmailAndPassword(auth, email, password)
+      // If registered successfully
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
+        dispatch(addUserDocument(user) as any);
       })
       .catch((error) => {
         const errorCode = error.code;

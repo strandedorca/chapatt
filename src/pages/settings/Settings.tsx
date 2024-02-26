@@ -1,8 +1,16 @@
 import * as React from 'react';
-import { Box, List, ListItem, ListItemText, Divider, Typography, styled } from '@mui/material';
+import { Box, List, ListItem, ListItemText, Divider, Typography, styled, Button } from '@mui/material';
+import { deleteUserDocument } from '../../redux-slices/userSlice';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../firebase/firebase';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Setting = () => {
     const [selectedTab, setSelectedTab] = React.useState('My Account');
+    const [user] = useAuthState(auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
         setSelectedTab(newValue);
@@ -40,51 +48,62 @@ const Setting = () => {
         display: none; /* For Chrome, Safari, and Opera */
     }
 `;
-
+    const handleDeleteAccount = () => {
+        dispatch(deleteUserDocument(user?.uid ?? '') as any);
+    }
 
     return (
-
-        <CustomScrollbar>
-            <List component="nav" sx={{ maxWidth: 200 }}>
-                {Object.entries(settings).map(([category, items]) => (
-                    <React.Fragment key={category}>
-                        <ListItem sx={{ padding: 2 }}>
-                            <Typography variant="h6" sx={{ fontSize: 12, fontWeight: 'bold', color: '#949ba4' }}>
-                                {category}
-                            </Typography>
-                        </ListItem>
-                        {items.map(text => (
-                            <ListItem
-                                button
-                                key={text}
-                                selected={selectedTab === text}
-                                onClick={(event) => handleListItemClick(event, text)}
-                                sx={{
-                                    padding: 0,
-                                    paddingLeft: 2,
-                                    bgcolor: selectedTab === text ? '#404249' : 'inherit',
-                                    borderRadius: '4px',
-                                    mb: '2px',
-                                    '&:hover': {
-                                        bgcolor: '#35373c',
-                                    },
-                                    '&.Mui-selected': {
-                                        bgcolor: '#404249',
-                                        color: '#ffffff',
+        <div>
+            {/* Menu bar */}
+            <CustomScrollbar>
+                <List component="nav" sx={{ maxWidth: 200 }}>
+                    {Object.entries(settings).map(([category, items]) => (
+                        <React.Fragment key={category}>
+                            <ListItem sx={{ padding: 2 }}>
+                                <Typography variant="h6" sx={{ fontSize: 12, fontWeight: 'bold', color: '#949ba4' }}>
+                                    {category}
+                                </Typography>
+                            </ListItem>
+                            {items.map(text => (
+                                <ListItem
+                                    button
+                                    key={text}
+                                    selected={selectedTab === text}
+                                    onClick={(event) => handleListItemClick(event, text)}
+                                    sx={{
+                                        padding: 0,
+                                        paddingLeft: 2,
+                                        bgcolor: selectedTab === text ? '#404249' : 'inherit',
+                                        borderRadius: '4px',
+                                        mb: '2px',
                                         '&:hover': {
                                             bgcolor: '#35373c',
                                         },
-                                    },
-                                }}
-                            >
-                                <ListItemText primary={text} />
-                            </ListItem>
-                        ))}
-                        <Divider sx={{ my: 1, bgcolor: '#3b3d44' }} />
-                    </React.Fragment>
-                ))}
-            </List>
-        </CustomScrollbar>
+                                        '&.Mui-selected': {
+                                            bgcolor: '#404249',
+                                            color: '#ffffff',
+                                            '&:hover': {
+                                                bgcolor: '#35373c',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <ListItemText primary={text} />
+                                </ListItem>
+                            ))}
+                            <Divider sx={{ my: 1, bgcolor: '#3b3d44' }} />
+                        </React.Fragment>
+                    ))}
+                </List>
+            </CustomScrollbar>
+
+            {/* Main */}
+            <Box>
+                <Button onClick={handleDeleteAccount}>
+                    Delete Account
+                </Button>
+            </Box>
+        </div>
     );
 };
 
