@@ -28,7 +28,7 @@ const NavigationSidebar = () => {
     gap: "10px",
   }
 
-  const handleGoogleLogout = () => {
+  const handleLogout = () => {
     auth.signOut();
   }
 
@@ -49,7 +49,7 @@ const NavigationSidebar = () => {
           />
         ))}
         <AddNewServer />
-        <Button onClick={handleGoogleLogout}>Log out</Button>
+        <Button onClick={handleLogout}>Log out</Button>
     </Box>
   )
 }
