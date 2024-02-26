@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, TextField, Typography, Link, Container } from "@mui/material";
 import styles from "./Login.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth } from "../../firebase/firebase";
 
 
 interface RegisterProps {

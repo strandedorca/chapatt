@@ -1,29 +1,29 @@
 // Import the functions you need from the SDKs you need
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
+import { getAnalytics } from "firebase/analytics";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAXQWDZ2sAMjL5lu02kE5R4KJxjITNyI7Y",
-  authDomain: "discord-clone-td.firebaseapp.com",
-  projectId: "discord-clone-td",
-  storageBucket: "discord-clone-td.appspot.com",
-  messagingSenderId: "342810131440",
-  appId: "1:342810131440:web:832140dc1c0d09b4cafb35",
-  measurementId: "G-8XH2LVEVTK",
+  apiKey: "AIzaSyC8JGiNNzoWjWJSBeYsAiwWj10iZJuneJM",
+  authDomain: "fa-messaging-app.firebaseapp.com",
+  projectId: "fa-messaging-app",
+  storageBucket: "fa-messaging-app.appspot.com",
+  messagingSenderId: "1031167239340",
+  appId: "1:1031167239340:web:35955e600ce170d9c32b09",
+  measurementId: "G-QPKZMMK8DH",
 };
 
 // Initialize Firebase
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
+// Initialize SDKs
 const db = getFirestore(app);
-
 const auth = getAuth(app);
-
+const analytics = getAnalytics(app);
 const provider = new GoogleAuthProvider();
 
-export { db, auth, provider };
+export { db, auth, provider, analytics };
