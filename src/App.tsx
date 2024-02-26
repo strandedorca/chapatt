@@ -10,39 +10,39 @@ import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
 import AuthPage from './pages/login/AuthPage';
 
-const ColorModeContext = createContext('dark')
+// const ColorModeContext = createContext('dark')
+export const WidthContext = createContext('240px');
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const handleLogIn = () => {
     setIsLoggedIn(!isLoggedIn);
   }
+  const modalWidth = '240px';
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login"/>}>
-            <Route index element={<Navigate to="me" />} />
-            {/* Homepage */}
-            <Route element={<MainLayout />}>
-
-              <Route path="me" element={<FriendsPage />}>
-                <Route path=":userId" element={<Messages />}/>
+      <WidthContext.Provider value={modalWidth}>
+        <CssBaseline />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login"/>}>
+              <Route index element={<Navigate to="me" />} />
+              {/* Homepage */}
+              <Route element={<MainLayout />}>
+                <Route path="me" element={<FriendsPage />}>
+                  <Route path=":userId" element={<Messages />}/>
+                </Route>
+                <Route path="servers" element={<Messages />}>
+                  <Route path=":serverId" element/>
+                </Route>
               </Route>
-
-              <Route path="servers" element={<Messages />}>
-                <Route path=":serverId" element/>
-              </Route>
-
             </Route>
-
-          </Route>
-          <Route path="login" element={<AuthPage />} />
-          <Route path="settings" element={<Settings />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="login" element={<AuthPage />} />
+            <Route path="settings" element={<Settings />} />
+          </Routes>
+        </BrowserRouter>
+      </WidthContext.Provider>
     </ThemeProvider>
   )
 }

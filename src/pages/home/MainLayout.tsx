@@ -7,6 +7,8 @@ import Messages from "./main-huyen/Messages"
 import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
 import { Outlet } from "react-router"
 import { Button, Box } from "@mui/material"
+// import { useContext } from "react"
+// import { WidthContext } from "../../App"
 
 const FHBox = styled(Box)({
   height: '100%',
@@ -29,9 +31,13 @@ const users = [
 ]
 
 const MainLayout = () => {
+  // const modalWidth = useContext(WidthContext);
   return (
     <FHBox>
       {/* Server Sidebar */}
+      {/* <Button 
+        sx={{ width: `${modalWidth}`, backgroundColor: "white", color: "black" }} 
+      >MY TEST BOX</Button> */}
       <FHBox 
         display={{ xs: 'none', md: 'block' }}
         width="240px"
