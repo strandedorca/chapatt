@@ -13,7 +13,7 @@ import AuthPage from './pages/login/AuthPage';
 import { auth, db } from './firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { addUserDocument } from './redux-slices/userSlice';
+import { addUserDocument, getUserDocument } from './redux-slices/userSlice';
 import { useDispatch } from 'react-redux';
         
 export const WidthContext = createContext('240px');
@@ -27,17 +27,18 @@ function App() {
 
   // Create a user doc when signing in with Google for the first time
   useEffect(() => {
-    const createUserDocument = async () => {
-      if (user) {
-        // Check if user is already created
+    if (user) {
+      // Check if user is already created
+      const onChangeUser = async () => {
         const userRef = doc(db, 'user', user.uid);
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           dispatch(addUserDocument(user) as any);
         }
-      }
-    };
-    createUserDocument();
+        dispatch(getUserDocument(user) as any);
+      };
+      onChangeUser();
+    }
   }, [user]);
 
   return (
@@ -57,9 +58,9 @@ function App() {
                   <Route path=":serverId" element/>
                 </Route>
               </Route>
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="login" element={<AuthPage />} />
-            <Route path="settings" element={<Settings />} />
           </Routes>
         </BrowserRouter>
       </WidthContext.Provider>

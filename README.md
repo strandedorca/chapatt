@@ -1,6 +1,7 @@
 # Discord Clone Project
 
 Welcome to our Discord Clone project repository!
+!!! DO NOT MODIFY USERS ON FIREBASE CONSOLE !!!
 
 ## Overview
 

@@ -4,8 +4,11 @@ import RightSidebar from "./right-sidebar/RightSidebar"
 import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
 import { Outlet } from "react-router"
 import { Button, Box } from "@mui/material"
+import avatar from './../../assets/avatar.jpg';
+
 // import { useContext } from "react"
 // import { WidthContext } from "../../App"
+
 
 const FHBox = styled(Box)({
   height: '100%',
@@ -24,6 +27,11 @@ const users = [
   { 
     id: "3",
     name: "Demon Lord"
+  },
+  {
+    id: "4",
+    name: "any",
+    photoUrl: avatar,
   }
 ]
 

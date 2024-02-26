@@ -12,8 +12,9 @@ import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 import { useTheme } from "@emotion/react";
 import { TextField } from "@mui/material";
+import ConversationsNavigationItem from "./ConversationsNavigationItem";
 
-const Button = styled('button')(({ theme }) =>({
+export const Button = styled('button')(({ theme }) =>({
     fontFamily: 'Inter',
     border: "none",
     borderRadius: "5px",
@@ -61,37 +62,50 @@ const ServerSidebar = ({ users }: any) => {
             id: "4"
         },
     ]
-
     const textChannels = channels.filter(channel => channel.type === "text");
     const voiceChannels = channels.filter(channel => channel.type === "voice");
 
+    // Check pathname to show different UI
     if (location.pathname === "/me") {
         content = (
             <Box>
                 {/* SearchBar */}
                 <Box padding="10px">
-                    <TextField variant="standard" placeholder="Find or start a conversation" fullWidth size="small"
+                    <TextField 
+                        variant="standard" 
+                        placeholder="Find or start a conversation" fullWidth 
+                        size="small"
                     />
                 </Box>
+
                 <Box padding="10px" >
+                    {/* Friends Button */}
                     <Button onClick={() => {
                         navigate('/me')
                     }}>
                         <PeopleAltIcon />
                         Friends
                     </Button>
+                    {/* Title + Add message button */}
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Title content="Direct messages" />
                         <CustomTooltip title="Create DM">
                             <Button style={{ width: "auto" }}>+</Button>
                         </CustomTooltip>
                     </Box>
+                    {/* Conversations */}
                     <Box>
                         {users.map((user: any) => (
-                            <Button key={user.id} onClick={() => { navigate(`/conversations/${user.id}`) }}>
-                                <Avatar sx={{ width: "32px", height: "32px" }}/>
-                                <div>{user.name}</div>
-                            </Button>
+                            // <Button key={user.id} onClick={() => { navigate(`/conversations/${user.id}`) }}>
+                            //     <Avatar sx={{ width: "32px", height: "32px" }}/>
+                            //     <div>{user.name}</div>
+                            // </Button>
+                            <ConversationsNavigationItem 
+                                key={user.id}
+                                uid={user.id}
+                                displayName={user.name}
+                                photoUrl={user.photoUrl}
+                            />
                         ))}
                     </Box>
                 </Box>
@@ -156,6 +170,7 @@ const ServerSidebar = ({ users }: any) => {
     >
         {/* Main */}
         {content}
+
         {/* Footer - always shown */}
         <Box sx={{
             padding: "10px",

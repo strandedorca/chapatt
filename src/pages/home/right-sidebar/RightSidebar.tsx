@@ -5,6 +5,8 @@ import Title from "../../../components/Title";
 import Avatar from '@mui/material/Avatar';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../../redux-slices/userSlice";
 
 const RightSidebar = () => {
     // Show different UI for me/server page
@@ -17,6 +19,10 @@ const RightSidebar = () => {
             setIsServer(false);
         }
     }, [location.pathname])
+
+    // Get currentUser state
+    const user = useSelector(selectCurrentUser);
+    console.log(user);
     
     // Styled components
     const Section = styled(Box)(({ theme } ) => ({
@@ -39,8 +45,8 @@ const RightSidebar = () => {
         >
             {/* Banner */}
             <Box id="banner" sx={{ 
-                backgroundColor: "#d7c3bc", 
-                height: "120px",
+                backgroundColor: user.bannerColor, 
+                height: 120,
             }}>
             </Box>
 
@@ -49,31 +55,45 @@ const RightSidebar = () => {
                 position: "absolute",
                 top: "100px", 
                 transform: "translate(15px, -40%)", 
-                padding: "0",
             }}>
-                <Avatar src={avatar} sx={{ width: 94, height: 94 }} />
+                <Avatar 
+                    src={user.photoURL} 
+                    sx={{ width: 94, height: 94 }} 
+                />
             </Box>
 
             <Box paddingTop="60px" paddingX="15px">
-                {/* Info */}
+                {/* Information */}
                 <Section paddingX="15px" paddingY="18px">
                     <Typography sx={{
                         fontSize: "1.1em",
                         fontWeight: "bold"
-                    }}>Pikachu</Typography>
-                    <Content>zippyzappy</Content>
+                    }}>
+                        {user.displayName}
+                    </Typography>
+                    <Content>
+                        // TO BE ADDED
+                        {user.displayName}
+                    </Content>
+
                     <WhiteDivider />
+
                     {!isServer ? (
                         <>
                             <Title content="About Me" />
-                            <Content>😮</Content>
+                            <Content>{user.aboutMe}</Content>
                             <WhiteDivider />
                         </>
-                    ) : ( null )
-                    }
+                    ) : ( null )}
+
                     <Title content="Since"/>
-                    <Content>Mar 9, 2018</Content>
+                    <Content>
+                        {user.createdAt}
+                    </Content>
+
                     <WhiteDivider />
+                    
+                    // TO BE IMPLEMENTED
                     <Title content="Note" />
                     <Content>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae, eligendi.</Content>
                 </Section>

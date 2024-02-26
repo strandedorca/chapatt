@@ -4,8 +4,11 @@ import { Button, Divider } from "@mui/material"
 import ServerNavigationItem from "./ServerNavigationItem"
 import avatar from './../../../assets/avatar.jpg';
 import { auth } from "../../../firebase/firebase";
+import { selectCurrentUser } from "../../../redux-slices/userSlice";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const NavigationSidebar = () => {
+  const [user] = useAuthState(auth);
   // PLACEHOLDER
   const servers = [
     {
@@ -34,12 +37,16 @@ const NavigationSidebar = () => {
 
   return (
     <Box sx={boxStyle}>
+        {/* Navigate to direct messages */}
         <ServerNavigationItem 
           id="me"
           name="Me"
-          imgUrl={avatar}           // PLACEHOLDER
+          imgUrl={user?.photoURL}
         />
+
         <Divider variant="middle" orientation="horizontal" flexItem sx={{ border: "1px solid #404249" }} />
+
+        {/* Navigate to servers */}
         {servers.map((server) => (
           <ServerNavigationItem 
             key={server.id}
@@ -48,7 +55,11 @@ const NavigationSidebar = () => {
             imgUrl={server.imgUrl}
           />
         ))}
+
+        {/* Add New Server Button */}
         <AddNewServer />
+        
+        {/* Logout Button */}
         <Button onClick={handleLogout}>Log out</Button>
     </Box>
   )
