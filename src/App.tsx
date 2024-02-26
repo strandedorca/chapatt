@@ -12,17 +12,17 @@ import AuthPage from './pages/login/AuthPage';
 
 import { auth } from './firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-        
+
 export const WidthContext = createContext('240px');
-        
+
 function App() {
   const [user] = useAuthState(auth)
-//const ColorModeContext = createContext('dark')
+  //const ColorModeContext = createContext('dark')
 
-// const [isLoggedIn, setIsLoggedIn] = useState(false);
-// const handleLogIn = () => {
-//   setIsLoggedIn(!isLoggedIn);
-// }
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const handleLogIn = () => {
+  //   setIsLoggedIn(!isLoggedIn);
+  // }
   const modalWidth = '240px';
 
   return (
@@ -31,15 +31,16 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}>
+            {/* <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}> */}
+            <Route path="/" element={<Home />} >
               <Route index element={<Navigate to="me" />} />
               {/* Homepage */}
               <Route element={<MainLayout />}>
                 <Route path="me" element={<FriendsPage />}>
-                  <Route path=":userId" element={<Messages />}/>
+                  <Route path=":userId" element={<Messages />} />
                 </Route>
                 <Route path="servers" element={<Messages />}>
-                  <Route path=":serverId" element/>
+                  <Route path=":serverId" element />
                 </Route>
               </Route>
             </Route>
