@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Container, TextField, Button, Link, Typography } from "@mui/material";
 import styles from "./Login.module.css";
 import validator from "validator"; // Import validator library for email validation
-import { auth } from "../../firebase";
 import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth/cordova";
 import { browserPopupRedirectResolver, createUserWithEmailAndPassword, getRedirectResult, signInWithEmailAndPassword } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase/firebase";
 
 interface LoginProps {
   onSwitch: () => void;
@@ -25,7 +26,9 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
     }
   }, [user])
   
-
+  // Google Login 
+  const [signInWithGoogle, _user, _loading, _error] = useSignInWithGoogle(auth);
+    
   // Manage input state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -158,6 +161,8 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
         >
           Forgot your password?
         </Link>
+
+        {/* Login with email + password */}
         <Button
           type="submit"
           variant="contained"
@@ -165,6 +170,14 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
           sx={{ marginTop: "25px", borderRadius: "10px" }}
         >
           Log In
+        </Button>
+        
+        {/* Login with Google */}
+        <Button 
+          variant="contained" 
+          onClick={() => { signInWithGoogle() }}
+        >
+          Sign in with Google
         </Button>
       </form>
 
