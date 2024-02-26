@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Container, TextField, Button, Link, Typography } from "@mui/material";
 import styles from "./Login.module.css";
 import validator from "validator"; // Import validator library for email validation
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase/firebase";
 
 interface LoginProps {
   onSwitch: () => void;
@@ -9,6 +11,10 @@ interface LoginProps {
 }
 
 function Login({ onSwitch, onForgotPassword }: LoginProps) {
+  const [signInWithGoogle, _user, _loading, _error] = useSignInWithGoogle(auth);
+  const signIn = () => {
+    signInWithGoogle();
+  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -133,6 +139,9 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
           sx={{ marginTop: "25px", borderRadius: "10px" }}
         >
           Log In
+        </Button>
+        <Button variant="contained" onClick={signIn}>
+          Sign in with Google
         </Button>
       </form>
       <Typography sx={{ color: "#B5BAC1", marginTop: "20px" }}>
