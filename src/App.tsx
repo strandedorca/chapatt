@@ -10,14 +10,19 @@ import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
 import AuthPage from './pages/login/AuthPage';
 
-// const ColorModeContext = createContext('dark')
+import { auth } from './firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+        
 export const WidthContext = createContext('240px');
-
+        
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const handleLogIn = () => {
-    setIsLoggedIn(!isLoggedIn);
-  }
+  const [user] = useAuthState(auth)
+// const ColorModeContext = createContext('dark')
+
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+//   const handleLogIn = () => {
+//     setIsLoggedIn(!isLoggedIn);
+//   }
   const modalWidth = '240px';
 
   return (
@@ -26,7 +31,7 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login"/>}>
+            <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}>
               <Route index element={<Navigate to="me" />} />
               {/* Homepage */}
               <Route element={<MainLayout />}>

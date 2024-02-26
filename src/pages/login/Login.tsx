@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, TextField, Button, Link, Typography } from "@mui/material";
 import styles from "./Login.module.css";
 import validator from "validator"; // Import validator library for email validation
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth/cordova";
+import { browserPopupRedirectResolver, createUserWithEmailAndPassword, getRedirectResult, signInWithEmailAndPassword } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase/firebase";
 
@@ -11,9 +15,21 @@ interface LoginProps {
 }
 
 function Login({ onSwitch, onForgotPassword }: LoginProps) {
-  // Google Login setup
-  const [signInWithGoogle, _user, _loading, _error] = useSignInWithGoogle(auth);
+  // Login State
+  const [user] = useAuthState(auth);
 
+  // Redirect to Home when logged in
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user])
+  
+  // Google Login 
+  const [signInWithGoogle, _user, _loading, _error] = useSignInWithGoogle(auth);
+    
+  // Manage input state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -27,7 +43,6 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (!validator.isEmail(email)) {
       alert("Please enter a valid email address");
       return;
@@ -39,7 +54,20 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
     }
 
     // Continue with login process
+    signInWithEmailAndPassword(auth, email, password);
   };
+
+  const handleGoogleLogin = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider, browserPopupRedirectResolver )
+      .then(result => {
+        console.log("result",result)
+    }).catch ((error) => {
+        console.error(error);
+        alert(error.message);
+    });;
+
+  }
 
   return (
     <Container
@@ -53,6 +81,8 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
       <Typography variant="h6" style={{ color: "#B5BAC1" }} gutterBottom>
         We're so excited to see you again!
       </Typography>
+
+      {/* Log in with email & password */}
       <form onSubmit={handleSubmit}>
         <TextField
           required
@@ -150,6 +180,11 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
           Sign in with Google
         </Button>
       </form>
+
+      {/* Other log-in options */}
+      {/* <Button onClick={handleGoogleLogin}>Login with Google</Button> */}
+
+      {/* Registration */}
       <Typography sx={{ color: "#B5BAC1", marginTop: "20px" }}>
         Need an account?{" "}
         <a
