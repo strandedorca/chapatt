@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit/react";
-import { addDoc, collection, doc, serverTimestamp, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Message } from "../types";
 
@@ -10,8 +10,8 @@ const messagesSlice = createSlice({
     initialState,
     reducers: {
         setConversation(state, action) {
-            state = action.payload;
-        }
+            return action.payload;
+        },
     }
 })
 
@@ -20,7 +20,9 @@ export const getConversation = ({ uid1, uid2 }: any) => {
         const sortedUid = [uid1, uid2].sort();
         const conversationId = `${sortedUid[0]}_${sortedUid[1]}`;
         const documentRef = doc(db, 'direct-messages', conversationId);
-        const querySnapshot = await getDocs(collection(documentRef, 'messages'));
+        const querySnapshot = await getDocs(
+            query(collection(documentRef, 'messages'), orderBy('createdAt'))
+        );
         const messages : Message[] = [];
         querySnapshot.forEach((doc) => {
             messages.push(doc.data() as Message);
@@ -34,7 +36,6 @@ export const sendMessageToUser = (payload: any) => {
     console.log(payload);
     return async () => {
         const { from, to, content } = payload;
-        console.log(from, to, content);
         const sortedUid = [from, to].sort();
         const conversationId = `${sortedUid[0]}_${sortedUid[1]}`;
         const documentRef = doc(db, 'direct-messages', conversationId);
@@ -48,4 +49,6 @@ export const sendMessageToUser = (payload: any) => {
 }
 
 export const { setConversation } = messagesSlice.actions;
+export const selectAllMessagesWithUser = (state: any) : any => (state.messages);
+// export const selectMessageByIdWithUser = (state: any) : any => (state.messages.mid);
 export default messagesSlice.reducer;

@@ -88,13 +88,25 @@ export const getUserDocument = (user: User) => {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            // console.log(userSnap.data());
             dispatch(setCurrentUser(userSnap.data()))
         } else {
             console.log("User doesn't exist");
         }
     }
 }
+
+// export const getOtherUserDocument = (user: User) => {
+//     return async (dispatch: any) => {
+//         const userRef = doc(db, 'users', user.uid);
+//         const userSnap = await getDoc(userRef);
+
+//         if (userSnap.exists()) {
+//             return 
+//         } else {
+//             console.log("User doesn't exist");
+//         }
+//     }
+// }
 
 export const updateUserDocument = (payload: any) => {
     return async (dispatch: any) => {
