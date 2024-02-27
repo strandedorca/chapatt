@@ -26,7 +26,7 @@ import { darkTheme } from '../../../theme';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { sendFriendRequest } from '../../../redux-slices/friendsSlice';
+import { sendFriendRequest, setCurrentList } from '../../../redux-slices/friendsSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../../firebase/firebase';
 
@@ -158,9 +158,21 @@ export default function Header() {
                                 <Typography><EmojiPeople /> Friends </Typography>
                                 <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
                                 <CustomButton>Online</CustomButton>
-                                <CustomButton>All</CustomButton>
-                                <CustomButton>Pending</CustomButton>
-                                <CustomButton>Blocked</CustomButton>
+                                <CustomButton
+                                    onClick={() => dispatch(setCurrentList('all'))}
+                                >
+                                    All
+                                </CustomButton>
+                                <CustomButton
+                                    onClick={() => dispatch(setCurrentList('pending'))}
+                                >
+                                    Pending
+                                </CustomButton>
+                                <CustomButton
+                                    onClick={() => dispatch(setCurrentList('blocked'))}
+                                >
+                                    Blocked
+                                </CustomButton>
                                 <Button
                                     variant="contained"
                                     color="inherit"

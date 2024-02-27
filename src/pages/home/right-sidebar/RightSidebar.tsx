@@ -73,7 +73,6 @@ const RightSidebar = () => {
                         {user.displayName}
                     </Typography>
                     <Content>
-                        // TO BE ADDED
                         {user.displayName}
                     </Content>
 
@@ -94,7 +93,6 @@ const RightSidebar = () => {
 
                     <WhiteDivider />
                     
-                    // TO BE IMPLEMENTED
                     <Title content="Note" />
                     <Content>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae, eligendi.</Content>
                 </Section>
