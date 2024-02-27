@@ -34,6 +34,11 @@ const users = [
     id: "rG2C6fxQRfNx0Rj4SppuhAr0cWm2",
     name: "pikachu",
     photoUrl: avatar,
+  },
+  {
+    id: "F4YOkYdVNtTrcmEhkD7IWyPouAg1",
+    name: "a Doanh",
+    // photoUrl: avatar,
   }
 ]
 

@@ -78,7 +78,6 @@ export const deleteUserDocument = (uid: string) => {
     }
 }
 
-// What do I fetch user data for?
 export const getUserDocument = (user: User) => {
     return async (dispatch: any) => {
         const userRef = doc(db, 'users', user.uid);
