@@ -5,7 +5,13 @@ import { User } from './../../../types.tsx';
 import { Avatar, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
-import TextField from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { acceptFriendRequest, getFriendList, getPendingRequestList, selectAllFriends, selectCurrentList, selectPendingRequest } from "../../../redux-slices/friendsSlice.tsx";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/firebase.ts";
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 const SearchBar = styled('input')(({theme}) => ({
     width: "100%",
@@ -48,6 +54,74 @@ const onlineUsers = [
 ]
 
 const FriendsPage = () => {
+    const dispatch = useDispatch();
+    const [user] = useAuthState(auth);
+    const currentList = useSelector(selectCurrentList);
+    const allFriends = useSelector(selectAllFriends);
+    const pendingRequests = useSelector(selectPendingRequest);
+    const [list, setList] = useState(allFriends);
+
+    useEffect(() => {
+        const onLoadFriendList = async () => {
+            if (user) {
+                await dispatch(getPendingRequestList(user.uid) as any);
+                await dispatch(getFriendList(user.uid) as any)
+                if (currentList === 'all') {
+                    setList(allFriends);
+                    console.log(allFriends);
+                } else if (currentList === 'pending') {
+                    setList(pendingRequests);
+                }
+            }
+        };
+        onLoadFriendList();
+    }, [user, currentList])
+    
+    let mainContent;
+    if (list) {
+        mainContent = list.map((item: any) => {
+            return(
+                <UserBox key={item.email}>
+                    <Box display="flex" gap="10px" alignItems="center">
+                        <Avatar />
+                        <Typography padding="0">{item.email}</Typography>
+                    </Box>
+                    <Box display="flex">
+                        {currentList === 'pending' ? (
+                            <>
+                                <IconButton
+                                    onClick={() => {
+                                        const payload = {
+                                            uid: user?.uid,
+                                            email: item.email,
+                                        }
+                                        dispatch(acceptFriendRequest(payload) as any)}
+                                    }
+                                >
+                                    <CheckCircleRoundedIcon/>
+                                </IconButton>
+                                <IconButton>
+                                    <CancelRoundedIcon />
+                                </IconButton>
+                            </>
+                        ) : (
+                            <>
+                                <IconButton>
+                                    <AddCommentRoundedIcon />
+                                </IconButton>
+                                <IconButton>
+                                    <PersonRemoveAlt1RoundedIcon />
+                                </IconButton>
+                            </>
+                        )}
+                    </Box>
+                </UserBox>
+            )
+        })
+    } else {
+        mainContent = <p>Nothing to show here</p>;
+    }
+
   return (
     <Box 
         height="100%"
@@ -64,28 +138,14 @@ const FriendsPage = () => {
                 }}
             />
         </Box>
+        {/* Title */}
         <Box paddingY="20px">
             <Title content="online" />
         </Box>
+
+        {/* Main */}
         <Box sx={boxStyle}>
-            {onlineUsers.map((user: User) => {
-                return(
-                    <UserBox key={user.id}>
-                        <Box display="flex" gap="10px" alignItems="center">
-                            <Avatar />
-                            <Typography padding="0">{user.name}</Typography>
-                        </Box>
-                        <Box display="flex">
-                            <IconButton>
-                                <AddCommentRoundedIcon />
-                            </IconButton>
-                            <IconButton>
-                                <PersonRemoveAlt1RoundedIcon />
-                            </IconButton>
-                        </Box>
-                    </UserBox>
-                )
-            })}
+            {mainContent}
         </Box>
     </Box>
   )

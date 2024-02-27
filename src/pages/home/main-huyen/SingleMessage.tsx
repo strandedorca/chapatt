@@ -14,7 +14,7 @@ const Message = ({ from, content, timestamp }: any) => {
         photoURL: '',
     })
     // Handle timestamp
-    const timestampString = timestamp.toDate();
+    // const timestampString = timestamp.toDate();
 
     // Handle show name and avatar from uid 
     useEffect(() => {

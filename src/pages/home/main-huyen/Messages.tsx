@@ -10,10 +10,11 @@ import { FormEvent, MouseEventHandler, useEffect, useState } from "react";
 import { auth, db } from "../../../firebase/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getConversation, selectAllMessagesWithUser, sendMessageToUser } from "../../../redux-slices/messagesSlice";
+import { getConversation, selectAllMessagesWithUser, sendMessageToUser, subscribeToMessages, unsubscribeFromMessages } from "../../../redux-slices/messagesSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Message } from "../../../types";
+import { unsubscribe } from "diagnostics_channel";
 
 const Messages = () => {
     const [user] = useAuthState(auth);
@@ -81,9 +82,13 @@ const Messages = () => {
                     uid1: user.uid,
                     uid2: uid,
                 }
-                dispatch(getConversation(uids) as any);
+                dispatch(subscribeToMessages(uids) as any);
             };
             onLoadMessages();
+        }
+        return () => {
+            dispatch(unsubscribeFromMessages() as any);
+            // dispatch(clearUnsubscribe() as any)
         }
     }, [user, uid])
 
