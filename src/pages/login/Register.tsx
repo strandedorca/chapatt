@@ -28,14 +28,12 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
         const user = userCredential.user;
         dispatch(addUserDocument(user) as any);
         updateProfile(user, {
-          displayName
+          displayName,
         });
         dispatch(updateUserDocument({ user, displayName }) as any);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        console.log(error.code, error.message);
       });
   };
 

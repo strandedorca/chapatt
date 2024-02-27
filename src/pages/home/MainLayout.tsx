@@ -1,4 +1,4 @@
-import Header from "./Header"
+import Header from "./header/Header"
 import { styled } from "@mui/system"
 import RightSidebar from "./right-sidebar/RightSidebar"
 import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"

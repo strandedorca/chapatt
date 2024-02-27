@@ -5,7 +5,7 @@ import { User } from './../../../types.tsx';
 import { Avatar, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
-import TextField from "@mui/material";
+import { useState } from "react";
 
 const SearchBar = styled('input')(({theme}) => ({
     width: "100%",
@@ -48,6 +48,15 @@ const onlineUsers = [
 ]
 
 const FriendsPage = () => {
+    let content;
+    const [state, setState] = useState('all');
+
+    // if (state === 'all') {
+    //     content = allFriends;
+    // } else if (state === 'pending') {
+    //     content = pendingRequest;
+    // }
+
   return (
     <Box 
         height="100%"
@@ -64,11 +73,14 @@ const FriendsPage = () => {
                 }}
             />
         </Box>
+        {/* Title */}
         <Box paddingY="20px">
             <Title content="online" />
         </Box>
+
+        {/* Main */}
         <Box sx={boxStyle}>
-            {onlineUsers.map((user: User) => {
+            {onlineUsers.map((user: any) => {
                 return(
                     <UserBox key={user.id}>
                         <Box display="flex" gap="10px" alignItems="center">

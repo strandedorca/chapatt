@@ -20,9 +20,6 @@ const currentUserSlice = createSlice({
     name: 'currentUser',
     initialState,
     reducers: {
-        addFriend(state, action) {
-
-        },
         updateCurrentUser(state: any, action: any) {
             const { field, value } = action.payload;
             state[field] = value;
@@ -111,4 +108,5 @@ export const updateUserDocument = (payload: any) => {
 
 export const { setCurrentUser, updateCurrentUser } = currentUserSlice.actions;
 export const selectCurrentUser = (state: any) : any => (state.currentUser);
+export const selectCurrentUserEmail = (state: any) : any => (state.currentUser.email);
 export default currentUserSlice.reducer
