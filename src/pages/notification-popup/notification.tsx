@@ -45,7 +45,7 @@ const CustomButton = styled(Button)(({ theme }) => ({
 const NotificationPopupSetting = () => {
   const [selectedValue, setSelectedValue] = React.useState("a");
 
-  const handleChange = (event) => {
+  const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
     setSelectedValue(event.target.value);
   };
   // Xem có mở hay không
