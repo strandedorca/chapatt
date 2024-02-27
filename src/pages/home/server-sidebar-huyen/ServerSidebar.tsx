@@ -66,7 +66,7 @@ const ServerSidebar = ({ users }: any) => {
     const voiceChannels = channels.filter(channel => channel.type === "voice");
 
     // Check pathname to show different UI
-    if (location.pathname === "/me") {
+    if (location.pathname.startsWith("/me")) {
         content = (
             <Box>
                 {/* SearchBar */}
@@ -96,10 +96,6 @@ const ServerSidebar = ({ users }: any) => {
                     {/* Conversations */}
                     <Box>
                         {users.map((user: any) => (
-                            // <Button key={user.id} onClick={() => { navigate(`/conversations/${user.id}`) }}>
-                            //     <Avatar sx={{ width: "32px", height: "32px" }}/>
-                            //     <div>{user.name}</div>
-                            // </Button>
                             <ConversationsNavigationItem 
                                 key={user.id}
                                 uid={user.id}

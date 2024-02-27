@@ -5,6 +5,7 @@ import './index.css'
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit/react';
 import userReducer from './redux-slices/userSlice.tsx';
+import messagesReducer from './redux-slices/messagesSlice.tsx';
 // import { getDefaultMiddleware } from '@reduxjs/toolkit';
 
 // const customizedMiddleware = getDefaultMiddleware({
@@ -14,6 +15,7 @@ import userReducer from './redux-slices/userSlice.tsx';
 const store = configureStore({
   reducer: {
     currentUser: userReducer,
+    messages: messagesReducer,
   },
   
 })

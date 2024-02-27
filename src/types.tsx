@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface User {
     uid: string,
     email: string,
@@ -14,4 +16,10 @@ export interface Channel {
     type: "text" | "voice",
     name: string,
     id: string,
+}
+
+export interface Message {
+    from: string,
+    createdAt: Timestamp,
+    content: string,
 }

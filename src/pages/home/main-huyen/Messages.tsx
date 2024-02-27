@@ -9,10 +9,17 @@ import { useTheme } from "@emotion/react";
 import { FormEvent, MouseEventHandler, useState } from "react";
 import { auth, db } from "../../../firebase/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { sendMessageToUser } from "../../../redux-slices/messagesSlice";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Messages = () => {
+    const [user] = useAuthState(auth);
+    const dispatch = useDispatch();
     const theme: any = useTheme();
     const [message, setMessage] = useState('');
+    const { uid } = useParams();
     const fakeMessages = [
         {
             from: 'user1',
@@ -65,22 +72,19 @@ const Messages = () => {
         //     content: 'Sounds like a great plan!',
         // },
     ];
+
     const handleSubmit = async (e: any ) => {
         e.preventDefault();
         if (message.trim() === '') {
             return;
         }
-        if (auth.currentUser) {
-            const { uid, email, photoURL } = auth.currentUser;
-            await addDoc(collection(db, 'messages'), {
-                text: message,
-                email: email,
-                avatar: photoURL,
-                createdAt: serverTimestamp(),
-                uid,
-            });
+        if (user) {
+            const from = user.uid;
+            const to = uid;
+            const content = message;
+            dispatch(sendMessageToUser({ from, to, content }) as any);
         }
-        setMessage("");
+        setMessage('');
     }
 
     return (
@@ -91,7 +95,7 @@ const Messages = () => {
             padding="20px"
             paddingRight="0"
         >
-            {/* Messages Sent */}
+            {/* Show Previous Messages */}
             <Box id="messages" sx={{ 
                 flexGrow: "1", 
                 overflowY: "scroll",
@@ -106,6 +110,7 @@ const Messages = () => {
                     />
                 })}
             </Box>
+
             {/* Message Input */}
             <Box 
                 id="input" 
@@ -115,9 +120,12 @@ const Messages = () => {
                 padding="10px"
                 sx={{ backgroundColor: theme.palette.background.paper }}
             >
+                {/* File Sharing Button */}
                 <IconButton>
                     <AddCircleRoundedIcon />
                 </IconButton>
+
+                {/* Input */}
                 <form 
                     style={{ width: "100%", marginRight: "5px" }}
                     onSubmit={e => { handleSubmit(e) }}
@@ -133,6 +141,8 @@ const Messages = () => {
                         fullWidth
                     />
                 </form>
+
+                {/* Sent Button */}
                 <IconButton onClick={e => { handleSubmit(e) }}>
                     <SendIcon />
                 </IconButton>

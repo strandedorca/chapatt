@@ -11,7 +11,7 @@ interface ConversationsNavigationItemProp {
 const ConversationsNavigationItem = ({ uid, displayName, photoUrl }: ConversationsNavigationItemProp) => {
   const navigate = useNavigate();
   return (
-    <Button onClick={() => { navigate(`/conversations/${uid}`) }}>
+    <Button onClick={() => { navigate(`/me/${uid}`) }}>
         <Avatar 
             src={photoUrl ? photoUrl : ''}
             sx={{ width: 32, height: 32 }}
