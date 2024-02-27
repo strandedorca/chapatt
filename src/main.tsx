@@ -6,14 +6,12 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit/react';
 import currentUserReducer from './redux-slices/currentUserSlice.tsx';
 import messagesReducer from './redux-slices/messagesSlice.tsx';
-import userReducer from './redux-slices/userSlice.tsx';
 import friendsReducer from './redux-slices/friendsSlice.tsx';
 
 const store = configureStore({
   reducer: {
     currentUser: currentUserReducer,
     messages: messagesReducer,
-    user: userReducer,
     friends: friendsReducer,
   },
   
