@@ -4,18 +4,17 @@ import App from './App.tsx'
 import './index.css'
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit/react';
-import userReducer from './redux-slices/userSlice.tsx';
+import currentUserReducer from './redux-slices/currentUserSlice.tsx';
 import messagesReducer from './redux-slices/messagesSlice.tsx';
-// import { getDefaultMiddleware } from '@reduxjs/toolkit';
-
-// const customizedMiddleware = getDefaultMiddleware({
-//   serializableCheck: false
-// })
+import userReducer from './redux-slices/userSlice.tsx';
+import friendsReducer from './redux-slices/friendsSlice.tsx';
 
 const store = configureStore({
   reducer: {
-    currentUser: userReducer,
+    currentUser: currentUserReducer,
     messages: messagesReducer,
+    user: userReducer,
+    friends: friendsReducer,
   },
   
 })

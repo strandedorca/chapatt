@@ -4,7 +4,7 @@ import styles from "./Login.module.css";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useDispatch } from "react-redux";
-import { addUserDocument, updateUserDocument } from "../../redux-slices/userSlice";
+import { addUserDocument, updateUserDocument } from "../../redux-slices/currentUserSlice";
 
 interface RegisterProps {
   onSwitch: () => void;

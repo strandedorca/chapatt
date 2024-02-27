@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box, List, ListItem, ListItemText, Divider, Typography, styled, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { deleteUserDocument } from '../../redux-slices/userSlice';
+import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
 

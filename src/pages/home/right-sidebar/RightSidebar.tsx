@@ -6,7 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../redux-slices/userSlice";
+import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 
 const RightSidebar = () => {
     // Show different UI for me/server page

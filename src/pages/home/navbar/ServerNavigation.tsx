@@ -4,7 +4,7 @@ import { Button, Divider } from "@mui/material"
 import ServerNavigationItem from "./ServerNavigationItem"
 import avatar from './../../../assets/avatar.jpg';
 import { auth } from "../../../firebase/firebase";
-import { selectCurrentUser } from "../../../redux-slices/userSlice";
+import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const NavigationSidebar = () => {

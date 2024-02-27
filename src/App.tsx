@@ -13,7 +13,7 @@ import AuthPage from './pages/login/AuthPage';
 import { auth, db } from './firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { addUserDocument, getUserDocument } from './redux-slices/userSlice';
+import { addUserDocument, getUserDocument } from './redux-slices/currentUserSlice';
 import { useDispatch } from 'react-redux';
         
 export const WidthContext = createContext('240px');

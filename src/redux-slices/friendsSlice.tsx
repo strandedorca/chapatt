@@ -5,11 +5,13 @@ import { db } from "../firebase/firebase";
 
 const initialState: any = [];
 
-const userSlice = createSlice({
-    name: 'user',
+const friendsSlice = createSlice({
+    name: 'friends',
     initialState,
     reducers: {
-        
+        addFriend(state, action) {
+            state.push(action.payload);
+        }
     }
 })
 
@@ -18,11 +20,12 @@ export const getUser = (user: User) => {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
-            
+            addFriend(userSnap.data());
         } else {
             console.log("User doesn't exist");
         }
     }
 }
 
-export default userSlice.reducer
+export const { addFriend } = friendsSlice.actions;
+export default friendsSlice.reducer
