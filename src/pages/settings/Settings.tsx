@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Box, List, ListItem, ListItemText, Divider, Typography, styled, Button } from '@mui/material';
+import { Box, List, ListItem, ListItemText, Divider, Typography, styled, Button, Modal } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
+import { darkTheme } from '../../theme';
 
 const Setting = () => {
     const [selectedTab, setSelectedTab] = React.useState('My Account');
+    const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const dispatch = useDispatch();
     const [user] = useAuthState(auth);
 
@@ -46,13 +48,43 @@ const Setting = () => {
         display: none; /* For Chrome, Safari, and Opera */
     }
 `;
+    const BoxModal = styled(Box)(({ theme }) => ({
 
+        position: 'absolute',
+        top: `calc(50% - 50px)`,
+        left: "50%",
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[24],
+        opacity: 0.9,
+        maxWidth: 400,
+        padding: 24,
+        transform: "translate(-50%, -50%)",
+        "& .MuiDialogContent-root": {
+            padding: theme.spacing(2),
+        },
+    }));
+    // const handleDeleteAccount = () => {
+    //     const confirmation = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    //     if (confirmation) {
+    //         dispatch(deleteUserDocument(user?.uid ?? '') as any);
+    //     }
+    // }
     const handleDeleteAccount = () => {
-        dispatch(deleteUserDocument(user?.uid ?? '') as any);
-    }
-    const handleLogout = () => {
+        setDeleteModalOpen(true);
+    };
 
+    const handleDeleteConfirmed = () => {
+        dispatch(deleteUserDocument(user?.uid ?? '') as any);
+        setDeleteModalOpen(false);
+    };
+
+    const handleCancelled = () => {
+        setDeleteModalOpen(false);
+    };
+    const handleLogOut = () => {
+        auth.signOut();
     }
+
     return (
         <div>
             <CustomScrollbar>
@@ -94,16 +126,41 @@ const Setting = () => {
                             <Divider sx={{ my: 1, bgcolor: '#3b3d44' }} />
                         </React.Fragment>
                     ))}
+                    {/* Nút Delete Account */}
+                    <ListItem button onClick={handleDeleteAccount}>
+                        <ListItemText primary="Delete Account" />
+                    </ListItem>
+                    {/* Nút Log Out */}
+                    <ListItem button onClick={handleLogOut}>
+                        <ListItemText primary="Log Out" />
+                    </ListItem>
                 </List>
             </CustomScrollbar>
 
-            {/* Buttons */}
-            <Button onClick={handleDeleteAccount}>
-                Delete Account
-            </Button>
-            <Button onClick={handleLogout}>
-                Logout
-            </Button>
+            {/* Modal Confirm Delete Account */}
+            <Modal
+                open={isDeleteModalOpen}
+                onClose={handleCancelled}
+                aria-labelledby="delete-modal-title"
+                aria-describedby="delete-modal-description"
+            >
+                <BoxModal>
+                    <Typography id="delete-modal-title" variant="h6" component="h2" align="center" gutterBottom>
+                        Confirm Account Deletion
+                    </Typography>
+                    <Typography id="delete-modal-description" variant="body1" component="p" align="center" gutterBottom>
+                        Are you sure you want to delete your account? This action cannot be undone.
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                        <Button variant="contained" color="error" onClick={handleDeleteConfirmed}>
+                            Delete
+                        </Button>
+                        <Button variant="contained" onClick={handleCancelled} sx={{ ml: 2, bgcolor: darkTheme.palette.grey[500], color: darkTheme.palette.text.primary }}>
+                            Cancel
+                        </Button>
+                    </Box>
+                </BoxModal>
+            </Modal>
         </div>
     );
 };
