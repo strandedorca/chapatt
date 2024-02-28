@@ -6,19 +6,11 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
-import { Avatar, Box, Button, Divider, Modal, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Divider, Tooltip } from '@mui/material';
 import {
-    AccountCircle,
     EmojiPeople,
-    Group,
-    Help,
-    Inbox,
-    MapsUgc,
     Notifications,
-    PersonAdd,
     PushPin,
-    Topic,
-    Videocam,
     WifiCalling3,
 } from '@mui/icons-material';
 
@@ -26,9 +18,11 @@ import { darkTheme } from '../../../theme';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { sendFriendRequest, setCurrentList } from '../../../redux-slices/friendsSlice';
+import { setCurrentList } from '../../../redux-slices/friendsSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../../firebase/firebase';
+// import ServerNavigationItem from '../navbar/ServerNavigationItem';
+import AddFriendModal from './AddFriendModal';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -86,17 +80,7 @@ const CustomButton = styled(Button)(({ theme }) => ({
         color: theme.palette.grey[400],
     },
 }));
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
+
 
 export default function Header() {
     const [modalOpen, setModalOpen] = useState(false);
@@ -105,7 +89,6 @@ export default function Header() {
 
     // State management for add friend feature
     const dispatch = useDispatch();
-    const [email, setEmail] = useState('');
     const [user] = useAuthState(auth);
 
     // Add Friend Modal
@@ -115,42 +98,18 @@ export default function Header() {
     const handleCloseAddFriend = () => {
         setModalOpen(false);
     }
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const payload = {
-            senderEmail: user?.email,
-            email,
-        }
-        dispatch(sendFriendRequest(payload) as any);
-        handleCloseAddFriend();
-    }
 
     const renderHeader = () => {
         // Render different headers based on pathname
         if (pathname === '/me') {
             return (
-                
+
                 <ThemeProvider theme={darkTheme}>
                     {/* Modal */}
                     {/* Cần chuyển sang file mới */}
-                    <Modal 
-                        open={modalOpen}
-                        onClose={handleCloseAddFriend}
-                    >
-                        <Box sx={style}>
-                            <Typography variant="h6" component="h2">
-                                Add Friend
-                            </Typography>
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Add a friend by typing in their email address:
-                            </Typography>
-                            <form action="" onSubmit={handleSubmit}>
-                                <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                                <button type="submit">Add friend</button>
-                            </form>
-                        </Box>
-                    </Modal>
-                    
+
+                    <AddFriendModal modalOpen={modalOpen} handleClose={handleCloseAddFriend} />
+
                     {/* Main */}
                     <AppBar position='sticky'>
                         <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
@@ -189,93 +148,6 @@ export default function Header() {
                                     Add Friend
                                 </Button>
                             </Box>
-
-                            <Box sx={{ display: 'flex' }} color={darkTheme.palette.text.secondary}>
-                                <CustomIconButton>
-                                    <Tooltip title="New Group DM" arrow>
-                                        <MapsUgc />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <Divider orientation="vertical" flexItem sx={{ m: 1 }} />
-                                <CustomIconButton>
-                                    <Tooltip title="Inbox" arrow>
-                                        <Inbox />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Help" arrow>
-                                        <Help />
-                                    </Tooltip>
-                                </CustomIconButton>
-                            </Box>
-                        </Toolbar>
-                    </AppBar>
-                </ThemeProvider>
-            );
-        } else if (pathname.startsWith('/me/')) {
-            return (
-                <ThemeProvider theme={darkTheme}>
-                    <AppBar position='sticky'>
-                        <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar alt="Hieu Bui" src="#"
-                                    sx={{ width: 24, height: 24 }}
-                                />
-                                <Tooltip title="Hieu Bui" arrow>
-                                    <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem", cursor: 'pointer' }}>
-                                        Hieu Bui
-                                    </Typography>
-                                </Tooltip>
-                            </Box>
-
-                            <Box sx={{ display: 'flex' }} color={darkTheme.palette.text.secondary}>
-                                <CustomIconButton>
-                                    <Tooltip title="Start Voice Call" arrow>
-                                        <WifiCalling3 />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Start Video Call" arrow>
-                                        <Videocam />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Pined Messages" arrow>
-                                        <PushPin />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Add Friends to DM" arrow>
-                                        <PersonAdd />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Show/Hide User Profile" arrow>
-                                        <AccountCircle />
-                                    </Tooltip>
-                                </CustomIconButton>
-
-                                <Search>
-                                    <StyledInputBase
-                                        placeholder="Search…"
-                                        inputProps={{ 'aria-label': 'search' }}
-                                    />
-                                    <SearchIconWrapper>
-                                        <SearchIcon />
-                                    </SearchIconWrapper>
-                                </Search>
-
-                                <CustomIconButton>
-                                    <Tooltip title="Inbox" arrow>
-                                        <Inbox />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Help" arrow>
-                                        <Help />
-                                    </Tooltip>
-                                </CustomIconButton>
-                            </Box>
                         </Toolbar>
                     </AppBar>
                 </ThemeProvider>
@@ -285,34 +157,50 @@ export default function Header() {
                 <ThemeProvider theme={darkTheme}>
                     <AppBar position='sticky'>
                         <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Typography variant='h4' color={darkTheme.palette.grey[600]} component='div'>#</Typography>
-                                <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem", cursor: 'pointer' }}>
-                                    general
-                                </Typography>
-                            </Box>
+                            {pathname.startsWith('/me/')
+                                ?
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Avatar alt={user?.displayName || ''} src={user?.photoURL || ''}
+                                        sx={{ width: 24, height: 24 }}
+                                    />
+                                    <Tooltip title={user?.displayName} arrow>
+                                        <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem", cursor: 'pointer' }}>
+                                            {user?.displayName}
+                                        </Typography>
+                                    </Tooltip>
+                                </Box>
+                                :
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Typography variant='h4' color={darkTheme.palette.grey[600]} component='div'>#</Typography>
+                                    <Typography variant="h6" noWrap component="div" sx={{ px: 1.5, fontSize: "1rem", cursor: 'pointer' }}>
+                                        general
+                                    </Typography>
+                                </Box>
+                            }
+
 
                             <Box sx={{ display: 'flex' }} color={darkTheme.palette.text.secondary}>
                                 <CustomIconButton>
-                                    <Tooltip title="Threads" arrow>
-                                        <Topic />
+                                    <Tooltip title="Start Voice Call" arrow>
+                                        <WifiCalling3 />
                                     </Tooltip>
                                 </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Notification Settings" arrow>
-                                        <Notifications />
+                                {/* <CustomIconButton>
+                                    <Tooltip title="Start Video Call" arrow>
+                                        <Videocam />
                                     </Tooltip>
-                                </CustomIconButton>
+                                </CustomIconButton> */}
                                 <CustomIconButton>
                                     <Tooltip title="Pined Messages" arrow>
                                         <PushPin />
                                     </Tooltip>
                                 </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Show Member List" arrow>
-                                        <Group />
+
+                                {/* <CustomIconButton>
+                                    <Tooltip title="Show/Hide User Profile" arrow>
+                                        <AccountCircle />
                                     </Tooltip>
-                                </CustomIconButton>
+                                </CustomIconButton> */}
 
                                 <Search>
                                     <StyledInputBase
@@ -325,13 +213,8 @@ export default function Header() {
                                 </Search>
 
                                 <CustomIconButton>
-                                    <Tooltip title="Inbox" arrow>
-                                        <Inbox />
-                                    </Tooltip>
-                                </CustomIconButton>
-                                <CustomIconButton>
-                                    <Tooltip title="Help" arrow>
-                                        <Help />
+                                    <Tooltip title="Notification Settings" arrow>
+                                        <Notifications />
                                     </Tooltip>
                                 </CustomIconButton>
                             </Box>
