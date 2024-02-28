@@ -5,6 +5,7 @@ import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
 import { darkTheme } from '../../theme';
+import { NavLink } from 'react-router-dom';
 
 const Setting = () => {
     const [selectedTab, setSelectedTab] = React.useState('My Account');
@@ -47,7 +48,7 @@ const Setting = () => {
     &::-webkit-scrollbar {
         display: none; /* For Chrome, Safari, and Opera */
     }
-`;
+    `;
     const BoxModal = styled(Box)(({ theme }) => ({
 
         position: 'absolute',
@@ -101,7 +102,9 @@ const Setting = () => {
                                     button
                                     key={text}
                                     selected={selectedTab === text}
-                                    onClick={(event) => handleListItemClick(event, text)}
+                                    onClick={(event) => {
+                                        handleListItemClick(event, text)
+                                    }}
                                     sx={{
                                         padding: 0,
                                         paddingLeft: 2,
@@ -137,6 +140,15 @@ const Setting = () => {
                 </List>
             </CustomScrollbar>
 
+            <Box sx={{ ml: 200, p: 2 }}>
+                {selectedTab === 'Profiles' && (
+                    <NavLink to="/profiles" style={{ textDecoration: 'none' }}>
+                        <Typography variant="h6" component="h1" gutterBottom>
+                            Profiles
+                        </Typography>
+                    </NavLink>
+                )}
+            </Box>
             {/* Modal Confirm Delete Account */}
             <Modal
                 open={isDeleteModalOpen}
