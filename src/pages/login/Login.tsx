@@ -57,17 +57,16 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
     signInWithEmailAndPassword(auth, email, password);
   };
 
-  const handleGoogleLogin = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider, browserPopupRedirectResolver )
-      .then(result => {
-        console.log("result",result)
-    }).catch ((error) => {
-        console.error(error);
-        alert(error.message);
-    });;
-
-  }
+  // const handleGoogleLogin = () => {
+  //   const provider = new GoogleAuthProvider();
+  //   signInWithRedirect(auth, provider, browserPopupRedirectResolver )
+  //     .then(result => {
+  //       console.log("result",result)
+  //   }).catch ((error) => {
+  //       console.error(error);
+  //       alert(error.message);
+  //   });;
+  // }
 
   return (
     <Container

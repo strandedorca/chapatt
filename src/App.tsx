@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import './App.css'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { createContext, useMemo, useState } from 'react'
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { darkTheme } from './theme';
 import Settings from './pages/settings/Settings';
 import Home from './pages/home/Home';
@@ -10,20 +10,36 @@ import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
 import AuthPage from './pages/login/AuthPage';
 
-import { auth } from './firebase/firebase';
+import { auth, db } from './firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-
+import { doc, getDoc } from 'firebase/firestore';
+import { addUserDocument, getUserDocument } from './redux-slices/currentUserSlice';
+import { useDispatch } from 'react-redux';
+        
 export const WidthContext = createContext('240px');
 
 function App() {
-  const [user] = useAuthState(auth)
-  //const ColorModeContext = createContext('dark')
+  const [user] = useAuthState(auth);
+  const dispatch = useDispatch();
+//const ColorModeContext = createContext('dark')
 
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const handleLogIn = () => {
-  //   setIsLoggedIn(!isLoggedIn);
-  // }
   const modalWidth = '240px';
+
+  // Create a user doc when signing in with Google for the first time
+  useEffect(() => {
+    if (user) {
+      // Check if user is already created
+      const onChangeUser = async () => {
+        const userRef = doc(db, 'user', user.uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          dispatch(addUserDocument(user) as any);
+        }
+        dispatch(getUserDocument(user) as any);
+      };
+      onChangeUser();
+    }
+  }, [user]);
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -36,16 +52,18 @@ function App() {
               <Route index element={<Navigate to="me" />} />
               {/* Homepage */}
               <Route element={<MainLayout />}>
+                <Route path="me/:uid" element={<Messages />}/>
                 <Route path="me" element={<FriendsPage />}>
                   <Route path=":userId" element={<Messages />} />
                 </Route>
+                <Route path="servers/:serverId" element/>
                 <Route path="servers" element={<Messages />}>
                   <Route path=":serverId" element />
                 </Route>
               </Route>
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="login" element={<AuthPage />} />
-            <Route path="settings" element={<Settings />} />
           </Routes>
         </BrowserRouter>
       </WidthContext.Provider>
