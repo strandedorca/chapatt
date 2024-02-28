@@ -1,6 +1,6 @@
 import { styled } from "@mui/system";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Avatar, Box, IconButton } from "@mui/material"
+import { Avatar, Box, IconButton, Modal } from "@mui/material"
 import avatar from './../../../assets/avatar.jpg';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CustomTooltip from "../../../components/CustomTooltip";
@@ -12,6 +12,8 @@ import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 import { useTheme } from "@emotion/react";
 import { TextField } from "@mui/material";
+import { useState } from "react";
+
 import ConversationsNavigationItem from "./ConversationsNavigationItem";
 
 export const Button = styled('button')(({ theme }) =>({
@@ -45,7 +47,7 @@ const ServerSidebar = ({ users }: any) => {
             type: "voice",
             name: "ABC",
             id: "1"
-        }, 
+        },
         {
             type: "text",
             name: "BCD",
@@ -107,7 +109,7 @@ const ServerSidebar = ({ users }: any) => {
                 </Box>
             </Box>
         )
-    }  else {
+    } else {
         content = (
             <Box padding="10px">
                 <Button onClick={() => {
@@ -137,7 +139,7 @@ const ServerSidebar = ({ users }: any) => {
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title content="Voice Channels" />
                     <CustomTooltip title="New voice channel">
-                        <Button style={{ width: "auto" }}>+</Button>
+                        <Button sx={{ width: "auto" }}>+</Button>
                     </CustomTooltip>
                 </Box>
                 {voiceChannels.map((channel: Channel) => {
@@ -155,39 +157,38 @@ const ServerSidebar = ({ users }: any) => {
     }
 
     return (
-    <Box
-        height="100%" 
-        display="flex" 
-        justifyContent="space-between" 
-        flexDirection="column"
-        sx={{
-            backgroundColor: theme.palette.background.paper,
-        }}
-    >
-        {/* Main */}
-        {content}
-
-        {/* Footer - always shown */}
-        <Box sx={{
-            padding: "10px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.background.default,
-        }}>
-            <Box display="flex" gap="10px" alignItems="center">
-                <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>
-                <div>
-                    <div>strandedorca</div>
-                    <div>Invisible</div>
-                </div>
+        <Box
+            height="100%"
+            display="flex"
+            justifyContent="space-between"
+            flexDirection="column"
+            sx={{
+                backgroundColor: theme.palette.background.paper,
+            }}
+        >
+            {/* Main */}
+            {content}
+            {/* Footer - always shown */}
+            <Box sx={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: theme.palette.background.default,
+            }}>
+                <Box display="flex" gap="10px" alignItems="center">
+                    <Avatar sx={{ width: "32px", height: "32px" }} src={avatar} />
+                    <div>
+                        <div>strandedorca</div>
+                        <div>Invisible</div>
+                    </div>
+                </Box>
+                <IconButton onClick={() => { navigate("/settings") }}>
+                    <SettingsRoundedIcon />
+                </IconButton>
             </Box>
-            <IconButton onClick={() => { navigate("/settings")}}>
-                <SettingsRoundedIcon />
-            </IconButton>
         </Box>
-    </Box>
-  )
+    )
 }
 
 export default ServerSidebar

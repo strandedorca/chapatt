@@ -17,7 +17,7 @@ import { addUserDocument, getUserDocument } from './redux-slices/currentUserSlic
 import { useDispatch } from 'react-redux';
         
 export const WidthContext = createContext('240px');
-        
+
 function App() {
   const [user] = useAuthState(auth);
   const dispatch = useDispatch();
@@ -47,17 +47,18 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}>
+            {/* <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}> */}
+            <Route path="/" element={<Home />} >
               <Route index element={<Navigate to="me" />} />
               {/* Homepage */}
               <Route element={<MainLayout />}>
                 <Route path="me/:uid" element={<Messages />}/>
                 <Route path="me" element={<FriendsPage />}>
-        
+                  <Route path=":userId" element={<Messages />} />
                 </Route>
                 <Route path="servers/:serverId" element/>
                 <Route path="servers" element={<Messages />}>
-                  
+                  <Route path=":serverId" element />
                 </Route>
               </Route>
               <Route path="settings" element={<Settings />} />
