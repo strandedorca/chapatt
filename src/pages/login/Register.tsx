@@ -7,6 +7,9 @@ import { useDispatch } from "react-redux";
 import { addUserDocument, updateUserDocument } from "../../redux-slices/currentUserSlice";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface RegisterProps {
   onSwitch: () => void;
@@ -23,7 +26,6 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
   const [displayName, setDisplayName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [dateOfBirth, setDateOfBirth] = useState<string>("");
 
   const usernameExists = async (username: string) => {
     const usersCollectionRef = collection(db, 'users');
@@ -188,39 +190,6 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{
-              mb: 2,
-              backgroundColor: "#1E1F22",
-              ".MuiOutlinedInput-root": {
-                // Áp dụng style cho phần root của OutlinedInput
-                borderRadius: "15px", // Bo tròn viền
-                "& fieldset": {
-                  // Áp dụng style cho phần viền của OutlinedInput
-                  borderColor: "#555", // Màu viền
-                },
-                "&:hover fieldset": {
-                  // Khi hover
-                  borderColor: "#1976d2", // Thay đổi màu viền
-                },
-                "&.Mui-focused fieldset": {
-                  // Khi field được focus
-                  borderColor: "#1976d2", // Thay đổi màu viền
-                },
-              },
-              borderRadius: "15px",
-              input: { color: "#B5BAC1" },
-            }}
-            InputLabelProps={{
-              style: { color: "#B5BAC1" },
-            }}
-          />
-          <TextField
-            required
-            fullWidth
-            label="Date of Birth"
-            type="date"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
             sx={{
               mb: 2,
               backgroundColor: "#1E1F22",
