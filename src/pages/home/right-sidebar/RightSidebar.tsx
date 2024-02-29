@@ -3,15 +3,20 @@ import avatar from './../../../assets/avatar.jpg';
 import { Button, Divider, Typography } from "@mui/material";
 import Title from "../../../components/Title";
 import Avatar from '@mui/material/Avatar';
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../firebase/firebase";
 
 const RightSidebar = () => {
     // Show different UI for me/server page
     const [isServer, setIsServer] = useState(false);
     const location = useLocation();
+    const { username } = useParams();
+    const currentUser = useSelector(selectCurrentUser);
+    const [userToShow, setUserToShow] = useState(currentUser);
     useEffect(() => {
         if (location.pathname !== '/me') {
             setIsServer(true);
@@ -20,11 +25,30 @@ const RightSidebar = () => {
         }
     }, [location.pathname])
 
-    // Get currentUser state
-    const user = useSelector(selectCurrentUser);
-    
+    useEffect(() => {
+        const getUserInfo = async (username: string) => {
+            const usersRef = collection(db, 'users');
+            if (username) {
+                const userQuery = query(
+                    collection(db, 'users'),
+                    where('username', '==', username),
+                )
+                const userSnap = await getDocs(userQuery);
+                if (!userSnap.empty) {
+                    setUserToShow(userSnap.docs[0].data());
+                } else {
+                    console.log("Username doesn't exist");
+                }
+            }
+        }
+        getUserInfo(username as string);
+    })
+
+
+
+
     // Styled components
-    const Section = styled(Box)(({ theme } ) => ({
+    const Section = styled(Box)(({ theme }) => ({
         width: "100%",
         borderRadius: "8px",
         marginBottom: "15px",
@@ -40,11 +64,11 @@ const RightSidebar = () => {
     })
 
     return (
-        <Box height="100%" position="relative" 
+        <Box height="100%" position="relative"
         >
             {/* Banner */}
-            <Box id="banner" sx={{ 
-                backgroundColor: user.bannerColor, 
+            <Box id="banner" sx={{
+                backgroundColor: userToShow.bannerColor,
                 height: 120,
             }}>
             </Box>
@@ -52,14 +76,14 @@ const RightSidebar = () => {
             {/* Avatar */}
             <Box sx={{
                 position: "absolute",
-                top: "100px", 
-                transform: "translate(15px, -40%)", 
+                top: "100px",
+                transform: "translate(15px, -40%)",
             }}>
-                <Avatar 
-                    src={user.photoURL} 
-                    sx={{ width: 94, height: 94 }} 
+                <Avatar
+                    src={userToShow.photoURL}
+                    sx={{ width: 94, height: 94 }}
                 >
-                    {/* {user.displayName[0]} */}
+                    {userToShow.displayName[0]}
                 </Avatar>
             </Box>
 
@@ -70,10 +94,10 @@ const RightSidebar = () => {
                         fontSize: "1.1em",
                         fontWeight: "bold"
                     }}>
-                        {user.displayName}
+                        {userToShow.displayName}
                     </Typography>
                     <Content>
-                        {user.displayName}
+                        {userToShow.displayName}
                     </Content>
 
                     <WhiteDivider />
@@ -81,18 +105,18 @@ const RightSidebar = () => {
                     {!isServer ? (
                         <>
                             <Title content="About Me" />
-                            <Content>{user.aboutMe}</Content>
+                            <Content>{userToShow.aboutMe}</Content>
                             <WhiteDivider />
                         </>
-                    ) : ( null )}
+                    ) : (null)}
 
-                    <Title content="Since"/>
+                    <Title content="Since" />
                     <Content>
-                        {user.createdAt}
+                        {userToShow.createdAt}
                     </Content>
 
                     <WhiteDivider />
-                    
+
                     <Title content="Note" />
                     <Content>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae, eligendi.</Content>
                 </Section>
@@ -100,7 +124,7 @@ const RightSidebar = () => {
                 {/* Buttons */}
                 {isServer ? (
                     <Section component={Button}>Show Members</Section>
-                ) : ( null )}
+                ) : (null)}
                 <Section component={Button}>Files Shared</Section>
             </Box>
         </Box>

@@ -47,7 +47,7 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             const { uid } = userCredential.user;
             const user = {
               uid,
-              username: username.toLowerCase(),
+              username,
               email,
               displayName,
               photoUrl: '',
@@ -156,7 +156,7 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             fullWidth
             label="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())}
             sx={{
               mb: 2,
               backgroundColor: "#1E1F22",

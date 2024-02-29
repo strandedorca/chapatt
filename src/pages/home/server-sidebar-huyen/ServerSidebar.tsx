@@ -15,8 +15,12 @@ import { TextField } from "@mui/material";
 
 import ConversationsNavigationItem from "./ConversationsNavigationItem";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../../firebase/firebase";
+import { auth, db } from "../../../firebase/firebase";
 import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
+import { useSelector } from "react-redux";
+import { selectAllFriends } from "../../../redux-slices/friendsSlice";
+import { query, collection, where, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 export const Button = styled('button')(({ theme }) => ({
     fontFamily: 'Inter',
@@ -42,7 +46,40 @@ const ServerSidebar = ({ users }: any) => {
     const [user] = useAuthState(auth);
     const navigate = useNavigate();
     const location = useLocation();
+    const [userInfo, setUserInfo] = useState<any>([]);
     let content;
+
+    const allFriends = useSelector(selectAllFriends);
+
+    useEffect(() => {
+        console.log(userInfo);
+        allFriends.map(async (friendUsername: any) => {
+            try {
+                const userQuery = query(
+                    collection(db, 'users'),
+                    where('username', '==', friendUsername),
+                )
+                const userSnap = await getDocs(userQuery);
+                if (!userSnap.empty) {
+                    setUserInfo((prevUserInfo: any) => [
+                        ...prevUserInfo,
+                        {
+                            displayName: userSnap.docs[0].data().displayName,
+                            username: userSnap.docs[0].data().username,
+                            photoURL: userSnap.docs[0].data().photoURL,
+                        }
+                    ])
+                } else {
+                    console.log("Username doesn't exist");
+                }
+            } catch (error) {
+                console.error('Error retrieving user information.', error);
+            }
+        });
+        return () => { setUserInfo([]) };
+    }, [user, allFriends])
+
+    // console.log(allFriends, userInfo);
 
     // PLACEHOLDER
     const channels: Channel[] = [
@@ -100,7 +137,7 @@ const ServerSidebar = ({ users }: any) => {
                     </Box>
                     {/* Conversations */}
                     <Box>
-                        {users.map((user: any) => (
+                        {userInfo.map((user: any) => (
                             <ConversationsNavigationItem
                                 key={user.username}
                                 username={user.username}

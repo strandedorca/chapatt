@@ -16,7 +16,7 @@ const ConversationsNavigationItem = ({ username, displayName, photoUrl }: Conver
         src={photoUrl ? photoUrl : ''}
         sx={{ width: 32, height: 32 }}
       >
-        {!photoUrl ? displayName[0] : null}
+        {!photoUrl ? displayName[0].toUpperCase() : null}
       </Avatar>
       <div>{displayName}</div>
     </Button>

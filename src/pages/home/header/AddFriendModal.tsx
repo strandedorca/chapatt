@@ -61,7 +61,7 @@ const AddFriendModal = ({ modalOpen, handleClose }: { modalOpen: boolean, handle
       })
   };
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
+    setUsername(e.target.value.toLowerCase());
     setIsValidEmail(!!e.target.value); // Set isValidEmail to true if email is not empty
   };
   return (

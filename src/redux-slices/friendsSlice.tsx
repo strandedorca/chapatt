@@ -70,9 +70,13 @@ export const acceptFriendRequest = ({ username, senderUsername }: any) => {
     return async () => {
         if (username) {
             const friendsCollectionRef = collection(db, 'friends');
-            // Add to friendslist
+            // Add to friendslist of currentUser
             await updateDoc(doc(friendsCollectionRef, username), {
                 friends: arrayUnion(senderUsername),
+            });
+            // Add to friendsList of sender
+            await updateDoc(doc(friendsCollectionRef, senderUsername), {
+                friends: arrayUnion(username),
             });
             // Delete from pending list
             await updateDoc(doc(friendsCollectionRef, username), {
