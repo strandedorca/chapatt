@@ -18,7 +18,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase/firebase";
 import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
 
-export const Button = styled('button')(({ theme }) =>({
+export const Button = styled('button')(({ theme }) => ({
     fontFamily: 'Inter',
     border: "none",
     borderRadius: "5px",
@@ -76,9 +76,9 @@ const ServerSidebar = ({ users }: any) => {
             <Box>
                 {/* SearchBar */}
                 <Box padding="10px">
-                    <TextField 
-                        variant="standard" 
-                        placeholder="Find or start a conversation" fullWidth 
+                    <TextField
+                        variant="standard"
+                        placeholder="Find or start a conversation" fullWidth
                         size="small"
                     />
                 </Box>
@@ -101,10 +101,10 @@ const ServerSidebar = ({ users }: any) => {
                     {/* Conversations */}
                     <Box>
                         {users.map((user: any) => (
-                            <ConversationsNavigationItem 
-                                key={user.id}
-                                uid={user.id}
-                                displayName={user.name}
+                            <ConversationsNavigationItem
+                                key={user.username}
+                                username={user.username}
+                                displayName={user.displayName}
                                 photoUrl={user.photoUrl}
                             />
                         ))}
@@ -181,7 +181,7 @@ const ServerSidebar = ({ users }: any) => {
                 height: '60px'
             }}>
                 <Box display="flex" gap="10px" alignItems="center"
-                sx={{ width: '170px' }}>
+                    sx={{ width: '170px' }}>
                     <Avatar sx={{ width: "32px", height: "32px" }} src={user?.photoURL as any} />
                     <EllipsisOverflowDiv>
                         <EllipsisOverflowDiv>{user?.displayName}</EllipsisOverflowDiv>

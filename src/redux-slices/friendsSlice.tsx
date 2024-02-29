@@ -1,9 +1,6 @@
 import { Dispatch, createSlice } from "@reduxjs/toolkit/react";
-import { User } from "firebase/auth";
-import { DocumentReference, DocumentSnapshot, addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
+import { DocumentReference, DocumentSnapshot, addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { useSelector } from "react-redux";
-import { selectCurrentUserEmail } from "./currentUserSlice";
 
 const initialState: any = {
     currentList: 'all',
@@ -16,7 +13,7 @@ const friendsSlice = createSlice({
     initialState,
     reducers: {
         setPendingList(state, action) {
-            state.pending = action. payload;
+            state.pending = action.payload;
         },
         setFriendList(state, action) {
             state.friends = action.payload;
@@ -27,17 +24,9 @@ const friendsSlice = createSlice({
     }
 })
 
-const getUserDoc = (uid: string) => {
-    return async (dispatch: Dispatch) => {
-        const userRef: DocumentReference  = doc(db, 'users', uid);
-        const userSnap: DocumentSnapshot = await getDoc(userRef);
-        return userSnap
-    }
-}
-
 export const getFriendList = (uid: string) => {
     return async (dispatch: Dispatch) => {
-        const userRef: DocumentReference  = doc(db, 'users', uid);
+        const userRef: DocumentReference = doc(db, 'users', uid);
         const userSnap: DocumentSnapshot = await getDoc(userRef);
 
         if (userSnap.exists()) {
@@ -78,7 +67,7 @@ export const getPendingRequestList = (uid: string) => {
 }
 
 // Done
-export const sendFriendRequest = ({ senderEmail, email}: any) => {
+export const sendFriendRequest = ({ senderEmail, email }: any) => {
     return async () => {
         const userQuery = query(collection(db, 'users'), where('email', '==', email));
         const querySnapshot = await getDocs(userQuery);
@@ -94,7 +83,7 @@ export const sendFriendRequest = ({ senderEmail, email}: any) => {
             const existingRequestSnapshot = await getDocs(existingRequestQuery);
             if (!existingRequestSnapshot.empty) {
                 console.log('Request already exists');
-                return; 
+                return;
             }
 
             // Add request

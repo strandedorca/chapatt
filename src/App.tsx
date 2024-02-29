@@ -50,9 +50,9 @@ function App() {
               <Route index element={<Navigate to="me" />} />
               {/* Homepage */}
               <Route element={<MainLayout />}>
-                <Route path="me/:uid" element={<Messages />} />
+                <Route path="me/:username" element={<Messages />} />
                 <Route path="me" element={<FriendsPage />}>
-                  <Route path=":userId" element={<Messages />} />
+                  <Route path=":username" element={<Messages />} />
                 </Route>
                 <Route path="servers/:serverId" element />
                 <Route path="servers" element={<Messages />}>

@@ -26,21 +26,21 @@ const FHBox = styled(Box)({
 // PLACEHOLDER
 const users = [
   {
-    id: "ccQSDCokFidwwksLeQloPwXDazE3",
-    name: "Hieu Bui",
+    username: "ccQSDCokFidwwksLeQloPwXDazE3",
+    displayName: "Hieu Bui",
   },
   {
-    id: "JbejhxQt4iTJWUep4G0OjMJvUdo2",
-    name: "Huyen Dang",
+    username: "huyen",
+    displayName: "Huyen Dang",
   },
   {
-    id: "rG2C6fxQRfNx0Rj4SppuhAr0cWm2",
-    name: "pikachu",
+    username: "tumau135",
+    displayName: "BESTOFMAU",
     photoUrl: avatar,
   },
   {
-    id: "F4YOkYdVNtTrcmEhkD7IWyPouAg1",
-    name: "a Doanh",
+    username: "F4YOkYdVNtTrcmEhkD7IWyPouAg1",
+    displayName: "a Doanh",
     // photoUrl: avatar,
   }
 ]

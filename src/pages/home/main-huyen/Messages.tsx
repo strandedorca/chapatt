@@ -10,126 +10,72 @@ import { FormEvent, MouseEventHandler, useEffect, useState } from "react";
 import { auth, db } from "../../../firebase/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getConversation, selectAllMessagesWithUser, sendMessageToUser, subscribeToMessages, unsubscribeFromMessages } from "../../../redux-slices/messagesSlice";
+import { selectAllMessagesWithUser, sendMessageToUser, subscribeToMessages } from "../../../redux-slices/messagesSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Message } from "../../../types";
 import { unsubscribe } from "diagnostics_channel";
+import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 
 const Messages = () => {
     const [user] = useAuthState(auth);
     const dispatch = useDispatch();
     const theme: any = useTheme();
     const [message, setMessage] = useState('');
-    const { uid } = useParams();
-    //     {
-    //         from: 'user1',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'Hello there!',
-    //     },
-    //     {
-    //         from: 'user2',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'Hi, how are you?',
-    //     },
-    //     {
-    //         from: 'user1',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'I\'m good, thanks! How about you?',
-    //     },
-    //     {
-    //         from: 'user2',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'I\'m doing well too. Just busy with work.',
-    //     },
-    //     {
-    //         from: 'user1',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'That sounds hectic. Hope you get some rest soon.',
-    //     },
-    //     {
-    //         from: 'user2',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'Thanks! Yeah, looking forward to the weekend.',
-    //     },
-    //     {
-    //         from: 'user1',
-    //         timestamp: "Today at 3:51 AM",
-    //         content: 'Same here! Any plans for the weekend?',
-    //     },
-    //     // {
-    //     //     from: 'user2',
-    //     //     timestamp: "Today at 3:51 AM",
-    //     //     content: 'Not really, just relaxing at home. How about you?',
-    //     // },
-    //     // {
-    //     //     from: 'user1',
-    //     //     timestamp: "Today at 3:51 AM",
-    //     //     content: 'I might go for a hike if the weather is nice.',
-    //     // },
-    //     // {
-    //     //     from: 'user2',
-    //     //     timestamp: "Today at 3:51 AM",
-    //     //     content: 'Sounds like a great plan!',
-    //     // },
-    // ];
     const messages = useSelector(selectAllMessagesWithUser);
-    
-    useEffect(() => {
-        if (user) {
-            const onLoadMessages = () => {
-                const uids = {
-                    uid1: user.uid,
-                    uid2: uid,
-                }
-                dispatch(subscribeToMessages(uids) as any);
-            };
-            onLoadMessages();
-        }
-        return () => {
-            dispatch(unsubscribeFromMessages() as any);
-            // dispatch(clearUnsubscribe() as any)
-        }
-    }, [user, uid])
 
-    const handleSubmit = async (e: any ) => {
+    // currentUser (sender) & targeted user (receiver)
+    const currentUser = useSelector(selectCurrentUser);
+    const { username } = useParams();
+
+    useEffect(() => {
+        const usernames = {
+            username1: currentUser.username,
+            username2: username,
+        }
+        const unsubscriber = dispatch(subscribeToMessages(usernames) as any);
+        return () => unsubscriber;
+    }, [currentUser, username])
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (message.trim() === '') {
             return;
         }
-        if (user) {
-            const from = user.uid;
-            const to = uid;
+        if (currentUser) {
+            const from = currentUser.username;
+            const to = username;
             const content = message;
             dispatch(sendMessageToUser({ from, to, content }) as any);
         }
         setMessage('');
     }
 
+
     return (
         <Box
-            height="100%" 
+            height="100%"
             display="flex"
             flexDirection="column"
             padding="20px"
             paddingRight="0"
         >
             {/* Show Previous Messages */}
-            <Box id="messages" sx={{ 
-                flexGrow: "1", 
+            <Box id="messages" sx={{
+                flexGrow: "1",
                 overflowY: "scroll",
                 mb: "15px",
             }}>
                 {messages.map((message: Message) => {
                     let sender = message.from;
-                    if (message.from !== user?.uid && uid) {
-                        sender = uid;
-                    }
+                    // if (message.from !== user?.uid && uid) {
+                    //     sender = uid;
+                    // }
                     return (
-                        <SingleMessage 
-                            key={message.content} 
-                            from={sender} 
-                            timestamp={message.createdAt} 
+                        <SingleMessage
+                            key={message.id}
+                            from={sender}
+                            createdAt={message.createdAt}
                             content={message.content}
                         />
                     );
@@ -137,8 +83,8 @@ const Messages = () => {
             </Box>
 
             {/* Message Input */}
-            <Box 
-                id="input" 
+            <Box
+                id="input"
                 width="100%"
                 display="flex"
                 borderRadius="8px"
@@ -151,7 +97,7 @@ const Messages = () => {
                 </IconButton>
 
                 {/* Input */}
-                <form 
+                <form
                     style={{ width: "100%", marginRight: "5px" }}
                     onSubmit={e => { handleSubmit(e) }}
                 >
