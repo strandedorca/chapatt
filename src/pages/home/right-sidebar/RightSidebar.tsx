@@ -17,17 +17,17 @@ const RightSidebar = () => {
     const { username } = useParams();
     const currentUser = useSelector(selectCurrentUser);
     const [userToShow, setUserToShow] = useState(currentUser);
+
     useEffect(() => {
-        if (location.pathname !== '/me') {
-            setIsServer(true);
-        } else {
+        if (location.pathname.startsWith('/me')) {
             setIsServer(false);
+        } else {
+            setIsServer(true);
         }
     }, [location.pathname])
 
     useEffect(() => {
         const getUserInfo = async (username: string) => {
-            const usersRef = collection(db, 'users');
             if (username) {
                 const userQuery = query(
                     collection(db, 'users'),
@@ -41,10 +41,8 @@ const RightSidebar = () => {
                 }
             }
         }
-        getUserInfo(username as string);
+        getUserInfo(username ? username : currentUser.username);
     })
-
-
 
 
     // Styled components
