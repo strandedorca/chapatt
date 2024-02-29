@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 interface LoginProps {
   onSwitch: () => void;
+  // onLogin: () => void;
   onForgotPassword: () => void;
 }
 
@@ -31,11 +32,16 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
   // Login State
   const [user] = useAuthState(auth);
 
+  const handleLoginClick = () => {
+    // Gọi prop onLogin khi nút Login được nhấn
+    // onLogin();
+  };
+
   // Redirect to Home when logged in
   const navigate = useNavigate();
   useEffect(() => {
     if (user) {
-      navigate("/me");
+      navigate('/');
     }
   }, [user]);
 
@@ -181,21 +187,24 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
             Forgot your password?
           </Link>
 
-          {/* Login with email + password */}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ marginTop: "25px", borderRadius: "10px" }}
-          >
-            Log In
-          </Button>
-
-          {/* Login with Google */}
-          <Button variant="contained" sx={{ marginTop: "15px", borderRadius: "10px" }} onClick={handleGoogleLogin}>
-            Sign in with Google
-          </Button>
-        </form>
+        {/* Login with email + password */}
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{ marginTop: "25px", borderRadius: "10px" }}
+        >
+          Log In
+        </Button>
+        
+        {/* Login with Google */}
+        <Button 
+          variant="contained" 
+          onClick={() => { signInWithGoogle() }}
+        >
+          Sign in with Google
+        </Button>
+      </form>
 
         {/* Other log-in options */}
         {/* <Button onClick={handleGoogleLogin}>Login with Google</Button> */}

@@ -69,6 +69,8 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
       })
   };
 
+  
+
   return (
     <>
       <Container
@@ -152,6 +154,7 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             Username already exists!
           </Typography>
           <TextField
+
             required
             fullWidth
             label="Username"
