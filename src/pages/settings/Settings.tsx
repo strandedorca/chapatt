@@ -5,20 +5,25 @@ import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
 import { darkTheme } from '../../theme';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import MainSettings from './MainSettings';
+import { useTheme } from '@emotion/react';
+import Underconstruction from '../Underconstruction';
 
 const Setting = () => {
     const [selectedTab, setSelectedTab] = React.useState('My Account');
     const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const dispatch = useDispatch();
     const [user] = useAuthState(auth);
+    const theme: any = useTheme();
+    const navigate = useNavigate();
 
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
         setSelectedTab(newValue);
     };
 
     const settings = {
-        'USER SETTINGS': ['My Account', 'Profiles', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
+        'USER SETTINGS': ['My Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
         'APP SETTINGS': ['Appearance', 'Accessibility', 'Voice & Video', 'Chat', 'Notifications', 'Keybinds', 'Language', 'Streamer Mode', 'Advanced']
     };
     const CustomScrollbar = styled(Box)`
@@ -50,7 +55,6 @@ const Setting = () => {
     }
     `;
     const BoxModal = styled(Box)(({ theme }) => ({
-
         position: 'absolute',
         top: `calc(50% - 50px)`,
         left: "50%",
@@ -64,12 +68,7 @@ const Setting = () => {
             padding: theme.spacing(2),
         },
     }));
-    // const handleDeleteAccount = () => {
-    //     const confirmation = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
-    //     if (confirmation) {
-    //         dispatch(deleteUserDocument(user?.uid ?? '') as any);
-    //     }
-    // }
+
     const handleDeleteAccount = () => {
         setDeleteModalOpen(true);
     };
@@ -89,7 +88,7 @@ const Setting = () => {
     return (
         <div>
             <CustomScrollbar>
-                <List component="nav" sx={{ maxWidth: 200 }}>
+                <List component="nav" sx={{ width: 200 }}>
                     {Object.entries(settings).map(([category, items]) => (
                         <React.Fragment key={category}>
                             <ListItem sx={{ padding: 2 }}>
@@ -130,25 +129,74 @@ const Setting = () => {
                         </React.Fragment>
                     ))}
                     {/* Nút Delete Account */}
-                    <ListItem button onClick={handleDeleteAccount}>
+                    <ListItem button onClick={handleDeleteAccount} sx={{
+                        padding: 0,
+                        paddingLeft: 2,
+                        borderRadius: '4px',
+                        mb: '2px',
+                        '&:hover': {
+                            // bgcolor: '#35373c',
+                            bgcolor: theme.palette.error.main
+                        },
+                        '&.Mui-selected': {
+                            bgcolor: '#404249',
+                            color: '#ffffff',
+                            '&:hover': {
+                                bgcolor: '#35373c',
+                            },
+                        },
+                    }}>
                         <ListItemText primary="Delete Account" />
                     </ListItem>
                     {/* Nút Log Out */}
-                    <ListItem button onClick={handleLogOut}>
+                    <ListItem button onClick={handleLogOut} sx={{
+                        padding: 0,
+                        paddingLeft: 2,
+                        borderRadius: '4px',
+                        mb: '2px',
+                        '&:hover': {
+                            bgcolor: '#35373c',
+                        },
+                        '&.Mui-selected': {
+                            bgcolor: '#404249',
+                            color: '#ffffff',
+                            '&:hover': {
+                                bgcolor: '#35373c',
+                            },
+                        },
+                    }}>
                         <ListItemText primary="Log Out" />
+                    </ListItem>
+                    {/* Return to homepage */}
+                    <ListItem button onClick={() => { navigate(-1) }} sx={{
+                        padding: 0,
+                        paddingLeft: 2,
+                        borderRadius: '4px',
+                        mb: '2px',
+                        '&:hover': {
+                            bgcolor: '#35373c',
+                        },
+                        '&.Mui-selected': {
+                            bgcolor: '#404249',
+                            color: '#ffffff',
+                            '&:hover': {
+                                bgcolor: '#35373c',
+                            },
+                        },
+                    }}>
+                        <ListItemText primary="Back to Homepage" />
                     </ListItem>
                 </List>
             </CustomScrollbar>
 
-            <Box sx={{ ml: 200, p: 2 }}>
-                {selectedTab === 'Profiles' && (
-                    <NavLink to="/profiles" style={{ textDecoration: 'none' }}>
-                        <Typography variant="h6" component="h1" gutterBottom>
-                            Profiles
-                        </Typography>
-                    </NavLink>
+            <Box sx={{ ml: '450px', p: 2 }}>
+                {selectedTab === 'Profile' ? (
+                    <MainSettings />
+                ) : (
+                    <Underconstruction />
                 )}
             </Box>
+
             {/* Modal Confirm Delete Account */}
             <Modal
                 open={isDeleteModalOpen}

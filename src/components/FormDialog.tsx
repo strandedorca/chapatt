@@ -91,7 +91,7 @@ const FormDialog = ({ }: FormDialogProp) => {
           onChange={(e) => { setUsername(e.target.value) }}
         />
         <DialogContentText color={theme.palette.error.main}>
-          Username alreayd exists!
+          Username already exists!
         </DialogContentText>
       </DialogContent>
       <DialogActions>
