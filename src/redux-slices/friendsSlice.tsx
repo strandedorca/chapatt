@@ -1,25 +1,22 @@
 import { Dispatch, createSlice } from "@reduxjs/toolkit/react";
-import { User } from "firebase/auth";
-import { DocumentReference, DocumentSnapshot, addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
+import { DocumentReference, DocumentSnapshot, addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { useSelector } from "react-redux";
-import { selectCurrentUserEmail } from "./currentUserSlice";
 
 const initialState: any = {
-    currentList: 'all',
+    currentList: 'friends',
     pending: [],
     friends: [],
+    blocked: [],
 };
 
 const friendsSlice = createSlice({
     name: 'friends',
     initialState,
     reducers: {
-        setPendingList(state, action) {
-            state.pending = action. payload;
-        },
         setFriendList(state, action) {
-            state.friends = action.payload;
+            state.pending = action.payload.pending;
+            state.friends = action.payload.friends;
+            state.blocked = action.payload.blocked;
         },
         setCurrentList(state, action) {
             state.currentList = action.payload;
@@ -27,114 +24,72 @@ const friendsSlice = createSlice({
     }
 })
 
-const getUserDoc = (uid: string) => {
-    return async (dispatch: Dispatch) => {
-        const userRef: DocumentReference  = doc(db, 'users', uid);
-        const userSnap: DocumentSnapshot = await getDoc(userRef);
-        return userSnap
-    }
-}
-
-export const getFriendList = (uid: string) => {
-    return async (dispatch: Dispatch) => {
-        const userRef: DocumentReference  = doc(db, 'users', uid);
-        const userSnap: DocumentSnapshot = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-            const friendsCollectionRef = collection(userSnap.ref, 'friends');
-            const friendsDocumentRef = doc(friendsCollectionRef, 'friends');
-            const allFriendsCollectionRef = collection(friendsDocumentRef, 'friends');
-            const querySnapshot = await getDocs(allFriendsCollectionRef);
-            const friendList: any = [];
-            querySnapshot.forEach((doc) => {
-                friendList.push(doc.data());
-            });
-            dispatch(setFriendList(friendList));
-        } else {
-            console.log("User doesn't exist");
-        }
-    }
-}
-
-export const getPendingRequestList = (uid: string) => {
-    return async (dispatch: any) => {
-        const userRef = doc(db, 'users', uid);
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-            const friendsCollectionRef = collection(userSnap.ref, 'friends');
-            const pendingDocumentRef = doc(friendsCollectionRef, 'pending');
-            const pendingCollectionRef = collection(pendingDocumentRef, 'pending');
-            const querySnapshot = await getDocs(pendingCollectionRef);
-            const pendingRequests: any = [];
-            querySnapshot.forEach((doc) => {
-                pendingRequests.push(doc.data());
-            });
-            dispatch(setPendingList(pendingRequests));
-        } else {
-            console.log("User doesn't exist");
-        }
-    }
-}
-
-// Done
-export const sendFriendRequest = ({ senderEmail, email}: any) => {
+export const addAnEmptyFriendsDoc = (username: any) => {
     return async () => {
-        const userQuery = query(collection(db, 'users'), where('email', '==', email));
-        const querySnapshot = await getDocs(userQuery);
-        if (!querySnapshot.empty) {
-            const userDoc = querySnapshot.docs[0];
-            const friendsCollectionRef = collection(userDoc.ref, 'friends');
-            const pendingDocumentRef = doc(friendsCollectionRef, 'pending');
-            const pendingCollectionRef = collection(pendingDocumentRef, 'pending');
+        // Add to friendsCollectionRef
+        await setDoc(doc(db, 'friends', username), {
+            friends: [],
+            pending: [],
+            blocked: [],
+        });
+    }
+}
 
-            // Check if the request already exists
-            // IS THIS NECESSARY?
-            const existingRequestQuery = query(pendingCollectionRef, where('email', '==', email));
-            const existingRequestSnapshot = await getDocs(existingRequestQuery);
-            if (!existingRequestSnapshot.empty) {
-                console.log('Request already exists');
-                return; 
+// Need to implement check for existing friends/blocked
+export const sendFriendRequest = ({ senderUsername, username }: any) => {
+    return async () => {
+        const friendsCollectionRef = collection(db, 'friends');
+        // Check if already friends/blocked
+
+        // Add to pending friends
+        await setDoc(doc(friendsCollectionRef, username), {
+            pending: [
+                senderUsername,
+            ]
+        }, {
+            merge: true
+        })
+    }
+}
+
+export const getFriendsList = (username: string) => {
+    return async (dispatch: any) => {
+        // Get friends doc in friends collection
+        const friendsCollectionRef = collection(db, 'friends');
+        if (username) {
+            const docRef = doc(friendsCollectionRef, username);
+            if (docRef) {
+                const docSnap = await getDoc(docRef);
+                dispatch(setFriendList(docSnap.data()));
             }
-
-            // Add request
-            await addDoc(pendingCollectionRef, { email: senderEmail });
-            console.log('Request sent successfully!');
-        } else {
-            console.log('User not found');
         }
     }
 }
 
-export const acceptFriendRequest = ({ uid, email }: any) => {
-    return async (dispatch: any) => {
-        const userRef = doc(db, 'users', uid);
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-            const friendsCollectionRef = collection(userSnap.ref, 'friends');
-            const pendingDocumentRef = doc(friendsCollectionRef, 'pending');
-            const pendingCollectionRef = collection(pendingDocumentRef, 'pending');
-            const querySnapshot = await getDocs(
-                query(pendingCollectionRef, where('email', '==', email))
-            );
-            if (!querySnapshot.empty) {
-                const pendingDocRef = querySnapshot.docs[0].ref;
-                await deleteDoc(pendingDocRef);
-                await addDoc(collection(db, 'users', uid, 'friends', 'friends', 'friends'), { email });
-                getFriendList(uid);
-                console.log('Friend request accepted successfully!');
-            }
-        } else {
-            console.log("User doesn't exist");
+export const acceptFriendRequest = ({ username, senderUsername }: any) => {
+    return async () => {
+        if (username) {
+            const friendsCollectionRef = collection(db, 'friends');
+            // Add to friendslist of currentUser
+            await updateDoc(doc(friendsCollectionRef, username), {
+                friends: arrayUnion(senderUsername),
+            });
+            // Add to friendsList of sender
+            await updateDoc(doc(friendsCollectionRef, senderUsername), {
+                friends: arrayUnion(username),
+            });
+            // Delete from pending list
+            await updateDoc(doc(friendsCollectionRef, username), {
+                pending: arrayRemove(senderUsername),
+            });
         }
     }
 }
 
 export const selectAllFriends = (state: any) => (state.friends.friends);
-export const selectPendingRequest = (state: any) => (state.friends.pending);
+export const selectPending = (state: any) => (state.friends.pending);
+export const selectBlocked = (state: any) => (state.friends.blocked);
 export const selectCurrentList = (state: any) => (state.friends.currentList);
 
-
-export const { setPendingList, setFriendList, setCurrentList } = friendsSlice.actions;
+export const { setFriendList, setCurrentList } = friendsSlice.actions;
 export default friendsSlice.reducer

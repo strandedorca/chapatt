@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
 // import { User } from "../types";
-import { doc, getDoc, setDoc, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc, serverTimestamp, collection } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
 import { User, deleteUser, updateProfile } from "firebase/auth";
 import { darkTheme } from "../theme";
@@ -73,6 +73,7 @@ export const addUserDocument = (user: any) => {
             day: '2-digit',
             year: 'numeric'
         });
+        // Add to userCollection
         await setDoc(doc(db, 'users', uid), {
             username: username,
             email,
@@ -83,6 +84,7 @@ export const addUserDocument = (user: any) => {
             bannerURL: '',
             aboutMe: 'Hello there.'
         })
+
     }
 }
 

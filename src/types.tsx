@@ -18,6 +18,7 @@ export interface Channel {
 }
 
 export interface Message {
+    id: string,
     from: string,
     createdAt: Timestamp,
     content: string,

@@ -7,6 +7,7 @@ import { auth, db } from "../firebase/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { setUserId } from "firebase/analytics";
+import { addAnEmptyFriendsDoc } from "../redux-slices/friendsSlice";
 
 interface FormDialogProp {
 
@@ -56,6 +57,7 @@ const FormDialog = ({ }: FormDialogProp) => {
       .then(() => {
         // Set username for the current user
         dispatch(updateUserDocument({ user, username }) as any);
+        dispatch(addAnEmptyFriendsDoc(username) as any);
         handleClose();
       })
       .catch((error) => {
@@ -90,7 +92,7 @@ const FormDialog = ({ }: FormDialogProp) => {
           value={username}
           onChange={(e) => { setUsername(e.target.value) }}
         />
-        <DialogContentText color={theme.palette.error.main}>
+        <DialogContentText color={theme.palette.error.main} display={showUsernameWarning ? 'block' : 'none'}>
           Username already exists!
         </DialogContentText>
       </DialogContent>
