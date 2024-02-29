@@ -1,13 +1,15 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
 // import { User } from "../types";
-import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
-import { User, deleteUser } from "firebase/auth";
+import { User, deleteUser, updateProfile } from "firebase/auth";
 import { darkTheme } from "../theme";
+import { useTheme } from "@emotion/react";
 
 const initialState = {
     uid: '',
     email: '',
+    username: '',
     displayName: '',
     photoURL: '',
     createdAt: '',
@@ -24,8 +26,9 @@ const currentUserSlice = createSlice({
             const { field, value } = action.payload;
             state[field] = value;
         },
-        setCurrentUser(state, action) { 
+        setCurrentUser(state, action) {
             state.uid = action.payload.uid;
+            state.username = action.payload.username;
             state.email = action.payload.email;
             state.displayName = action.payload.displayName;
             state.photoURL = action.payload.photoURL;
@@ -37,28 +40,75 @@ const currentUserSlice = createSlice({
     }
 })
 
-export const addUserDocument = (user: User) => {
-    return async () => {
-        const { uid, email, displayName, photoURL } = user;
-        let createdAt = '';
-        if (user.metadata.creationTime) {
-            const dateObject = new Date(user.metadata.creationTime);
-            createdAt = dateObject.toLocaleDateString('en-US', {
-                month: 'short',
-                day: '2-digit',
-                year: 'numeric'
-            })
+export const getUserDocument = (user: User) => {
+    return async (dispatch: any) => {
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            dispatch(setCurrentUser(userSnap.data()))
+        } else {
+            console.log("User doesn't exist");
         }
-        await setDoc(doc(db, 'users', uid), {
+    }
+}
+
+export const addUserDocument = (user: any) => {
+    return async () => {
+        const {
             uid,
-            email, 
-            displayName, 
+            email,
+            displayName,
+            photoURL = '',
+            username = null,
+        } = user;
+
+        let dateObject;
+        if (user.metadata?.creationTime) {
+            dateObject = new Date(user.metadata.creationTime);
+        } else {
+            dateObject = new Date();
+        }
+        let createdAt = dateObject.toLocaleDateString('en-US', {
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric'
+        });
+        await setDoc(doc(db, 'users', uid), {
+            username: username,
+            email,
+            displayName,
             photoURL,
             createdAt,
-            bannerColor: darkTheme.palette.primary.main,
+            bannerColor: '#eec18d',
             bannerURL: '',
-            aboutMe: 'Tell me about you!',
-        });
+            aboutMe: 'Hello there.'
+        })
+    }
+}
+
+export const updateUserDocument = (payload: any) => {
+    // Parameters: { user, field: value, }
+    return async (dispatch: any) => {
+        const user = payload.user;
+        const userRef = doc(db, 'users', user.uid);
+        const field = Object.keys(payload)[1];
+        const value = payload[field];
+
+        // Update on firestore database
+        await updateDoc(userRef, {
+            [field]: value
+        })
+
+        // Update on firebase authentication
+        if (['email', 'displayName', 'photoURL'].includes(field)) {
+            if (auth.currentUser) {
+                updateProfile(auth.currentUser, {
+                    [field]: value
+                })
+            }
+        }
+        dispatch(getUserDocument(user));
+        console.log('User updated successfully');
     }
 }
 
@@ -78,34 +128,7 @@ export const deleteUserDocument = (uid: string) => {
     }
 }
 
-export const getUserDocument = (user: User) => {
-    return async (dispatch: any) => {
-        const userRef = doc(db, 'users', user.uid);
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-            dispatch(setCurrentUser(userSnap.data()))
-        } else {
-            console.log("User doesn't exist");
-        }
-    }
-}
-
-export const updateUserDocument = (payload: any) => {
-    return async (dispatch: any) => {
-        const user = payload.user;
-        const userRef = doc(db, 'users', user.uid);
-        const field = Object.keys(payload)[1];
-        const value = payload[field];
-        await updateDoc(userRef, {
-            [field]: value
-        })
-        dispatch(updateCurrentUser({ field, value } as any));
-        console.log('User updated successfully');
-    }
-}
-
 export const { setCurrentUser, updateCurrentUser } = currentUserSlice.actions;
-export const selectCurrentUser = (state: any) : any => (state.currentUser);
-export const selectCurrentUserEmail = (state: any) : any => (state.currentUser.email);
+export const selectCurrentUser = (state: any): any => (state.currentUser);
+export const selectCurrentUserEmail = (state: any): any => (state.currentUser.email);
 export default currentUserSlice.reducer

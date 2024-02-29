@@ -12,9 +12,11 @@ import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 import { useTheme } from "@emotion/react";
 import { TextField } from "@mui/material";
-import { useState } from "react";
 
 import ConversationsNavigationItem from "./ConversationsNavigationItem";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/firebase";
+import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
 
 export const Button = styled('button')(({ theme }) =>({
     fontFamily: 'Inter',
@@ -37,6 +39,7 @@ export const Button = styled('button')(({ theme }) =>({
 
 const ServerSidebar = ({ users }: any) => {
     const theme: any = useTheme();
+    const [user] = useAuthState(auth);
     const navigate = useNavigate();
     const location = useLocation();
     let content;
@@ -170,18 +173,20 @@ const ServerSidebar = ({ users }: any) => {
             {content}
             {/* Footer - always shown */}
             <Box sx={{
-                padding: "10px",
+                paddingX: "10px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 backgroundColor: theme.palette.background.default,
+                height: '60px'
             }}>
-                <Box display="flex" gap="10px" alignItems="center">
-                    <Avatar sx={{ width: "32px", height: "32px" }} src={avatar} />
-                    <div>
-                        <div>strandedorca</div>
-                        <div>Invisible</div>
-                    </div>
+                <Box display="flex" gap="10px" alignItems="center"
+                sx={{ width: '170px' }}>
+                    <Avatar sx={{ width: "32px", height: "32px" }} src={user?.photoURL as any} />
+                    <EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{user?.displayName}</EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{user?.email}</EllipsisOverflowDiv>
+                    </EllipsisOverflowDiv>
                 </Box>
                 <IconButton onClick={() => { navigate("/settings") }}>
                     <SettingsRoundedIcon />

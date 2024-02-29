@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit/react";
+import { Dispatch, createSlice } from "@reduxjs/toolkit/react";
 import { User } from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
+import { DocumentReference, DocumentSnapshot, addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { useSelector } from "react-redux";
 import { selectCurrentUserEmail } from "./currentUserSlice";
@@ -8,7 +8,6 @@ import { selectCurrentUserEmail } from "./currentUserSlice";
 const initialState: any = {
     currentList: 'all',
     pending: [],
-    // sent: [],
     friends: [],
 };
 
@@ -17,7 +16,7 @@ const friendsSlice = createSlice({
     initialState,
     reducers: {
         setPendingList(state, action) {
-            state.pending = action.payload;
+            state.pending = action. payload;
         },
         setFriendList(state, action) {
             state.friends = action.payload;
@@ -28,10 +27,18 @@ const friendsSlice = createSlice({
     }
 })
 
+const getUserDoc = (uid: string) => {
+    return async (dispatch: Dispatch) => {
+        const userRef: DocumentReference  = doc(db, 'users', uid);
+        const userSnap: DocumentSnapshot = await getDoc(userRef);
+        return userSnap
+    }
+}
+
 export const getFriendList = (uid: string) => {
-    return async (dispatch: any) => {
-        const userRef = doc(db, 'users', uid);
-        const userSnap = await getDoc(userRef);
+    return async (dispatch: Dispatch) => {
+        const userRef: DocumentReference  = doc(db, 'users', uid);
+        const userSnap: DocumentSnapshot = await getDoc(userRef);
 
         if (userSnap.exists()) {
             const friendsCollectionRef = collection(userSnap.ref, 'friends');

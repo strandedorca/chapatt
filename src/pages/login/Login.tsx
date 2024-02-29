@@ -7,7 +7,10 @@ import { browserPopupRedirectResolver, createUserWithEmailAndPassword, getRedire
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase/firebase";
+import { auth, db } from "../../firebase/firebase";
+import { addUserDocument, getUserDocument } from "../../redux-slices/currentUserSlice";
+import { useDispatch } from "react-redux";
+import { doc, getDoc } from "firebase/firestore";
 
 interface LoginProps {
   onSwitch: () => void;
@@ -17,6 +20,7 @@ interface LoginProps {
 function Login({ onSwitch, onForgotPassword }: LoginProps) {
   // Login State
   const [user] = useAuthState(auth);
+  const dispatch = useDispatch();
 
   // Redirect to Home when logged in
   const navigate = useNavigate();
@@ -25,10 +29,10 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
       navigate('/');
     }
   }, [user])
-  
+
   // Google Login 
   const [signInWithGoogle, _user, _loading, _error] = useSignInWithGoogle(auth);
-    
+
   // Manage input state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,16 +61,9 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
     signInWithEmailAndPassword(auth, email, password);
   };
 
-  // const handleGoogleLogin = () => {
-  //   const provider = new GoogleAuthProvider();
-  //   signInWithRedirect(auth, provider, browserPopupRedirectResolver )
-  //     .then(result => {
-  //       console.log("result",result)
-  //   }).catch ((error) => {
-  //       console.error(error);
-  //       alert(error.message);
-  //   });;
-  // }
+  const handleGoogleLogin = async () => {
+    signInWithGoogle();
+  }
 
   return (
     <Container
@@ -170,11 +167,11 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
         >
           Log In
         </Button>
-        
+
         {/* Login with Google */}
-        <Button 
-          variant="contained" 
-          onClick={() => { signInWithGoogle() }}
+        <Button
+          variant="contained"
+          onClick={handleGoogleLogin}
         >
           Sign in with Google
         </Button>

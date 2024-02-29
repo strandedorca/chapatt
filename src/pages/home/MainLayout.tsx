@@ -3,14 +3,17 @@ import { styled } from "@mui/system"
 import RightSidebar from "./right-sidebar/RightSidebar"
 import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
 import { Outlet } from "react-router"
-import { Button, Box } from "@mui/material"
+import { Button, Box, TextField, DialogActions } from "@mui/material"
 import avatar from './../../assets/avatar.jpg';
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { selectAllFriends } from "../../redux-slices/friendsSlice"
 import { query, collection, where, getDocs } from "@firebase/firestore"
 import { userInfo } from "os"
-import { db } from "../../firebase/firebase"
+import { auth, db } from "../../firebase/firebase"
+import FormDialog from "../../components/FormDialog"
+import { useAuthState } from "react-firebase-hooks/auth"
+import { getUserDocument, selectCurrentUser } from "../../redux-slices/currentUserSlice"
 
 // import { useContext } from "react"
 // import { WidthContext } from "../../App"
@@ -30,7 +33,7 @@ const users = [
     id: "JbejhxQt4iTJWUep4G0OjMJvUdo2",
     name: "Huyen Dang",
   },
-  { 
+  {
     id: "rG2C6fxQRfNx0Rj4SppuhAr0cWm2",
     name: "pikachu",
     photoUrl: avatar,
@@ -43,6 +46,10 @@ const users = [
 ]
 
 const MainLayout = () => {
+  const [user] = useAuthState(auth);
+  const [usernameModalOpen, setUsernameModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
   // const friendList = useSelector(selectAllFriends);
   // const [friendInfoList, setFriendInfoList] = useState([]);
 
@@ -65,17 +72,33 @@ const MainLayout = () => {
   //   }
   // }, [friendList])
 
+  // useEffect(() => {
+  //   if (user) {
+  //     dispatch(getUserDocument(user) as any);
+  //     if (currentUser.username === null) {
+  //       setUsernameModalOpen(true);
+  //     }
+  //   }
+  // });
+
+  // const handleClose = () => {
+  //   setUsernameModalOpen((prev) => !prev);
+  // }
+
   return (
     <FHBox>
-      <FHBox 
+      {/* Prompt for username if not set yet (for users signed up with Google) */}
+      {/* <Button onClick={handleClose}>CLOSE</Button> */}
+      <FormDialog />
+      <FHBox
         display={{ xs: 'none', md: 'block' }}
         width="240px"
         position="fixed"
       >
-        <ServerSidebar users={users}/>
+        <ServerSidebar users={users} />
       </FHBox>
 
-      <FHBox 
+      <FHBox
         paddingLeft={{ md: "240px" }}
         display="flex"
         flexDirection="column"

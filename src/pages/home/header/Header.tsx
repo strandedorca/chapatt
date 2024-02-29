@@ -8,21 +8,21 @@ import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
 import { Avatar, Box, Button, Divider, Tooltip } from '@mui/material';
 import {
-    EmojiPeople,
+    PeopleAltRounded,
     Notifications,
     PushPin,
     WifiCalling3,
 } from '@mui/icons-material';
-
+import styles from '../../../App.module.css'
 import { darkTheme } from '../../../theme';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setCurrentList } from '../../../redux-slices/friendsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentList, setCurrentList } from '../../../redux-slices/friendsSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../../firebase/firebase';
-// import ServerNavigationItem from '../navbar/ServerNavigationItem';
 import AddFriendModal from './AddFriendModal';
+import { useTheme } from '@mui/system';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -75,16 +75,19 @@ const CustomIconButton = styled(IconButton)(({ theme }) => ({
 const CustomButton = styled(Button)(({ theme }) => ({
     color: theme.palette.common.white,
     textTransform: 'none',
-    fontSize: '16px',
-    '&:focus': {
-        color: theme.palette.grey[400],
-    },
+    fontSize: '1em',
+    fontWeight: '400',
+    marginRight: '10px',
+    '&:hover': {
+        backgroundColor: theme.palette.background.paper,
+    }
 }));
 
-
 export default function Header() {
+    const currentList = useSelector(selectCurrentList);
     const [modalOpen, setModalOpen] = useState(false);
     const location = useLocation();
+    const theme = useTheme();
     const { pathname } = location;
 
     // State management for add friend feature
@@ -103,32 +106,39 @@ export default function Header() {
         // Render different headers based on pathname
         if (pathname === '/me') {
             return (
-
                 <ThemeProvider theme={darkTheme}>
                     {/* Modal */}
-                    {/* Cần chuyển sang file mới */}
-
                     <AddFriendModal modalOpen={modalOpen} handleClose={handleCloseAddFriend} />
 
                     {/* Main */}
                     <AppBar position='sticky'>
                         <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Typography><EmojiPeople /> Friends </Typography>
+                                <Typography sx={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '10px',
+                                }}>
+                                    <PeopleAltRounded /> 
+                                    Friends 
+                                </Typography>
                                 <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
-                                <CustomButton>Online</CustomButton>
                                 <CustomButton
                                     onClick={() => dispatch(setCurrentList('all'))}
+                                    sx={currentList === 'all' ? { backgroundColor: theme.palette.background.paper} : null}
                                 >
                                     All
                                 </CustomButton>
                                 <CustomButton
                                     onClick={() => dispatch(setCurrentList('pending'))}
+                                    sx={currentList === 'pending' ? { backgroundColor: theme.palette.background.paper} : null}
                                 >
                                     Pending
                                 </CustomButton>
                                 <CustomButton
                                     onClick={() => dispatch(setCurrentList('blocked'))}
+                                    sx={currentList === 'blocked' ? { backgroundColor: theme.palette.background.paper} : null}
                                 >
                                     Blocked
                                 </CustomButton>

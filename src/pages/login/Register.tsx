@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography, Link, Container } from "@mui/material";
+import { Button, TextField, Typography, Link, Container, useTheme } from "@mui/material";
 import styles from "./Login.module.css";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { auth, db } from "../../firebase/firebase";
 import { useDispatch } from "react-redux";
 import { addUserDocument, updateUserDocument } from "../../redux-slices/currentUserSlice";
+import { useNavigate } from "react-router-dom";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 interface RegisterProps {
   onSwitch: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
+  const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [showUsernameWarning, setShowUsernameWarning] = useState(false);
 
   // Control form input
   const [email, setEmail] = useState<string>("");
@@ -20,21 +25,46 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
   const [password, setPassword] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
 
+  const usernameExists = async (username: string) => {
+    const usersCollectionRef = collection(db, 'users');
+    const usernameQuery = query(usersCollectionRef, where('username', '==', username));
+    const usernameQuerySnapshot = await getDocs(usernameQuery);
+    if (!usernameQuerySnapshot.empty) {
+      // Username already exists
+      return Promise.reject('Username already exists');
+    }
+    return Promise.resolve();
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      // If registered successfully
-      .then((userCredential) => {
-        const user = userCredential.user;
-        dispatch(addUserDocument(user) as any);
-        updateProfile(user, {
-          displayName,
-        });
-        dispatch(updateUserDocument({ user, displayName }) as any);
+    usernameExists(username)
+      .then(() => {
+        createUserWithEmailAndPassword(auth, email, password)
+          // If registered successfully
+          .then((userCredential) => {
+            const { uid } = userCredential.user;
+            const user = {
+              uid,
+              username: username.toLowerCase(),
+              email,
+              displayName,
+              photoUrl: '',
+            }
+            dispatch(addUserDocument(user) as any);
+            updateProfile(userCredential.user, {
+              displayName,
+            });
+            navigate('/');
+          })
+          .catch((error) => {
+            console.log(error.code, error.message);
+          });
       })
       .catch((error) => {
-        console.log(error.code, error.message);
-      });
+        setShowUsernameWarning(true);
+        console.log(error);
+      })
   };
 
   return (
@@ -112,6 +142,13 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
               style: { color: "#B5BAC1" },
             }}
           />
+          <Typography
+            display={showUsernameWarning ? 'block' : 'none'}
+            sx={{ textAlign: 'left', marginBottom: '10px', marginTop: '-10px' }}
+            color={theme.palette.error.main}
+          >
+            Username already exists!
+          </Typography>
           <TextField
             required
             fullWidth

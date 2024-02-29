@@ -122,6 +122,12 @@ const FriendsPage = () => {
         mainContent = <p>Nothing to show here</p>;
     }
 
+    let title = currentList === 'all'
+        ? 'all'
+        : currentList === 'pending' 
+        ? 'pending'
+        : 'blocked';
+
   return (
     <Box 
         height="100%"
@@ -140,7 +146,7 @@ const FriendsPage = () => {
         </Box>
         {/* Title */}
         <Box paddingY="20px">
-            <Title content="online" />
+            <Title content={title} />
         </Box>
 
         {/* Main */}
