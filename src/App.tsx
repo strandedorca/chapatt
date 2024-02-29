@@ -15,7 +15,8 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { addUserDocument, getUserDocument } from './redux-slices/currentUserSlice';
 import { useDispatch } from 'react-redux';
-
+import ProfilePage from './pages/settings/ProfilePage';
+        
 export const WidthContext = createContext('240px');
 
 function App() {
@@ -60,6 +61,8 @@ function App() {
                 </Route>
               </Route>
               <Route path="settings" element={<Settings />} />
+              {/* Routing profile */}
+              <Route path="/profiles" element={<ProfilePage/>} />
             </Route>
             <Route path="login" element={<AuthPage />} />
           </Routes>

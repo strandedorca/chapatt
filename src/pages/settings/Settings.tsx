@@ -5,22 +5,31 @@ import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
 import { darkTheme } from '../../theme';
+
+import { useNavigate } from 'react-router-dom';
+
 import { NavLink, useNavigate } from 'react-router-dom';
 import MainSettings from './MainSettings';
 import { useTheme } from '@emotion/react';
 import Underconstruction from '../Underconstruction';
+
 
 const Setting = () => {
     const [selectedTab, setSelectedTab] = React.useState('My Account');
     const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const dispatch = useDispatch();
     const [user] = useAuthState(auth);
+
     const theme: any = useTheme();
     const navigate = useNavigate();
-
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
         setSelectedTab(newValue);
+        // profile routing
+        if (newValue === "Profiles") {
+            navigate("/profiles")
+        }
     };
+
 
     const settings = {
         'USER SETTINGS': ['My Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
@@ -196,6 +205,7 @@ const Setting = () => {
                     <Underconstruction />
                 )}
             </Box>
+
 
             {/* Modal Confirm Delete Account */}
             <Modal
