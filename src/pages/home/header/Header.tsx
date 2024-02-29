@@ -114,31 +114,31 @@ export default function Header() {
                     <AppBar position='sticky'>
                         <Toolbar style={{ minHeight: '48px' }} sx={{ justifyContent: 'space-between' }} >
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Typography sx={{ 
+                                <Typography sx={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     gap: '10px',
                                 }}>
-                                    <PeopleAltRounded /> 
-                                    Friends 
+                                    <PeopleAltRounded />
+                                    Friends
                                 </Typography>
                                 <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
                                 <CustomButton
-                                    onClick={() => dispatch(setCurrentList('all'))}
-                                    sx={currentList === 'all' ? { backgroundColor: theme.palette.background.paper} : null}
+                                    onClick={() => dispatch(setCurrentList('friends'))}
+                                    sx={currentList === 'friends' ? { backgroundColor: theme.palette.background.paper } : null}
                                 >
                                     All
                                 </CustomButton>
                                 <CustomButton
                                     onClick={() => dispatch(setCurrentList('pending'))}
-                                    sx={currentList === 'pending' ? { backgroundColor: theme.palette.background.paper} : null}
+                                    sx={currentList === 'pending' ? { backgroundColor: theme.palette.background.paper } : null}
                                 >
                                     Pending
                                 </CustomButton>
                                 <CustomButton
                                     onClick={() => dispatch(setCurrentList('blocked'))}
-                                    sx={currentList === 'blocked' ? { backgroundColor: theme.palette.background.paper} : null}
+                                    sx={currentList === 'blocked' ? { backgroundColor: theme.palette.background.paper } : null}
                                 >
                                     Blocked
                                 </CustomButton>

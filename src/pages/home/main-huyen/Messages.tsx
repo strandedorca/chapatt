@@ -10,12 +10,13 @@ import { FormEvent, MouseEventHandler, useEffect, useState } from "react";
 import { auth, db } from "../../../firebase/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { selectAllMessagesWithUser, sendMessageToUser, subscribeToMessages } from "../../../redux-slices/messagesSlice";
+import { selectAllMessagesWithUser, selectShow, sendMessageToUser, subscribeToMessages } from "../../../redux-slices/messagesSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Message } from "../../../types";
 import { unsubscribe } from "diagnostics_channel";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
+import { CircularProgress } from "@material-ui/core";
 
 const Messages = () => {
     const [user] = useAuthState(auth);
@@ -23,6 +24,7 @@ const Messages = () => {
     const theme: any = useTheme();
     const [message, setMessage] = useState('');
     const messages = useSelector(selectAllMessagesWithUser);
+    const show = useSelector(selectShow);
 
     // currentUser (sender) & targeted user (receiver)
     const currentUser = useSelector(selectCurrentUser);
@@ -66,6 +68,7 @@ const Messages = () => {
                 overflowY: "scroll",
                 mb: "15px",
             }}>
+                {show && <CircularProgress />}
                 {messages.map((message: Message) => {
                     let sender = message.from;
                     // if (message.from !== user?.uid && uid) {

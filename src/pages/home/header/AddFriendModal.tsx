@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Typography, Box, Button, TextField } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { sendFriendRequest } from '../../../redux-slices/friendsSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../../firebase/firebase';
+import { auth, db } from '../../../firebase/firebase';
 import { darkTheme } from '../../../theme';
+import { selectCurrentUser } from '../../../redux-slices/currentUserSlice';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { useTheme } from '@emotion/react';
 
 const style = {
   position: 'absolute',
@@ -21,47 +24,74 @@ const style = {
 
 
 const AddFriendModal = ({ modalOpen, handleClose }: { modalOpen: boolean, handleClose: () => void }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const dispatch = useDispatch();
-  const [user] = useAuthState(auth);
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const currentUser = useSelector(selectCurrentUser);
+  const [showError, setShowError] = useState(false);
+  const theme: any = useTheme();
+
+  const usernameExists = async (username: string) => {
+    const usersCollectionRef = collection(db, 'users');
+    const usernameQuery = query(usersCollectionRef, where('username', '==', username));
+    const usernameQuerySnapshot = await getDocs(usernameQuery);
+    if (!usernameQuerySnapshot.empty) {
+      // Username already exists
+      return Promise.resolve();
+    }
+    return Promise.reject('Username does not exist');
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const payload = {
-      senderEmail: user?.email,
-      email,
+      senderUsername: currentUser.username,
+      username,
     };
-    dispatch(sendFriendRequest(payload) as any);
-    handleClose();
+    usernameExists(username)
+      .then(() => {
+        dispatch(sendFriendRequest(payload) as any);
+        setUsername('');
+        setShowError(false);
+        handleClose();
+      })
+      .catch((err) => {
+        setShowError(true);
+        console.log(err);
+      })
   };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
     setIsValidEmail(!!e.target.value); // Set isValidEmail to true if email is not empty
   };
   return (
-    <Modal open={modalOpen} onClose={handleClose}>
+    <Modal open={modalOpen} onClose={() => {
+      setUsername('');
+      setShowError(false);
+      handleClose();
+    }}>
       <Box sx={style}>
         <Typography variant="h6" component="h2" sx={{ marginBottom: '10px' }}>
           Add Friend
         </Typography>
         <Typography id="modal-modal-description" sx={{ marginBottom: '20px', fontStyle: 'italic' }}>
-          Add a friend by typing in their email address:
+          Add a friend by typing in their username:
         </Typography>
         <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
           <TextField
-            type="email"
-            id="email"
-            name="email"
-            placeholder='Enter Your Email'
-            value={email}
-            onChange={handleEmailChange}
+            type="text"
+            id="username"
+            name="username"
+            placeholder='Enter a username'
+            value={username}
+            onChange={handleUsernameChange}
             variant="outlined"
             fullWidth
             sx={{ marginBottom: '20px' }}
           />
+          <Typography sx={{ marginBottom: '20px', fontStyle: 'italic', color: theme.palette.error.main }} display={showError ? 'block' : 'none'}>
+            User name does not exist!
+          </Typography>
           <Button
             type="submit"
             variant="contained"

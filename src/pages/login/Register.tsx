@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { addUserDocument, updateUserDocument } from "../../redux-slices/currentUserSlice";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { addAnEmptyFriendsDoc } from "../../redux-slices/friendsSlice";
 
 interface RegisterProps {
   onSwitch: () => void;
@@ -55,6 +56,7 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             updateProfile(userCredential.user, {
               displayName,
             });
+            dispatch(addAnEmptyFriendsDoc(username) as any)
             navigate('/');
           })
           .catch((error) => {

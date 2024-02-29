@@ -6,6 +6,7 @@ import { Message } from "../types";
 const initialState: any = {
     messages: [],
     unsubscribe: null,
+    show: false,
 };
 
 const messagesSlice = createSlice({
@@ -84,5 +85,5 @@ export const subscribeToMessages = ({ username1, username2 }: any) => {
 
 export const { setConversation } = messagesSlice.actions;
 export const selectAllMessagesWithUser = (state: any): any => (state.messages.messages);
-// export const selectMessageByIdWithUser = (state: any) : any => (state.messages.mid);
+export const selectShow = (state: any): any => (state.messages.show);
 export default messagesSlice.reducer;
