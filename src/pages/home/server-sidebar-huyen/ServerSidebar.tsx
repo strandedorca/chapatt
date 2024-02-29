@@ -1,6 +1,6 @@
 import { styled } from "@mui/system";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Avatar, Box, IconButton } from "@mui/material"
+import { Avatar, Box, IconButton, Modal } from "@mui/material"
 import avatar from './../../../assets/avatar.jpg';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CustomTooltip from "../../../components/CustomTooltip";
@@ -12,9 +12,17 @@ import TagRoundedIcon from '@mui/icons-material/TagRounded';
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 import { useTheme } from "@emotion/react";
 import { TextField } from "@mui/material";
-import ConversationsNavigationItem from "./ConversationsNavigationItem";
 
-export const Button = styled('button')(({ theme }) =>({
+import ConversationsNavigationItem from "./ConversationsNavigationItem";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../../../firebase/firebase";
+import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
+import { useSelector } from "react-redux";
+import { selectAllFriends } from "../../../redux-slices/friendsSlice";
+import { query, collection, where, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
+
+export const Button = styled('button')(({ theme }) => ({
     fontFamily: 'Inter',
     border: "none",
     borderRadius: "5px",
@@ -35,9 +43,43 @@ export const Button = styled('button')(({ theme }) =>({
 
 const ServerSidebar = ({ users }: any) => {
     const theme: any = useTheme();
+    const [user] = useAuthState(auth);
     const navigate = useNavigate();
     const location = useLocation();
+    const [userInfo, setUserInfo] = useState<any>([]);
     let content;
+
+    const allFriends = useSelector(selectAllFriends);
+
+    useEffect(() => {
+        console.log(userInfo);
+        allFriends.map(async (friendUsername: any) => {
+            try {
+                const userQuery = query(
+                    collection(db, 'users'),
+                    where('username', '==', friendUsername),
+                )
+                const userSnap = await getDocs(userQuery);
+                if (!userSnap.empty) {
+                    setUserInfo((prevUserInfo: any) => [
+                        ...prevUserInfo,
+                        {
+                            displayName: userSnap.docs[0].data().displayName,
+                            username: userSnap.docs[0].data().username,
+                            photoURL: userSnap.docs[0].data().photoURL,
+                        }
+                    ])
+                } else {
+                    console.log("Username doesn't exist");
+                }
+            } catch (error) {
+                console.error('Error retrieving user information.', error);
+            }
+        });
+        return () => { setUserInfo([]) };
+    }, [user, allFriends])
+
+    // console.log(allFriends, userInfo);
 
     // PLACEHOLDER
     const channels: Channel[] = [
@@ -45,7 +87,7 @@ const ServerSidebar = ({ users }: any) => {
             type: "voice",
             name: "ABC",
             id: "1"
-        }, 
+        },
         {
             type: "text",
             name: "BCD",
@@ -71,9 +113,9 @@ const ServerSidebar = ({ users }: any) => {
             <Box>
                 {/* SearchBar */}
                 <Box padding="10px">
-                    <TextField 
-                        variant="standard" 
-                        placeholder="Find or start a conversation" fullWidth 
+                    <TextField
+                        variant="standard"
+                        placeholder="Find or start a conversation" fullWidth
                         size="small"
                     />
                 </Box>
@@ -95,11 +137,11 @@ const ServerSidebar = ({ users }: any) => {
                     </Box>
                     {/* Conversations */}
                     <Box>
-                        {users.map((user: any) => (
-                            <ConversationsNavigationItem 
-                                key={user.id}
-                                uid={user.id}
-                                displayName={user.name}
+                        {userInfo.map((user: any) => (
+                            <ConversationsNavigationItem
+                                key={user.username}
+                                username={user.username}
+                                displayName={user.displayName}
                                 photoUrl={user.photoUrl}
                             />
                         ))}
@@ -107,7 +149,7 @@ const ServerSidebar = ({ users }: any) => {
                 </Box>
             </Box>
         )
-    }  else {
+    } else {
         content = (
             <Box padding="10px">
                 <Button onClick={() => {
@@ -137,7 +179,7 @@ const ServerSidebar = ({ users }: any) => {
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title content="Voice Channels" />
                     <CustomTooltip title="New voice channel">
-                        <Button style={{ width: "auto" }}>+</Button>
+                        <Button sx={{ width: "auto" }}>+</Button>
                     </CustomTooltip>
                 </Box>
                 {voiceChannels.map((channel: Channel) => {
@@ -155,39 +197,40 @@ const ServerSidebar = ({ users }: any) => {
     }
 
     return (
-    <Box
-        height="100%" 
-        display="flex" 
-        justifyContent="space-between" 
-        flexDirection="column"
-        sx={{
-            backgroundColor: theme.palette.background.paper,
-        }}
-    >
-        {/* Main */}
-        {content}
-
-        {/* Footer - always shown */}
-        <Box sx={{
-            padding: "10px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.background.default,
-        }}>
-            <Box display="flex" gap="10px" alignItems="center">
-                <Avatar sx={{ width: "32px", height: "32px" }} src={avatar}/>
-                <div>
-                    <div>strandedorca</div>
-                    <div>Invisible</div>
-                </div>
+        <Box
+            height="100%"
+            display="flex"
+            justifyContent="space-between"
+            flexDirection="column"
+            sx={{
+                backgroundColor: theme.palette.background.paper,
+            }}
+        >
+            {/* Main */}
+            {content}
+            {/* Footer - always shown */}
+            <Box sx={{
+                paddingX: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: theme.palette.background.default,
+                height: '60px'
+            }}>
+                <Box display="flex" gap="10px" alignItems="center"
+                    sx={{ width: '170px' }}>
+                    <Avatar sx={{ width: "32px", height: "32px" }} src={user?.photoURL as any} />
+                    <EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{user?.displayName}</EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{user?.email}</EllipsisOverflowDiv>
+                    </EllipsisOverflowDiv>
+                </Box>
+                <IconButton onClick={() => { navigate("/settings") }}>
+                    <SettingsRoundedIcon />
+                </IconButton>
             </Box>
-            <IconButton onClick={() => { navigate("/settings")}}>
-                <SettingsRoundedIcon />
-            </IconButton>
         </Box>
-    </Box>
-  )
+    )
 }
 
 export default ServerSidebar

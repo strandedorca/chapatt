@@ -1,41 +1,76 @@
 import React, { useState } from "react";
-import { Button, TextField, Typography, Link, Container } from "@mui/material";
+import { Button, TextField, Typography, Link, Container, useTheme } from "@mui/material";
 import styles from "./Login.module.css";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { auth, db } from "../../firebase/firebase";
 import { useDispatch } from "react-redux";
 import { addUserDocument, updateUserDocument } from "../../redux-slices/currentUserSlice";
+import { useNavigate } from "react-router-dom";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { addAnEmptyFriendsDoc } from "../../redux-slices/friendsSlice";
 
 interface RegisterProps {
   onSwitch: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
+  const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [showUsernameWarning, setShowUsernameWarning] = useState(false);
 
   // Control form input
   const [email, setEmail] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [dateOfBirth, setDateOfBirth] = useState<string>("");
+
+  const usernameExists = async (username: string) => {
+    const usersCollectionRef = collection(db, 'users');
+    const usernameQuery = query(usersCollectionRef, where('username', '==', username));
+    const usernameQuerySnapshot = await getDocs(usernameQuery);
+    if (!usernameQuerySnapshot.empty) {
+      // Username already exists
+      return Promise.reject('Username already exists');
+    }
+    return Promise.resolve();
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      // If registered successfully
-      .then((userCredential) => {
-        const user = userCredential.user;
-        dispatch(addUserDocument(user) as any);
-        updateProfile(user, {
-          displayName,
-        });
-        dispatch(updateUserDocument({ user, displayName }) as any);
+    usernameExists(username)
+      .then(() => {
+        createUserWithEmailAndPassword(auth, email, password)
+          // If registered successfully
+          .then((userCredential) => {
+            const { uid } = userCredential.user;
+            const user = {
+              uid,
+              username,
+              email,
+              displayName,
+              photoUrl: '',
+            }
+            dispatch(addUserDocument(user) as any);
+            updateProfile(userCredential.user, {
+              displayName,
+            });
+            dispatch(addAnEmptyFriendsDoc(username) as any)
+            navigate('/');
+          })
+          .catch((error) => {
+            console.log(error.code, error.message);
+          });
       })
       .catch((error) => {
-        console.log(error.code, error.message);
-      });
+        setShowUsernameWarning(true);
+        console.log(error);
+      })
   };
+
+  
 
   return (
     <>
@@ -112,12 +147,20 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
               style: { color: "#B5BAC1" },
             }}
           />
+          <Typography
+            display={showUsernameWarning ? 'block' : 'none'}
+            sx={{ textAlign: 'left', marginBottom: '10px', marginTop: '-10px' }}
+            color={theme.palette.error.main}
+          >
+            Username already exists!
+          </Typography>
           <TextField
+
             required
             fullWidth
             label="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())}
             sx={{
               mb: 2,
               backgroundColor: "#1E1F22",
@@ -151,39 +194,6 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{
-              mb: 2,
-              backgroundColor: "#1E1F22",
-              ".MuiOutlinedInput-root": {
-                // Áp dụng style cho phần root của OutlinedInput
-                borderRadius: "15px", // Bo tròn viền
-                "& fieldset": {
-                  // Áp dụng style cho phần viền của OutlinedInput
-                  borderColor: "#555", // Màu viền
-                },
-                "&:hover fieldset": {
-                  // Khi hover
-                  borderColor: "#1976d2", // Thay đổi màu viền
-                },
-                "&.Mui-focused fieldset": {
-                  // Khi field được focus
-                  borderColor: "#1976d2", // Thay đổi màu viền
-                },
-              },
-              borderRadius: "15px",
-              input: { color: "#B5BAC1" },
-            }}
-            InputLabelProps={{
-              style: { color: "#B5BAC1" },
-            }}
-          />
-          <TextField
-            required
-            fullWidth
-            label="Date of Birth"
-            type="date"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
             sx={{
               mb: 2,
               backgroundColor: "#1E1F22",

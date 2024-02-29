@@ -18,12 +18,10 @@ import { useDispatch } from 'react-redux';
 import ProfilePage from './pages/settings/ProfilePage';
         
 export const WidthContext = createContext('240px');
-        
+
 function App() {
   const [user] = useAuthState(auth);
   const dispatch = useDispatch();
-//const ColorModeContext = createContext('dark')
-
   const modalWidth = '240px';
 
   // Create a user doc when signing in with Google for the first time
@@ -31,7 +29,7 @@ function App() {
     if (user) {
       // Check if user is already created
       const onChangeUser = async () => {
-        const userRef = doc(db, 'user', user.uid);
+        const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           dispatch(addUserDocument(user) as any);
@@ -48,17 +46,18 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={user ? <Home /> : <Navigate to="/login"/>}>
+            <Route path="/" element={user ? <Home /> : <Navigate to="/login" />}>
+              {/* <Route path="/" element={<Home />} > */}
               <Route index element={<Navigate to="me" />} />
               {/* Homepage */}
               <Route element={<MainLayout />}>
-                <Route path="me/:uid" element={<Messages />}/>
+                <Route path="me/:username" element={<Messages />} />
                 <Route path="me" element={<FriendsPage />}>
-        
+                  <Route path=":username" element={<Messages />} />
                 </Route>
-                <Route path="servers/:serverId" element/>
+                <Route path="servers/:serverId" element />
                 <Route path="servers" element={<Messages />}>
-                  
+                  <Route path=":serverId" element />
                 </Route>
               </Route>
               <Route path="settings" element={<Settings />} />

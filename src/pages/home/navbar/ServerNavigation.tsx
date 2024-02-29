@@ -61,7 +61,7 @@ const NavigationSidebar = () => {
       <AddNewServer />
 
       {/* Logout Button */}
-      <LogOutButton handleLogOut={handleLogOut} bottom="10%" />
+      <LogOutButton handleLogOut={handleLogOut} bottom="0" />
     </Box>
   )
 }

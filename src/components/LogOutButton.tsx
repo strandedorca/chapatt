@@ -2,14 +2,16 @@ import { PowerSettingsNew } from '@mui/icons-material';
 import { Button, styled } from '@mui/material';
 
 const LogOutButtonStyled = styled(Button)(({ theme }) => ({
-    color: theme.palette.error.main,
-    backgroundColor: 'transparent',
-    borderRadius: 4,
-    padding: 8,
-    margin: 4,
-    transition: 'background-color 0.3s ease',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: 0,
+    height: '60px',
+    margin: '0px',
+    width: '100%',
+    transition: 'all 0.3s ease',
     '&:hover': {
         backgroundColor: theme.palette.error.main,
+        borderRadius: 16,
         color: '#fff',
     },
 }));
