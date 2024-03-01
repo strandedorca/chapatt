@@ -94,8 +94,13 @@ const RightSidebar = () => {
                         {userToShow.displayName}
                     </Typography>
                     <Content>
-                        {userToShow.displayName}
+                        {userToShow.username}
                     </Content>
+
+                    <WhiteDivider />
+
+                    <Title content="Status" />
+                    <Content>{userToShow.status}</Content>
 
                     <WhiteDivider />
 
@@ -112,10 +117,6 @@ const RightSidebar = () => {
                         {userToShow.createdAt}
                     </Content>
 
-                    <WhiteDivider />
-
-                    <Title content="Note" />
-                    <Content>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae, eligendi.</Content>
                 </Section>
 
                 {/* Buttons */}

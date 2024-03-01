@@ -11,6 +11,7 @@ const initialState = {
     displayName: '',
     photoURL: '',
     createdAt: '',
+    status: 'Feeling cool 😎',
     bannerColor: '',
     bannerURL: '',
     aboutMe: '',
@@ -31,6 +32,7 @@ const currentUserSlice = createSlice({
             state.displayName = action.payload.displayName;
             state.photoURL = action.payload.photoURL;
             state.createdAt = action.payload.createdAt;
+            state.status = action.payload.status;
             state.bannerColor = action.payload.bannerColor;
             state.bannerURL = action.payload.bannerURL;
             state.aboutMe = action.payload.aboutMe;
@@ -78,6 +80,7 @@ export const addUserDocument = (user: any) => {
             displayName,
             photoURL,
             createdAt,
+            status: 'Feeling cool 😎',
             bannerColor: '#eec18d',
             bannerURL: '',
             aboutMe: 'Hello there.'
@@ -111,6 +114,7 @@ export const updateUserDocument = (payload: any) => {
         console.log('User updated successfully');
     }
 }
+
 
 export const deleteUserDocument = (uid: string) => {
     return async () => {

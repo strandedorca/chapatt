@@ -9,13 +9,11 @@ import MainLayout from './pages/home/MainLayout'
 import Messages from './pages/home/main-huyen/Messages'
 import FriendsPage from './pages/home/main-huyen/FriendsPage'
 import AuthPage from './pages/login/AuthPage';
-
 import { auth, db } from './firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { addUserDocument, getUserDocument } from './redux-slices/currentUserSlice';
 import { useDispatch } from 'react-redux';
-import ProfilePage from './pages/settings/ProfilePage';
 
 export const WidthContext = createContext('240px');
 
@@ -60,8 +58,8 @@ function App() {
                   <Route path=":serverId" element />
                 </Route>
               </Route>
-              <Route path="settings" element={<Settings />} />
             </Route>
+            <Route path="settings" element={<Settings />} />
             <Route path="login" element={<AuthPage />} />
           </Routes>
         </BrowserRouter>

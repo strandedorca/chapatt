@@ -5,12 +5,12 @@ import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
 import { darkTheme } from '../../theme';
+import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
 
-import { NavLink, useNavigate } from 'react-router-dom';
-import MainSettings from './MainSettings';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
 import Underconstruction from '../Underconstruction';
-import ProfilePage from './ProfilePage';
+import AccountSettings from './AccountSettings';
 import ProfileSettings from './ProfileSettings';
 
 
@@ -27,17 +27,18 @@ const Setting = () => {
         'APP SETTINGS': ['Appearance', 'Accessibility', 'Voice & Video', 'Chat', 'Notifications', 'Keybinds', 'Language', 'Streamer Mode', 'Advanced']
     };
     const CustomScrollbar = styled(Box)`
-    width: 450px;
+    width: 350px;
     height: 100vh;
-    background-color: #2b2d31;
     color: #b5bac1;
     border-right: 1px solid #ccc;
+    z-index: 999;
     position: fixed;
     left: 0;
     top: 0;
     overflow: hidden;
-    padding-left: 14rem;
+    padding-left: 7rem;
     padding-top: 4rem;
+    padding-bottom: 4rem;
 
     &:hover {
         overflow: auto;
@@ -54,6 +55,7 @@ const Setting = () => {
         display: none; /* For Chrome, Safari, and Opera */
     }
     `;
+
     const BoxModal = styled(Box)(({ theme }) => ({
         position: 'absolute',
         top: `calc(50% - 50px)`,
@@ -90,17 +92,17 @@ const Setting = () => {
 
     let mainBody;
     switch (selectedTab.toLowerCase()) {
-        case 'profile':
-            mainBody = <ProfileSettings />;
-            break;
         case 'account':
-            mainBody = <ProfilePage />;
+            mainBody = <AccountSettings />;
+            break;
+        case 'profile':
+            mainBody = <ProfileSettings setSelectedTab={setSelectedTab} />;
             break;
         default:
             mainBody = <Underconstruction />;
     }
     return (
-        <div>
+        <Box>
             {/* Sidebar Navigation */}
             <CustomScrollbar>
                 {/* List of settings options */}
@@ -165,6 +167,7 @@ const Setting = () => {
                     }}>
                         <ListItemText primary="Delete Account" />
                     </ListItem>
+
                     {/* Nút Log Out */}
                     <ListItem button onClick={handleLogOut} sx={{
                         padding: 0,
@@ -184,6 +187,7 @@ const Setting = () => {
                     }}>
                         <ListItemText primary="Log Out" />
                     </ListItem>
+
                     {/* Return to homepage */}
                     <ListItem button onClick={() => { navigate(-1) }} sx={{
                         padding: 0,
@@ -207,9 +211,23 @@ const Setting = () => {
             </CustomScrollbar>
 
             {/* Main body */}
-            <Box sx={{ ml: '400px', p: 2 }}>
-                <h1>{selectedTab}</h1>
-                {mainBody}
+            <Box display='flex' sx={{ ml: '350px', p: 2, height: '100vh', backgroundColor: `${theme.palette.background.paper}` }}>
+                <Box sx={{ flexGrow: '1' }}>
+                    <h1 style={{ margin: '0 0 15px 30px' }}>{selectedTab}</h1>
+                    <Box sx={{ p: '20px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {mainBody}
+                    </Box>
+                </Box>
+                <Box width="200px" paddingTop="10px">
+                    <HighlightOffRoundedIcon fontSize='large'
+                        onClick={() => { navigate(-1) }}
+                        sx={{
+                            '&:hover': {
+                                cursor: 'pointer'
+                            }
+                        }}
+                    />
+                </Box>
             </Box>
 
             {/* Modal Confirm Delete Account */}
@@ -236,7 +254,7 @@ const Setting = () => {
                     </Box>
                 </BoxModal>
             </Modal>
-        </div>
+        </Box>
     );
 };
 

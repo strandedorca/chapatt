@@ -15,8 +15,9 @@ const MainLayout = () => {
   return (
     <FHBox>
       {/* Prompt for username if not set yet (for users signed up with Google) */}
-      {/* <Button onClick={handleClose}>CLOSE</Button> */}
       <FormDialog />
+
+      {/* Sidebar */}
       <FHBox
         display={{ xs: 'none', md: 'block' }}
         width="240px"

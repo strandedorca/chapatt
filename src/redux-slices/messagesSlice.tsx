@@ -64,25 +64,6 @@ export const subscribeToMessages = ({ username1, username2 }: any) => {
     }
 }
 
-// export const getConversation = ({ uid1, uid2 }: any) => {
-//     return async (dispatch: any) => {
-//         const sortedUid = [uid1, uid2].sort();
-//         const conversationId = `${sortedUid[0]}_${sortedUid[1]}`;
-//         const documentRef = doc(db, 'direct-messages', conversationId);
-//         const querySnapshot = await getDocs(
-//             query(collection(documentRef, 'messages'), orderBy('createdAt'))
-//         );
-//         const messages: Message[] = [];
-//         querySnapshot.forEach((doc) => {
-//             messages.push(doc.data() as Message);
-//         })
-//         console.log(messages);
-//         dispatch(setConversation(messages));
-//     }
-// }
-
-
-
 export const { setConversation } = messagesSlice.actions;
 export const selectAllMessagesWithUser = (state: any): any => (state.messages.messages);
 export const selectShow = (state: any): any => (state.messages.show);
