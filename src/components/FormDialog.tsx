@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { setUserId } from "firebase/analytics";
 import { addAnEmptyFriendsDoc } from "../redux-slices/friendsSlice";
+import { isValidUsername, usernameExistsPromise } from "./helper-functions";
 
 interface FormDialogProp {
 
@@ -16,10 +17,11 @@ interface FormDialogProp {
 const FormDialog = ({ }: FormDialogProp) => {
   const [username, setUsername] = useState('');
   const [showUsernameWarning, setShowUsernameWarning] = useState(false);
-  const theme = useTheme();
-  const [user] = useAuthState(auth);
-  const dispatch = useDispatch();
+  const [showExistingUsernameWarning, setshowExistingUsernameWarning] = useState(false);
   const [open, setOpen] = useState(false);
+  const [user] = useAuthState(auth);
+  const theme = useTheme();
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
 
   useEffect(() => {
@@ -36,34 +38,31 @@ const FormDialog = ({ }: FormDialogProp) => {
     }
   }, [currentUser.username]);
 
+  // Handlers
   const handleClose = () => {
     setOpen(false);
   }
-
-  const usernameExists = async (username: string) => {
-    const usersCollectionRef = collection(db, 'users');
-    const usernameQuery = query(usersCollectionRef, where('username', '==', username));
-    const usernameQuerySnapshot = await getDocs(usernameQuery);
-    if (!usernameQuerySnapshot.empty) {
-      // Username already exists
-      return Promise.reject('Username already exists');
-    }
-    return Promise.resolve();
-  }
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    usernameExists(username)
-      .then(() => {
-        // Set username for the current user
-        dispatch(updateUserDocument({ user, username }) as any);
-        dispatch(addAnEmptyFriendsDoc(username) as any);
-        handleClose();
-      })
-      .catch((error) => {
-        setShowUsernameWarning(true);
-        console.log(error);
-      })
+    setShowUsernameWarning(false);
+    setshowExistingUsernameWarning(false);
+    if (isValidUsername(username)) {
+      usernameExistsPromise(username)
+        // If available to set
+        .then(() => {
+          // Set username for the current user
+          dispatch(updateUserDocument({ user, username }) as any);
+          dispatch(addAnEmptyFriendsDoc(username) as any);
+          handleClose();
+        })
+        //  If unavailable to set
+        .catch((error) => {
+          setshowExistingUsernameWarning(true);
+          console.log(error);
+        })
+    } else {
+      setShowUsernameWarning(true);
+    }
   };
 
   return (
@@ -75,7 +74,7 @@ const FormDialog = ({ }: FormDialogProp) => {
       }}
     >
       <DialogTitle>Set username</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ width: '400px' }}>
         <DialogContentText>
           Let's find you a unique name to start with!
         </DialogContentText>
@@ -92,8 +91,14 @@ const FormDialog = ({ }: FormDialogProp) => {
           value={username}
           onChange={(e) => { setUsername(e.target.value) }}
         />
-        <DialogContentText color={theme.palette.error.main} display={showUsernameWarning ? 'block' : 'none'}>
-          Username already exists!
+        <DialogContentText color={theme.palette.error.main} display={showExistingUsernameWarning ? 'block' : 'none'}>
+          Username already exists.
+        </DialogContentText>
+        <DialogContentText color={theme.palette.error.main} display={showUsernameWarning ? 'block' : 'none'} style={{
+          wordBreak: 'break-all',
+          whiteSpace: 'normal',
+        }}>
+          Username must not contain any special character except for underscore.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

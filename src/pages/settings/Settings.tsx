@@ -11,25 +11,19 @@ import MainSettings from './MainSettings';
 import { useTheme } from '@emotion/react';
 import Underconstruction from '../Underconstruction';
 import ProfilePage from './ProfilePage';
+import ProfileSettings from './ProfileSettings';
 
 
 const Setting = () => {
-    const [selectedTab, setSelectedTab] = React.useState('My Account');
+    const [selectedTab, setSelectedTab] = React.useState('Account');
     const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const dispatch = useDispatch();
     const [user] = useAuthState(auth);
     const theme: any = useTheme();
     const navigate = useNavigate();
-    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
-        setSelectedTab(newValue);
-        // profile routing
-        if (newValue === "Profiles") {
-            navigate("/profiles")
-        }
-    };
 
     const settings = {
-        'USER SETTINGS': ['My Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
+        'USER SETTINGS': ['Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
         'APP SETTINGS': ['Appearance', 'Accessibility', 'Voice & Video', 'Chat', 'Notifications', 'Keybinds', 'Language', 'Streamer Mode', 'Advanced']
     };
     const CustomScrollbar = styled(Box)`
@@ -75,6 +69,9 @@ const Setting = () => {
         },
     }));
 
+    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
+        setSelectedTab(newValue);
+    }
     const handleDeleteAccount = () => {
         setDeleteModalOpen(true);
     };
@@ -91,10 +88,22 @@ const Setting = () => {
         auth.signOut();
     }
 
+    let mainBody;
+    switch (selectedTab.toLowerCase()) {
+        case 'profile':
+            mainBody = <ProfileSettings />;
+            break;
+        case 'account':
+            mainBody = <ProfilePage />;
+            break;
+        default:
+            mainBody = <Underconstruction />;
+    }
     return (
         <div>
             {/* Sidebar Navigation */}
             <CustomScrollbar>
+                {/* List of settings options */}
                 <List component="nav" sx={{ width: 200 }}>
                     {Object.entries(settings).map(([category, items]) => (
                         <React.Fragment key={category}>
@@ -135,6 +144,7 @@ const Setting = () => {
                             <Divider sx={{ my: 1, bgcolor: '#3b3d44' }} />
                         </React.Fragment>
                     ))}
+
                     {/* Nút Delete Account */}
                     <ListItem button onClick={handleDeleteAccount} sx={{
                         padding: 0,
@@ -197,12 +207,9 @@ const Setting = () => {
             </CustomScrollbar>
 
             {/* Main body */}
-            <Box sx={{ ml: '450px', p: 2 }}>
-                {selectedTab === 'Profile' ? (
-                    <ProfilePage />
-                ) : (
-                    <Underconstruction />
-                )}
+            <Box sx={{ ml: '400px', p: 2 }}>
+                <h1>{selectedTab}</h1>
+                {mainBody}
             </Box>
 
             {/* Modal Confirm Delete Account */}

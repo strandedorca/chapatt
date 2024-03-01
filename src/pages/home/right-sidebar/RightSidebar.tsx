@@ -1,5 +1,4 @@
 import { Box, styled } from "@mui/system"
-import avatar from './../../../assets/avatar.jpg';
 import { Button, Divider, Typography } from "@mui/material";
 import Title from "../../../components/Title";
 import Avatar from '@mui/material/Avatar';
@@ -7,7 +6,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
 
 const RightSidebar = () => {
@@ -42,7 +41,7 @@ const RightSidebar = () => {
             }
         }
         getUserInfo(username ? username : currentUser.username);
-    })
+    }, [currentUser])
 
 
     // Styled components

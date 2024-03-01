@@ -132,6 +132,14 @@ export const deleteUserDocument = (uid: string) => {
     }
 }
 
+export const changePassword = ({ user, newPassword }: any) => {
+    user.updatePassword(newPassword).then(() => {
+        console.log('Password updated successfully');
+    }).catch((error: Error) => {
+        console.log(error);
+    })
+}
+
 export const { setCurrentUser, updateCurrentUser } = currentUserSlice.actions;
 export const selectCurrentUser = (state: any): any => (state.currentUser);
 export const selectCurrentUserEmail = (state: any): any => (state.currentUser.email);
