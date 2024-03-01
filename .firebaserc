@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "discord-clone-td"
-  }
+    "default": "fa-chapatt",
+    "chapatt": "fa-chapatt"
+  },
+  "targets": {},
+  "etags": {}
 }
