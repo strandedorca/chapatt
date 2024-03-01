@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, List, ListItem, ListItemText, Divider, Typography, styled, Button, Modal } from '@mui/material';
+import { Box, List, ListItem, ListItemText, Divider, Typography, styled, Button, Modal, makeStyles } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { deleteUserDocument } from '../../redux-slices/currentUserSlice';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -16,16 +16,16 @@ import ProfilePage from './ProfilePage';
 const Setting = () => {
     const [selectedTab, setSelectedTab] = React.useState('My Account');
     const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
+    const [showOptions, setShowOptions] = React.useState(false);
     const dispatch = useDispatch();
     const [user] = useAuthState(auth);
     const theme: any = useTheme();
     const navigate = useNavigate();
+
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
         setSelectedTab(newValue);
-        // profile routing
-        if (newValue === "Profiles") {
-            navigate("/profiles")
-        }
+        setShowOptions(true);
+        // ...
     };
 
     const settings = {
@@ -44,6 +44,21 @@ const Setting = () => {
     overflow: hidden;
     padding-left: 14rem;
     padding-top: 4rem;
+    height: vh;
+
+    @media (max-width: 768px) {
+        width: 40%;
+        padding-left: 2rem;
+        padding-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+        // display:none;
+        width: 100%;
+        padding-left: 4rem;
+        padding-top: 2rem;
+        overflow: hidden;
+    }
 
     &:hover {
         overflow: auto;
@@ -90,6 +105,7 @@ const Setting = () => {
     const handleLogOut = () => {
         auth.signOut();
     }
+
 
     return (
         <div>
@@ -197,7 +213,16 @@ const Setting = () => {
             </CustomScrollbar>
 
             {/* Main body */}
-            <Box sx={{ ml: '450px', p: 2 }}>
+            <Box sx={{
+                ml: '380px',
+                '@media (max-width: 600px)': {
+                    ml: 0,
+                    display: (selectedTab === 'Profile') ? 'block' : 'none',
+                },
+                ' @media (max-width: 768px)': {
+                    ml: '270px',
+                }
+            }}>
                 {selectedTab === 'Profile' ? (
                     <ProfilePage />
                 ) : (
