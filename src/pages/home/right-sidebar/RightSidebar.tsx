@@ -37,7 +37,7 @@ const RightSidebar = () => {
                 if (!userSnap.empty) {
                     setUserToShow(userSnap.docs[0].data());
                 } else {
-                    console.log("Username doesn't exist");
+                    console.log("Username doesn't exist. This might be the first time signing in.");
                 }
             }
         }

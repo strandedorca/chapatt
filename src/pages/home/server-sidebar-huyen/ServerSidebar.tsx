@@ -52,7 +52,6 @@ const ServerSidebar = ({ users }: any) => {
     const allFriends = useSelector(selectAllFriends);
 
     useEffect(() => {
-        console.log(userInfo);
         allFriends.map(async (friendUsername: any) => {
             try {
                 const userQuery = query(

@@ -47,7 +47,7 @@ export const getUserDocument = (user: User) => {
         if (userSnap.exists()) {
             dispatch(setCurrentUser(userSnap.data()))
         } else {
-            console.log("User doesn't exist");
+            console.log("User doesn't exist. This might be the first time signing in.");
         }
     }
 }
@@ -117,13 +117,15 @@ export const updateUserDocument = (payload: any) => {
 export const deleteUserDocument = (uid: string) => {
     return async () => {
         if (uid) {
+            // Delete on firestore database
             await deleteDoc(doc(db, 'users', uid));
+            // Delete on firebase authentication
             const user: User | null = auth.currentUser;
             if (user) {
                 deleteUser(user).then(() => {
                     console.log('Account deleted successfully');
                 }).catch((error: Error) => {
-                    console.log(error);
+                    console.log('Failed to delete account', error);
                 });
             }
         }

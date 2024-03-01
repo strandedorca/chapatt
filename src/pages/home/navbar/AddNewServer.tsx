@@ -37,12 +37,14 @@ const AddNewServer = () => {
         open={isModalOpen}
         onClose={handleModalClose}
       >
-        <ModalServer
-          currentStep={currentStep}
-          goToNextStep={goToNextStep}
-          handleModalClose={handleModalClose}
-          goToPreviousStep={goToPreviousStep}
-        />
+        <>
+          <ModalServer
+            currentStep={currentStep}
+            goToNextStep={goToNextStep}
+            handleModalClose={handleModalClose}
+            goToPreviousStep={goToPreviousStep}
+          />
+        </>
       </Modal>
     </div>
   );

@@ -10,6 +10,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import MainSettings from './MainSettings';
 import { useTheme } from '@emotion/react';
 import Underconstruction from '../Underconstruction';
+import ProfilePage from './ProfilePage';
 
 
 const Setting = () => {
@@ -17,7 +18,6 @@ const Setting = () => {
     const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const dispatch = useDispatch();
     const [user] = useAuthState(auth);
-
     const theme: any = useTheme();
     const navigate = useNavigate();
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, newValue: React.SetStateAction<string>) => {
@@ -27,7 +27,6 @@ const Setting = () => {
             navigate("/profiles")
         }
     };
-
 
     const settings = {
         'USER SETTINGS': ['My Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
@@ -94,6 +93,7 @@ const Setting = () => {
 
     return (
         <div>
+            {/* Sidebar Navigation */}
             <CustomScrollbar>
                 <List component="nav" sx={{ width: 200 }}>
                     {Object.entries(settings).map(([category, items]) => (
@@ -196,14 +196,14 @@ const Setting = () => {
                 </List>
             </CustomScrollbar>
 
+            {/* Main body */}
             <Box sx={{ ml: '450px', p: 2 }}>
                 {selectedTab === 'Profile' ? (
-                    <MainSettings />
+                    <ProfilePage />
                 ) : (
                     <Underconstruction />
                 )}
             </Box>
-
 
             {/* Modal Confirm Delete Account */}
             <Modal
