@@ -6,8 +6,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
 import { darkTheme } from '../../theme';
 
-import { useNavigate } from 'react-router-dom';
-
 import { NavLink, useNavigate } from 'react-router-dom';
 import MainSettings from './MainSettings';
 import { useTheme } from '@emotion/react';
