@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Button, Box, Slide, styled, useTheme, IconButton, TextField } from '@mui/material';
 import { AddAPhoto, ArrowForwardIos, Close } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../../../redux-slices/currentUserSlice';
+import { addNewServer } from '../../../../redux-slices/serverSlice';
+import { isValidUsername } from '../../../../components/helper-functions';
 
 const BoxModalSerVer = styled(Box)(({ theme }) => ({
     position: 'absolute',
@@ -58,17 +62,32 @@ const BackButton = styled(Button)(({ theme }) => ({
     }
 }));
 
-const UpLoadButton = styled(IconButton)(({ theme }) => ({
-    border: '1px dashed grey',
+const UpLoadButton = styled('label')(({ theme }) => ({
+    backgroundColor: `${theme.palette.background.default}`,
     borderRadius: '50%',
-    padding: 14,
+    width: '100px',
+    position: 'relative',
+    height: '100px',
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'column',
     fontSize: 18,
     '&:hover': {
-        backgroundColor: "transparent",
+        backgroundColor: `${theme.palette.primary.main}`,
+        opacity: '.8',
+        color: `${theme.palette.background.default}`,
+        cursor: 'pointer',
     }
 }));
+const PhotoContainer = styled('div')({
+    position: 'absolute',
+    overflow: 'hidden',
+    borderRadius: '50%',
+    top: '0',
+    width: '100px',
+    height: '100px',
+})
 
 type OptionsType = {
     [key: number]: string[];
@@ -87,13 +106,30 @@ type ModalServerProps = {
 };
 
 
-
-
 const ArrowIcon = styled(ArrowForwardIos)(({ theme }) => ({
     marginLeft: theme.spacing(1),
 }));
 
 const ModalServer: React.FC<ModalServerProps> = ({ currentStep, goToNextStep, goToPreviousStep, handleModalClose }) => {
+    const [uploadedPhoto, setUploadedPhoto] = useState(null);
+    const [serverNameError, setServerNameError] = useState('');
+    const handleFileUpload = (event: any) => {
+        const file = event.target.files[0];
+        // Assuming you're storing the file in state
+        setUploadedPhoto(URL.createObjectURL(file) as any);
+        // You can also send the file to the server for further processing
+    };
+    const handleCreateServer = (event: any) => {
+        event.preventDefault();
+        if (!serverName) {
+            setServerNameError('Server name is required');
+        } else if (!isValidUsername(serverName)) {
+            setServerNameError('Must not contain special character.');
+        } else {
+            dispatch(addNewServer({ serverName, username }) as any)
+            handleModalClose();
+        }
+    }
     const renderStepContent = (step: number) => {
         // Dynamically create buttons based on the current step
         return options[step]?.map((option, index) => (
@@ -111,18 +147,28 @@ const ModalServer: React.FC<ModalServerProps> = ({ currentStep, goToNextStep, go
                 <UpLoadButton
                     aria-label="upload picture"
                 >
-                    <input hidden accept="image/*" type="file" />
-                    <AddAPhoto sx={{ mb: 1 }} />
-                    UPLOAD
+                    <input hidden multiple={false} type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" onChange={handleFileUpload} />
+                    <AddAPhoto fontSize='large' />
+
+                    {uploadedPhoto && (
+                        <PhotoContainer>
+                            <img src={uploadedPhoto} alt="Uploaded" style={{ maxWidth: '100%', objectFit: 'cover' }} />
+                        </PhotoContainer>
+                    )}
                 </UpLoadButton>
+
+
                 <Typography variant="body2" color="textSecondary" >
                     Give your new server a personality with a name and an icon. You can always change it later.
                 </Typography>
                 <TextField
                     fullWidth
                     label="SERVER NAME"
-                    defaultValue="hieubui178's server"
                     variant="outlined"
+                    value={serverName}
+                    onChange={(e) => setServerName(e.target.value)}
+                    error={Boolean(serverNameError)}
+                    helperText={serverNameError}
                 />
                 <Typography variant="body2" color="textSecondary" fontSize={10} sx={{ alignSelf: 'flex-start' }}>
                     By creating a server, you agree to Discord's <NavLink to={''} style={{ color: theme.palette.info.dark }}>Community Guidelines.</NavLink>
@@ -131,6 +177,10 @@ const ModalServer: React.FC<ModalServerProps> = ({ currentStep, goToNextStep, go
             </Box>;
     };
     const theme = useTheme()
+    const currentUser = useSelector(selectCurrentUser);
+    const username = currentUser.username;
+    const [serverName, setServerName] = useState(`${currentUser.username}'s server`);
+    const dispatch = useDispatch();
     return (
         <Slide direction="left" in={currentStep > 0} mountOnEnter unmountOnExit>
             <BoxModalSerVer>
@@ -163,20 +213,22 @@ const ModalServer: React.FC<ModalServerProps> = ({ currentStep, goToNextStep, go
                 {currentStep === 1 ? (
                     <>
                         <Typography sx={{ mt: 2, textAlign: 'center' }}>
-                            Already have an invite?
+                            {/* Already have an invite? */}
                         </Typography>
                         <Button variant="text" sx={{ width: '100%', mt: 1, backgroundColor: theme.palette.grey[800], color: 'white', '&:hover': { backgroundColor: theme.palette.grey[700] } }}>Join a Server</Button>
                     </>
                 ) :
                     (currentStep === 2 ?
                         <Typography sx={{ mt: 2, textAlign: 'center' }}>
-                            Not sure? You can <NavLink to={''} style={{ color: theme.palette.info.dark }}>skip question</NavLink> for now.
+                            {/* Not sure? You can <NavLink to={''} style={{ color: theme.palette.info.dark }}>skip question</NavLink> for now. */}
                             <BackButton variant="outlined" onClick={goToPreviousStep}>Back</BackButton>
                         </Typography>
                         :
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', mt: 4, color: 'white' }}>
                             <BackButton variant="text" onClick={goToPreviousStep}>Back</BackButton>
-                            <Button variant="contained" color="inherit" sx={{ backgroundColor: theme.palette.info.dark }}>Create</Button>
+                            <Button variant="contained" color="inherit"
+                                sx={{ backgroundColor: theme.palette.info.dark }}
+                                onClick={handleCreateServer}>Create</Button>
                         </Box>
                     )
                 }

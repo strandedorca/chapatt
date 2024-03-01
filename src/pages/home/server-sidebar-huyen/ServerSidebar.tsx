@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import { selectAllFriends } from "../../../redux-slices/friendsSlice";
 import { query, collection, where, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 
 export const Button = styled('button')(({ theme }) => ({
     fontFamily: 'Inter',
@@ -42,6 +43,7 @@ export const Button = styled('button')(({ theme }) => ({
 
 const ServerSidebar = () => {
     const theme: any = useTheme();
+    const currentUser = useSelector(selectCurrentUser);
     const [user] = useAuthState(auth);
     const navigate = useNavigate();
     const location = useLocation();
@@ -217,8 +219,8 @@ const ServerSidebar = () => {
                     sx={{ width: '170px' }}>
                     <Avatar sx={{ width: "32px", height: "32px" }} src={user?.photoURL as any} />
                     <EllipsisOverflowDiv>
-                        <EllipsisOverflowDiv>{user?.displayName}</EllipsisOverflowDiv>
-                        <EllipsisOverflowDiv>{user?.email}</EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{currentUser.displayName}</EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{currentUser.status}</EllipsisOverflowDiv>
                     </EllipsisOverflowDiv>
                 </Box>
                 <IconButton onClick={() => { navigate("/settings") }}>

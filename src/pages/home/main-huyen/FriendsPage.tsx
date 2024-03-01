@@ -1,15 +1,18 @@
 import { Box, styled } from "@mui/system";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Title from "../../../components/Title";
-import { Avatar, IconButton, Typography } from "@mui/material";
+import { Avatar, Button, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { acceptFriendRequest, getFriendsList, selectAllFriends, selectBlocked, selectCurrentList, selectPending } from "../../../redux-slices/friendsSlice.tsx";
+import { acceptFriendRequest, refuseFriendRequest, selectAllFriends, selectBlocked, selectCurrentList, selectPending, subscribeToFriendList, unblockFriend } from "../../../redux-slices/friendsSlice.tsx";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice.tsx";
+import { useNavigate } from "react-router-dom";
+import AutoModeRoundedIcon from '@mui/icons-material/AutoModeRounded';
+import BlockModal from "../../../components/BlockModal.tsx";
 
 const SearchBar = styled('input')(({ theme }) => ({
     width: "100%",
@@ -34,15 +37,18 @@ const UserBox = styled(Box)({
 
 const FriendsPage = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const currentList = useSelector(selectCurrentList);
     const currentUser = useSelector(selectCurrentUser);
     const allFriends = useSelector(selectAllFriends);
     const pendingFriends = useSelector(selectPending);
     const blockedFriends = useSelector(selectBlocked);
+    const [blockModalOpen, setBlockModalOpen] = useState(false);
 
     // Update friend list
     useEffect(() => {
-        dispatch(getFriendsList(currentUser.username) as any);
+        const unsubscriber = dispatch(subscribeToFriendList(currentUser.username) as any);
+        return () => unsubscriber;
     }, [currentUser, currentList])
 
     let list, title;
@@ -78,24 +84,50 @@ const FriendsPage = () => {
                             >
                                 <CheckCircleRoundedIcon />
                             </IconButton>
-                            <IconButton>
+                            <IconButton
+                                onClick={() => {
+                                    const payload = {
+                                        username: currentUser.username,
+                                        senderUsername: friendUsername
+                                    }
+                                    dispatch(refuseFriendRequest(payload) as any)
+                                }}>
                                 <CancelRoundedIcon />
                             </IconButton>
                         </>
-                    ) : (
+                    ) : (currentList === 'friends') ? (
                         <>
-                            <IconButton>
+                            <IconButton
+                                onClick={() => {
+                                    navigate(`/me/${friendUsername}`)
+                                }}
+                            >
                                 <AddCommentRoundedIcon />
                             </IconButton>
                             <IconButton>
                                 <PersonRemoveAlt1RoundedIcon />
                             </IconButton>
                         </>
+                    ) : (
+                        <IconButton>
+                            <AutoModeRoundedIcon
+                                onClick={() => {
+                                    const payload = {
+                                        blockedUsername: friendUsername,
+                                        username: currentUser.username,
+                                    }
+                                    dispatch(unblockFriend(payload) as any);
+                                }}
+                            />
+                        </IconButton>
                     )}
                 </Box>
             </UserBox>
         )
     })
+
+    const handleBlockModalClose = () => { setBlockModalOpen(false) };
+    const handleBlockModalOpen = () => { setBlockModalOpen(true) };
 
     return (
         <Box
@@ -104,19 +136,34 @@ const FriendsPage = () => {
             position="relative"
         >
             {/* Searchbar */}
-            <Box>
-                <SearchBar type="text" placeholder="Search" />
-                <SearchRoundedIcon
-                    sx={{
-                        position: "absolute",
-                        top: "26px",
-                        right: "40px"
-                    }}
-                />
-            </Box>
+            {currentList === 'friends' &&
+                <Box>
+                    <SearchBar type="text" placeholder="Search" />
+                    <SearchRoundedIcon
+                        sx={{
+                            position: "absolute",
+                            top: "26px",
+                            right: "40px"
+                        }}
+                    />
+                </Box>
+            }
+
+            {/* Block Button */}
+            {currentList === 'blocked' &&
+                <BlockModal modalOpen={blockModalOpen} handleClose={handleBlockModalClose} />
+            }
+
             {/* Title */}
-            <Box paddingY="20px">
+            <Box paddingY="20px" display='flex' alignItems='center' gap="20px" justifyContent="space-between">
                 <Title content={title} />
+                {currentList === 'blocked' &&
+                    <Button
+                        variant="contained"
+                        sx={{ width: "10rem" }}
+                        onClick={handleBlockModalOpen}>
+                        Block a user
+                    </Button>}
             </Box>
 
             {/* Main */}

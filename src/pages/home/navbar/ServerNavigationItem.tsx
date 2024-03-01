@@ -12,12 +12,12 @@ const ServerNavigationItem = ({ id, imgUrl, name }: ServerNavigationItemProps) =
     return (
         <CustomTooltip title={name}>
             {/* NavLink to personal conversations / a group */}
-            <NavLink 
-                to={id === "me" ? 'me' : `servers/${id}`} 
+            <NavLink
+                to={id === "me" ? 'me' : `servers/${id}`}
                 style={{ textDecoration: "none" }}
             >
                 <ServerButton imgUrl={imgUrl}>
-                    <div>{name[0]}</div>
+                    <div>{name[0].toUpperCase()}</div>
                 </ServerButton>
             </NavLink>
         </CustomTooltip>

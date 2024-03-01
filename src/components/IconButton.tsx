@@ -3,7 +3,7 @@ import { Button } from "@mui/material"
 
 interface IconButtonProp {
     children: React.ReactElement,
-    onClick?:  React.MouseEventHandler<HTMLButtonElement>,
+    onClick?: React.MouseEventHandler<HTMLButtonElement>,
 }
 
 const IconButton = ({ children, onClick }: IconButtonProp) => {
@@ -19,11 +19,11 @@ const IconButton = ({ children, onClick }: IconButtonProp) => {
             border: "none",
         }
     })
-  return (
-    <TransparentBtn onClick={onClick}>
-        {children}
-    </TransparentBtn>
-  )
+    return (
+        <TransparentBtn onClick={onClick}>
+            {children}
+        </TransparentBtn>
+    )
 }
 
 export default IconButton

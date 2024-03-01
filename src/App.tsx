@@ -14,6 +14,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { addUserDocument, getUserDocument } from './redux-slices/currentUserSlice';
 import { useDispatch } from 'react-redux';
+import ServerMessages from './pages/home/servers/ServerMessages';
 
 export const WidthContext = createContext('240px');
 
@@ -53,9 +54,8 @@ function App() {
                 <Route path="me" element={<FriendsPage />}>
                   <Route path=":username" element={<Messages />} />
                 </Route>
-                <Route path="servers/:serverId" element />
-                <Route path="servers" element={<Messages />}>
-                  <Route path=":serverId" element />
+                <Route path="servers">
+                  <Route path=":serverName" element={<ServerMessages />} />
                 </Route>
               </Route>
             </Route>

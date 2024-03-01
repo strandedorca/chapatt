@@ -1,6 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit/react";
-import { arrayRemove, arrayUnion, collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { createSlice, current } from "@reduxjs/toolkit/react";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import { setConversation } from "./messagesSlice";
+import { usernameExistsPromise } from "../components/helper-functions";
 
 const initialState: any = {
     currentList: 'friends',
@@ -38,29 +40,60 @@ export const addAnEmptyFriendsDoc = (username: any) => {
 // Need to implement check for existing friends/blocked
 export const sendFriendRequest = ({ senderUsername, username }: any) => {
     return async () => {
-        const friendsCollectionRef = collection(db, 'friends');
-        // Check if already friends/blocked
+        const docRef = doc(db, 'friends', username);
+        try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
 
-        // Add to pending friends
-        await setDoc(doc(friendsCollectionRef, username), {
-            pending: [
-                senderUsername,
-            ]
-        }, {
-            merge: true
-        })
-    }
-}
+                // Check if sender is blocked or already friends
+                if (
+                    data.friends.includes(senderUsername) ||
+                    data.blocked.includes(senderUsername)
+                ) {
+                    console.log(`${senderUsername} is already friends or blocked.`);
+                    return;
+                }
 
-export const getFriendsList = (username: string) => {
+                // Check if target is blocked - if yes remove from blocked
+                const currentUserRef = doc(db, 'friends', senderUsername);
+                await updateDoc(currentUserRef, {
+                    blocked: arrayRemove(username)
+                });
+
+                // Add sender to pending friends
+                await updateDoc(docRef, {
+                    pending: arrayUnion(senderUsername)
+                });
+                console.log(`Friend request sent from ${senderUsername} to ${username}.`);
+            } else {
+                console.log(`User ${username} does not exist in the friends collection.`);
+            }
+        } catch (error) {
+            console.error('Failed to send friend request.', error);
+        }
+    };
+};
+
+export const subscribeToFriendList = (username: string) => {
     return async (dispatch: any) => {
-        // Get friends doc in friends collection
-        const friendsCollectionRef = collection(db, 'friends');
         if (username) {
-            const docRef = doc(friendsCollectionRef, username);
-            if (docRef) {
-                const docSnap = await getDoc(docRef);
-                dispatch(setFriendList(docSnap.data()));
+            // Get ref to friendlist of current user
+            const documentRef = doc(db, 'friends', username);
+            // Subscribe to the user friends document
+            try {
+                const unsubscriber = onSnapshot(documentRef, (doc) => {
+                    if (doc.exists()) {
+                        const data = doc.data();
+                        dispatch(setFriendList(data));
+                    } else {
+                        console.log("Friends document doesn't exist");
+                    }
+                });
+                // To unsubscribe later
+                return unsubscriber;
+            } catch (error) {
+                console.log('Failed to subscribe to document.', error);
             }
         }
     }
@@ -82,6 +115,53 @@ export const acceptFriendRequest = ({ username, senderUsername }: any) => {
             await updateDoc(doc(friendsCollectionRef, username), {
                 pending: arrayRemove(senderUsername),
             });
+        }
+    }
+}
+
+export const refuseFriendRequest = ({ username, senderUsername }: any) => {
+    return async () => {
+        if (username) {
+            const friendsCollectionRef = collection(db, 'friends');
+            // Delete from pending list
+            await updateDoc(doc(friendsCollectionRef, username), {
+                pending: arrayRemove(senderUsername),
+            });
+        }
+    }
+}
+
+export const blockFriend = ({ username, blockedUsername }: any) => {
+    return async () => {
+        const currentUserRef = doc(db, 'friends', username);
+        const blockedUserRef = doc(db, 'friends', blockedUsername);
+        try {
+            // Add to the block list
+            await updateDoc(currentUserRef, {
+                blocked: arrayUnion(blockedUsername)
+            })
+            // Remove if already friends
+            await updateDoc(currentUserRef, {
+                friends: arrayRemove(blockedUsername)
+            });
+            await updateDoc(blockedUserRef, {
+                friends: arrayRemove(username)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+export const unblockFriend = ({ username, blockedUsername }: any) => {
+    return async () => {
+        const currentUserRef = doc(db, 'friends', username);
+        try {
+            await updateDoc(currentUserRef, {
+                blocked: arrayRemove(blockedUsername)
+            })
+        } catch (error) {
+            console.log(error);
         }
     }
 }
