@@ -1,7 +1,6 @@
 import { styled } from "@mui/system";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Avatar, Box, IconButton, Modal } from "@mui/material"
-import avatar from './../../../assets/avatar.jpg';
+import { Avatar, Box, IconButton } from "@mui/material"
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CustomTooltip from "../../../components/CustomTooltip";
 import { useLocation, useNavigate } from "react-router";
@@ -41,7 +40,7 @@ export const Button = styled('button')(({ theme }) => ({
     }
 }));
 
-const ServerSidebar = ({ users }: any) => {
+const ServerSidebar = () => {
     const theme: any = useTheme();
     const [user] = useAuthState(auth);
     const navigate = useNavigate();
@@ -77,8 +76,6 @@ const ServerSidebar = ({ users }: any) => {
         });
         return () => { setUserInfo([]) };
     }, [user, allFriends])
-
-    // console.log(allFriends, userInfo);
 
     // PLACEHOLDER
     const channels: Channel[] = [

@@ -1,10 +1,8 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
+import { createSlice } from "@reduxjs/toolkit/react";
 // import { User } from "../types";
-import { doc, getDoc, setDoc, deleteDoc, updateDoc, serverTimestamp, collection } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
 import { User, deleteUser, updateProfile } from "firebase/auth";
-import { darkTheme } from "../theme";
-import { useTheme } from "@emotion/react";
 
 const initialState = {
     uid: '',

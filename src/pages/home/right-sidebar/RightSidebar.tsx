@@ -80,7 +80,7 @@ const RightSidebar = () => {
                     src={userToShow.photoURL}
                     sx={{ width: 94, height: 94 }}
                 >
-                    {userToShow.displayName[0]}
+                    {userToShow.displayName}
                 </Avatar>
             </Box>
 

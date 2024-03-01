@@ -1,5 +1,5 @@
-import { Dispatch, createSlice } from "@reduxjs/toolkit/react";
-import { DocumentReference, DocumentSnapshot, addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { createSlice } from "@reduxjs/toolkit/react";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 const initialState: any = {

@@ -1,19 +1,15 @@
 import { Box, styled } from "@mui/system";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Title from "../../../components/Title";
-import { User } from './../../../types.tsx';
 import { Avatar, IconButton, Typography } from "@mui/material";
 import AddCommentRoundedIcon from '@mui/icons-material/AddCommentRounded';
 import PersonRemoveAlt1RoundedIcon from '@mui/icons-material/PersonRemoveAlt1Rounded';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { acceptFriendRequest, getFriendsList, selectAllFriends, selectBlocked, selectCurrentList, selectPending } from "../../../redux-slices/friendsSlice.tsx";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../../firebase/firebase.ts";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice.tsx";
-import { current } from "@reduxjs/toolkit";
 
 const SearchBar = styled('input')(({ theme }) => ({
     width: "100%",
