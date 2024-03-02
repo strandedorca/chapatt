@@ -201,20 +201,10 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
             Sign in with Google
           </Button>
         </form>
-
-        {/* Login with Google */}
-        <Button
-          variant="contained"
-          onClick={() => {
-            signInWithGoogle();
-          }}
-        >
-          Sign in with Google
-        </Button>
         <Link
           component="button"
           onClick={onForgotPassword}
-          sx={{ cursor: "pointer" }}
+          sx={{ cursor: "pointer", marginTop: "15px" }}
         >
           Forgot your password?
         </Link>
@@ -223,13 +213,9 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
         {/* Registration */}
         <Typography sx={{ color: "#B5BAC1", marginTop: "20px" }}>
           Need an account?{" "}
-          <a
-            href="#"
-            onClick={onSwitch}
-            style={{ color: "#1976d2", cursor: "pointer" }}
-          >
+          <Link href="#" onClick={onSwitch}>
             Register
-          </a>
+          </Link>
         </Typography>
       </Container>
     </>
