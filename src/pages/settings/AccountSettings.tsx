@@ -58,62 +58,62 @@ const StyledButton = styled(Button)({
   marginTop: "5px",
 });
 
-// Validation
-const validateUsername = async (value: string) => {
-  let error;
-  if (!value) {
-    error = "Required.";
-  } else if (!isValidUsername(value)) {
-    error =
-      "Username must not contain any special character except for underscore.";
-  }
-  try {
-    if (currentUser.username !== value) {
-      await usernameExistsPromise(value);
-    }
-  } catch (err) {
-    // Username already exists
-    error = err;
-  }
-  return error;
-};
-const validateDisplayName = (value: string) => {
-  let error;
-  if (!value) {
-    error = "Required";
-  }
-  return error;
-};
-const validateEmail = (value: string) => {
-  let error;
-  if (!value) {
-    error = "Required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-    error = "Invalid email address";
-  }
-  return error;
-};
-const validatePassword = (values: any) => {
-  const errors: any = {};
-  if (!values.newPassword) {
-    errors.newPassword = "Required";
-  } else if (!values.confirmPassword) {
-    errors.confirmPassword = "Required";
-  } else if (!/^(?=.*[A-Z]).{6,}$/.test(values.newPassword)) {
-    errors.newPassword =
-      "Password must contain at least 6 characters & 1 uppercase character";
-  } else if (values.confirmPassword !== values.newPassword) {
-    errors.confirmPassword = "Passwords must match";
-  }
-  return errors;
-};
-
 const AccountSettings = () => {
   const [user] = useAuthState(auth);
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const { username, email, displayName } = currentUser;
   const [showPassword, setShowPassword] = useState(false);
+
+  // Validation
+  const validateUsername = async (value: string) => {
+    let error;
+    if (!value) {
+      error = "Required.";
+    } else if (!isValidUsername(value)) {
+      error =
+        "Username must not contain any special character except for underscore.";
+    }
+    try {
+      if (currentUser.username !== value) {
+        await usernameExistsPromise(value);
+      }
+    } catch (err) {
+      // Username already exists
+      error = err;
+    }
+    return error;
+  };
+  const validateDisplayName = (value: string) => {
+    let error;
+    if (!value) {
+      error = "Required";
+    }
+    return error;
+  };
+  const validateEmail = (value: string) => {
+    let error;
+    if (!value) {
+      error = "Required";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+      error = "Invalid email address";
+    }
+    return error;
+  };
+  const validatePassword = (values: any) => {
+    const errors: any = {};
+    if (!values.newPassword) {
+      errors.newPassword = "Required";
+    } else if (!values.confirmPassword) {
+      errors.confirmPassword = "Required";
+    } else if (!/^(?=.*[A-Z]).{6,}$/.test(values.newPassword)) {
+      errors.newPassword =
+        "Password must contain at least 6 characters & 1 uppercase character";
+    } else if (values.confirmPassword !== values.newPassword) {
+      errors.confirmPassword = "Passwords must match";
+    }
+    return errors;
+  };
 
   // Manage Toast
   const notify = (input: string) => {

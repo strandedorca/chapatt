@@ -1,7 +1,7 @@
-import { Box, styled, useTheme } from "@mui/system"
+import { Box, styled, useTheme } from "@mui/system";
 import { Button, Divider, Typography } from "@mui/material";
 import Title from "../../../components/Title";
-import Avatar from '@mui/material/Avatar';
+import Avatar from "@mui/material/Avatar";
 import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -11,125 +11,126 @@ import { db } from "../../../firebase/firebase";
 
 // Styled components
 const Section = styled(Box)(({ theme }) => ({
-    width: "100%",
-    borderRadius: "8px",
-    marginBottom: "15px",
-    backgroundColor: theme.palette.background.paper,
+  width: "100%",
+  borderRadius: "8px",
+  marginBottom: "15px",
+  backgroundColor: theme.palette.background.paper,
 }));
-const Content = styled('p')({
-    margin: "0",
-    fontSize: ".8em",
-})
+const Content = styled("p")({
+  margin: "0",
+  fontSize: ".8em",
+});
 const WhiteDivider = styled(Divider)({
-    borderColor: "white",
-    margin: "15px 0"
-})
+  borderColor: "white",
+  margin: "15px 0",
+});
 
 const RightSidebar = () => {
-    const theme = useTheme();
-    // Show different UI for me/server page
-    const [isServer, setIsServer] = useState(false);
-    const location = useLocation();
-    const { username } = useParams();
-    const currentUser = useSelector(selectCurrentUser);
-    const [userToShow, setUserToShow] = useState(currentUser);
+  const theme = useTheme();
+  // Show different UI for me/server page
+  const [isServer, setIsServer] = useState(false);
+  const location = useLocation();
+  const { username } = useParams();
+  const currentUser = useSelector(selectCurrentUser);
+  const [userToShow, setUserToShow] = useState(currentUser);
 
-    useEffect(() => {
-        if (location.pathname.startsWith('/me')) {
-            setIsServer(false);
+  useEffect(() => {
+    if (location.pathname.startsWith("/me")) {
+      setIsServer(false);
+    } else {
+      setIsServer(true);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const getUserInfo = async (username: string) => {
+      if (username) {
+        const userQuery = query(
+          collection(db, "users"),
+          where("username", "==", username)
+        );
+        const userSnap = await getDocs(userQuery);
+        if (!userSnap.empty) {
+          setUserToShow(userSnap.docs[0].data());
         } else {
-            setIsServer(true);
+          console.log(
+            "Username doesn't exist. This might be the first time signing in."
+          );
         }
-    }, [location.pathname])
+      }
+    };
+    getUserInfo(username ? username : currentUser.username);
+  }, [currentUser, location]);
 
-    useEffect(() => {
-        const getUserInfo = async (username: string) => {
-            if (username) {
-                const userQuery = query(
-                    collection(db, 'users'),
-                    where('username', '==', username),
-                )
-                const userSnap = await getDocs(userQuery);
-                if (!userSnap.empty) {
-                    setUserToShow(userSnap.docs[0].data());
-                } else {
-                    console.log("Username doesn't exist. This might be the first time signing in.");
-                }
-            }
-        }
-        getUserInfo(username ? username : currentUser.username);
-    }, [currentUser])
+  return (
+    <Box height="100%" position="relative">
+      {/* Banner */}
+      <Box
+        id="banner"
+        sx={{
+          backgroundColor: userToShow.bannerColor,
+          height: 120,
+        }}
+      ></Box>
 
-    return (
-        <Box height="100%" position="relative"
+      {/* Avatar */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "100px",
+          transform: "translate(15px, -30%)",
+        }}
+      >
+        <Avatar
+          src={userToShow.photoURL}
+          sx={{
+            width: 94,
+            height: 94,
+            border: `8px ${theme.palette.background.default} solid`,
+          }}
         >
-            {/* Banner */}
-            <Box id="banner" sx={{
-                backgroundColor: userToShow.bannerColor,
-                height: 120,
-            }}>
-            </Box>
+          {userToShow.displayName}
+        </Avatar>
+      </Box>
 
-            {/* Avatar */}
-            <Box sx={{
-                position: "absolute",
-                top: "100px",
-                transform: "translate(15px, -30%)",
-            }}>
-                <Avatar
-                    src={userToShow.photoURL}
-                    sx={{
-                        width: 94, height: 94,
-                        border: `8px ${theme.palette.background.default} solid`,
-                    }}
-                >
-                    {userToShow.displayName}
-                </Avatar>
-            </Box>
+      <Box paddingTop="60px" paddingX="15px">
+        {/* Information */}
+        <Section paddingX="15px" paddingY="18px">
+          <Typography
+            sx={{
+              fontSize: "1.1em",
+              fontWeight: "bold",
+            }}
+          >
+            {userToShow.displayName}
+          </Typography>
+          <Content>{`@${userToShow.username}`}</Content>
 
-            <Box paddingTop="60px" paddingX="15px">
-                {/* Information */}
-                <Section paddingX="15px" paddingY="18px">
-                    <Typography sx={{
-                        fontSize: "1.1em",
-                        fontWeight: "bold"
-                    }}>
-                        {userToShow.displayName}
-                    </Typography>
-                    <Content>
-                        {`@${userToShow.username}`}
-                    </Content>
+          <WhiteDivider />
 
-                    <WhiteDivider />
+          <Title content="Status" />
+          <Content>{userToShow.status}</Content>
 
-                    <Title content="Status" />
-                    <Content>{userToShow.status}</Content>
+          <WhiteDivider />
 
-                    <WhiteDivider />
+          {!isServer ? (
+            <>
+              <Title content="About Me" />
+              <Content>{userToShow.aboutMe}</Content>
+              <WhiteDivider />
+            </>
+          ) : null}
 
-                    {!isServer ? (
-                        <>
-                            <Title content="About Me" />
-                            <Content>{userToShow.aboutMe}</Content>
-                            <WhiteDivider />
-                        </>
-                    ) : (null)}
+          <Title content="Since" />
+          <Content>{userToShow.createdAt}</Content>
+        </Section>
 
-                    <Title content="Since" />
-                    <Content>
-                        {userToShow.createdAt}
-                    </Content>
+        {/* Buttons */}
+        {isServer ? <Section component={Button}>Show Members</Section> : null}
+        <Section component={Button}>Files Shared</Section>
+      </Box>
+    </Box>
+  );
+};
 
-                </Section>
-
-                {/* Buttons */}
-                {isServer ? (
-                    <Section component={Button}>Show Members</Section>
-                ) : (null)}
-                <Section component={Button}>Files Shared</Section>
-            </Box>
-        </Box>
-    )
-}
-
-export default RightSidebar
+export default RightSidebar;
