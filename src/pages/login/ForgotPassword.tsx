@@ -4,19 +4,23 @@ import styles from "./Login.module.css";
 
 interface ForgotPasswordProps {
   onSwitchToLogin: () => void; // Chuyển người dùng trở lại trang đăng nhập
+  onForgotPassword: (string) => void;
 }
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onSwitchToLogin }) => {
+const ForgotPassword: React.FC<ForgotPasswordProps> = ({
+  onSwitchToLogin,
+  onForgotPassword,
+}) => {
   const [email, setEmail] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Reset password for:", email);
-    // Tại đây bạn sẽ gọi API để xử lý reset mật khẩu
+    onForgotPassword(email);
     alert(
       "If the email matches an account, a password reset link will be sent."
     );
-    onSwitchToLogin(); // Chuyển người dùng trở lại trang đăng nhập sau khi yêu cầu
+    onSwitchToLogin();
   };
 
   return (
