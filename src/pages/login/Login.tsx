@@ -98,13 +98,13 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
       <Container
         className={styles.container}
         maxWidth="sm"
-        sx={{ marginTop: "100px", textAlign: "center" }}
+        sx={{ textAlign: "center" }}
       >
         <Typography variant="h5" style={{ color: "#F2F3F5" }} gutterBottom>
-          Welcome back!
+          Welcome!
         </Typography>
         <Typography variant="h6" style={{ color: "#B5BAC1" }} gutterBottom>
-          We're so excited to see you again!
+          We're so excited to have you!
         </Typography>
 
         {/* Log in with email & password */}

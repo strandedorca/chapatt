@@ -7,17 +7,21 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import Toast from "../../components/Toast";
 import { toast } from "react-toastify";
+import styles from "./Login.module.css";
+import image from "../../assets/Blue Night Sky Cute Whale.png";
 
 const AuthPage: React.FC = () => {
   const notify = (input: string) => {
-    if (input === 'success') {
-        toast.success("Password reset sent successfully");
-    } else if (input === 'error') {
-        toast.error("Failed to reset password. Please try again..");
+    if (input === "success") {
+      toast.success("Password reset sent successfully");
+    } else if (input === "error") {
+      toast.error("Failed to reset password. Please try again..");
     } else {
-        toast.warning("Requires recent login. Please log in again to change password.")
+      toast.warning(
+        "Requires recent login. Please log in again to change password."
+      );
     }
-}
+  };
   const [view, setView] = useState<"login" | "register" | "forgotPassword">(
     "login"
   );
@@ -28,17 +32,27 @@ const AuthPage: React.FC = () => {
 
   const handleForgotPassword = async (email: string) => {
     try {
-      await sendPasswordResetEmail(auth, email)
-      notify('success');
+      await sendPasswordResetEmail(auth, email);
+      notify("success");
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundImage: `url("${image}")`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Toast />
-      <Container maxWidth="sm" sx={{ mt: "100px", textAlign: "center" }}>
+      <Container maxWidth="sm" sx={{ textAlign: "center" }}>
         {view === "login" && (
           <Login
             onSwitch={switchToRegister}
