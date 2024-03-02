@@ -88,7 +88,6 @@ const ServerSidebar = () => {
         } else {
           console.log("Username doesn't exist");
         }
-        console.log(newUsersInfo);
         setUsersInfo(newUsersInfo);
       } catch (error) {
         console.error("Error retrieving user information.", error);
@@ -196,6 +195,7 @@ const ServerSidebar = () => {
         {textChannels.map((channel: Channel) => {
           return (
             <Button
+              key={channel.id}
               onClick={() => {
                 navigate(`${channel.id}`);
               }}
