@@ -1,17 +1,16 @@
-import Header from "./header/Header"
-import { styled } from "@mui/system"
-import RightSidebar from "./right-sidebar/RightSidebar"
-import ServerSidebar from "./server-sidebar-huyen/ServerSidebar"
-import { Outlet } from "react-router"
-import { Box } from "@mui/material"
-import FormDialog from "../../components/FormDialog"
+import Header from "./header/Header";
+import { styled } from "@mui/system";
+import RightSidebar from "./right-sidebar/RightSidebar";
+import ServerSidebar from "./server-sidebar-huyen/ServerSidebar";
+import { Outlet } from "react-router";
+import { Box } from "@mui/material";
+import FormDialog from "../../components/FormDialog";
 
 const FHBox = styled(Box)({
-  height: '100%',
-})
+  height: "100%",
+});
 
 const MainLayout = () => {
-
   return (
     <FHBox>
       {/* Prompt for username if not set yet (for users signed up with Google) */}
@@ -19,7 +18,7 @@ const MainLayout = () => {
 
       {/* Sidebar */}
       <FHBox
-        display={{ xs: 'none', md: 'block' }}
+        display={{ xs: "none", md: "block" }}
         width="240px"
         position="fixed"
       >
@@ -40,14 +39,13 @@ const MainLayout = () => {
           <FHBox flexGrow={1}>
             <Outlet />
           </FHBox>
-          <FHBox width="340px">
+          <FHBox width="340px" display={{ xs: "none", md: "block" }}>
             <RightSidebar />
           </FHBox>
         </FHBox>
-
       </FHBox>
     </FHBox>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;

@@ -41,7 +41,7 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
   const navigate = useNavigate();
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate("/");
     }
   }, [user]);
 
@@ -64,14 +64,14 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
     event.preventDefault();
     if (!validator.isEmail(email)) {
       toast.error("Please enter a valid email address", {
-        position: 'top-center',
+        position: "top-center",
       });
       return;
     }
 
     if (!password) {
       toast.error("Please enter your password", {
-        position: 'top-center',
+        position: "top-center",
       });
       return;
     }
@@ -83,7 +83,7 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
       })
       .catch((error) => {
         toast.error("Invalid email or password. Please try again.", {
-          position: 'top-center',
+          position: "top-center",
         });
       });
   };
@@ -180,34 +180,37 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
             }}
           />
 
-        {/* Login with email + password */}
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ marginTop: "25px", borderRadius: "8px" }}
-        >
-          Log In
-        </Button>
-        
-        {/* Login with Google */}
-        <Button 
-          variant="contained" 
-          onClick={() => { signInWithGoogle() }}
-          sx={{ marginTop: '15px', width: '100%', borderRadius: '8px' }}
-        >
-          Sign in with Google
-        </Button>
-      </form>
+          {/* Login with email + password */}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ marginTop: "25px", borderRadius: "8px" }}
+          >
+            Log In
+          </Button>
 
           {/* Login with Google */}
           <Button
             variant="contained"
-            onClick={() => { signInWithGoogle() }}
+            onClick={() => {
+              signInWithGoogle();
+            }}
+            sx={{ marginTop: "15px", width: "100%", borderRadius: "8px" }}
           >
             Sign in with Google
           </Button>
         </form>
+
+        {/* Login with Google */}
+        <Button
+          variant="contained"
+          onClick={() => {
+            signInWithGoogle();
+          }}
+        >
+          Sign in with Google
+        </Button>
         <Link
           component="button"
           onClick={onForgotPassword}
@@ -216,7 +219,6 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
           Forgot your password?
         </Link>
         {/* Other log-in options */}
-        {/* <Button onClick={handleGoogleLogin}>Login with Google</Button> */}
 
         {/* Registration */}
         <Typography sx={{ color: "#B5BAC1", marginTop: "20px" }}>
