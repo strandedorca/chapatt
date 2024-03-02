@@ -168,6 +168,7 @@ const ServerSidebar = () => {
                 username={user.username}
                 displayName={user.displayName}
                 photoUrl={user.photoUrl}
+                status={currentUser.status}
               />
             ))}
           </Box>
@@ -259,7 +260,7 @@ const ServerSidebar = () => {
         >
           <Avatar
             sx={{ width: "32px", height: "32px" }}
-            src={user?.photoURL as any}
+            src={currentUser.photoURL as any}
           />
           <EllipsisOverflowDiv>
             <EllipsisOverflowDiv>{currentUser.displayName}</EllipsisOverflowDiv>

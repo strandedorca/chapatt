@@ -75,11 +75,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
           Continute
         </Button>
         <Typography>
-          <Link
-            component="button"
-            onClick={onSwitchToLogin}
-            sx={{ cursor: "pointer", color: "#1976d2" }}
-          >
+          <Link component="button" onClick={onSwitchToLogin}>
             Back to login
           </Link>
         </Typography>
