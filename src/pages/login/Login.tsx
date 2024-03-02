@@ -179,33 +179,33 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
               style: { color: "#B5BAC1" },
             }}
           />
-          <Link
-            component="button"
-            onClick={onForgotPassword}
-            sx={{ cursor: "pointer" }}
+
+
+          {/* Login with email + password */}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ my: 2, borderRadius: "10px" }}
           >
-            Forgot your password?
-          </Link>
+            Log In
+          </Button>
 
-        {/* Login with email + password */}
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ marginTop: "25px", borderRadius: "10px" }}
+          {/* Login with Google */}
+          <Button
+            variant="contained"
+            onClick={() => { signInWithGoogle() }}
+          >
+            Sign in with Google
+          </Button>
+        </form>
+        <Link
+          component="button"
+          onClick={onForgotPassword}
+          sx={{ cursor: "pointer" }}
         >
-          Log In
-        </Button>
-        
-        {/* Login with Google */}
-        <Button 
-          variant="contained" 
-          onClick={() => { signInWithGoogle() }}
-        >
-          Sign in with Google
-        </Button>
-      </form>
-
+          Forgot your password?
+        </Link>
         {/* Other log-in options */}
         {/* <Button onClick={handleGoogleLogin}>Login with Google</Button> */}
 
