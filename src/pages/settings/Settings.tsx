@@ -114,14 +114,14 @@ const Setting = () => {
     dispatch(deleteUserDocument(user?.uid ?? "") as any);
     setDeleteModalOpen(false);
   };
+    const handleCancelled = () => {
+        setDeleteModalOpen(false);
+    };
+    const handleLogOut = () => {
+        auth.signOut();
+        navigate('/login')
+    }
 
-  const handleCancelled = () => {
-    setDeleteModalOpen(false);
-  };
-  const handleLogOut = () => {
-    auth.signOut();
-    navigate("/");
-  };
 
   let mainBody;
   switch (selectedTab.toLowerCase()) {
