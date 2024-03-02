@@ -180,16 +180,25 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
             }}
           />
 
-
-          {/* Login with email + password */}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ my: 2, borderRadius: "10px" }}
-          >
-            Log In
-          </Button>
+        {/* Login with email + password */}
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{ marginTop: "25px", borderRadius: "8px" }}
+        >
+          Log In
+        </Button>
+        
+        {/* Login with Google */}
+        <Button 
+          variant="contained" 
+          onClick={() => { signInWithGoogle() }}
+          sx={{ marginTop: '15px', width: '100%', borderRadius: '8px' }}
+        >
+          Sign in with Google
+        </Button>
+      </form>
 
           {/* Login with Google */}
           <Button
