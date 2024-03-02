@@ -182,7 +182,7 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
           <Link
             component="button"
             onClick={onForgotPassword}
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", marginTop: '10px' }}
           >
             Forgot your password?
           </Link>
@@ -192,7 +192,7 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
           type="submit"
           variant="contained"
           fullWidth
-          sx={{ marginTop: "25px", borderRadius: "10px" }}
+          sx={{ marginTop: "25px", borderRadius: "8px" }}
         >
           Log In
         </Button>
@@ -201,6 +201,7 @@ function Login({ onSwitch, onForgotPassword }: LoginProps) {
         <Button 
           variant="contained" 
           onClick={() => { signInWithGoogle() }}
+          sx={{ marginTop: '15px', width: '100%', borderRadius: '8px' }}
         >
           Sign in with Google
         </Button>
