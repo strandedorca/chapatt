@@ -88,6 +88,7 @@ const Setting = () => {
     };
     const handleLogOut = () => {
         auth.signOut();
+        navigate('/login')
     }
 
     let mainBody;
