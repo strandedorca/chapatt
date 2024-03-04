@@ -1,8 +1,11 @@
-import { createSlice, current } from "@reduxjs/toolkit/react";
+import { ThunkAction, UnknownAction, createSlice, current } from "@reduxjs/toolkit/react";
 import { arrayRemove, arrayUnion, collection, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { setConversation } from "./messagesSlice";
 import { usernameExistsPromise } from "../components/helper-functions";
+import { AppThunk } from "../types";
+import { RootState } from "../main";
+import { Unsubscribe } from "firebase/auth";
 
 const initialState: any = {
     currentList: 'friends',
@@ -28,12 +31,16 @@ const friendsSlice = createSlice({
 
 export const addAnEmptyFriendsDoc = (username: any) => {
     return async () => {
-        // Add to friendsCollectionRef
-        await setDoc(doc(db, 'friends', username), {
-            friends: [],
-            pending: [],
-            blocked: [],
-        });
+        try {
+            // Add to friendsCollectionRef
+            await setDoc(doc(db, 'friends', username), {
+                friends: [],
+                pending: [],
+                blocked: [],
+            });
+        } catch (error) {
+            console.log('Error initializing friends list.', error);
+        }
     }
 }
 
@@ -82,7 +89,7 @@ export const subscribeToFriendList = (username: string) => {
             const documentRef = doc(db, 'friends', username);
             // Subscribe to the user friends document
             try {
-                const unsubscriber = onSnapshot(documentRef, (doc) => {
+                const unsubscriber: Unsubscribe = onSnapshot(documentRef, (doc) => {
                     if (doc.exists()) {
                         const data = doc.data();
                         dispatch(setFriendList(data));
@@ -101,32 +108,60 @@ export const subscribeToFriendList = (username: string) => {
 
 export const acceptFriendRequest = ({ username, senderUsername }: any) => {
     return async () => {
-        if (username) {
-            const friendsCollectionRef = collection(db, 'friends');
-            // Add to friendslist of currentUser
-            await updateDoc(doc(friendsCollectionRef, username), {
-                friends: arrayUnion(senderUsername),
-            });
-            // Add to friendsList of sender
-            await updateDoc(doc(friendsCollectionRef, senderUsername), {
-                friends: arrayUnion(username),
-            });
-            // Delete from pending list
-            await updateDoc(doc(friendsCollectionRef, username), {
-                pending: arrayRemove(senderUsername),
-            });
+        try {
+            if (username) {
+                const friendsCollectionRef = collection(db, 'friends');
+                // Add to friendslist of currentUser
+                await updateDoc(doc(friendsCollectionRef, username), {
+                    friends: arrayUnion(senderUsername),
+                });
+                // Add to friendsList of sender
+                await updateDoc(doc(friendsCollectionRef, senderUsername), {
+                    friends: arrayUnion(username),
+                });
+                // Delete from pending list
+                await updateDoc(doc(friendsCollectionRef, username), {
+                    pending: arrayRemove(senderUsername),
+                });
+            }
+        } catch (error) {
+            console.log('Error accepting friend', error);
+        }
+    }
+}
+
+export const deleteFriend = ({ username, friendUsername }: { username: string; friendUsername: string; }): AppThunk<void> => {
+    return async () => {
+        try {
+            if (username) {
+                const friendsCollectionRef = collection(db, 'friends');
+                // Delete from current user's friend list
+                await updateDoc(doc(friendsCollectionRef, username), {
+                    friends: arrayRemove(friendUsername),
+                });
+                // Delete from friend's friend list
+                await updateDoc(doc(friendsCollectionRef, friendUsername), {
+                    friends: arrayRemove(username),
+                });
+            }
+        } catch (error) {
+            console.log('Error deleting friend', error);
         }
     }
 }
 
 export const refuseFriendRequest = ({ username, senderUsername }: any) => {
     return async () => {
-        if (username) {
-            const friendsCollectionRef = collection(db, 'friends');
-            // Delete from pending list
-            await updateDoc(doc(friendsCollectionRef, username), {
-                pending: arrayRemove(senderUsername),
-            });
+        try {
+            if (username) {
+                const friendsCollectionRef = collection(db, 'friends');
+                // Delete from pending list
+                await updateDoc(doc(friendsCollectionRef, username), {
+                    pending: arrayRemove(senderUsername),
+                });
+            }
+        } catch (error) {
+            console.log('Error refusing friend request', error);
         }
     }
 }
@@ -148,7 +183,7 @@ export const blockFriend = ({ username, blockedUsername }: any) => {
                 friends: arrayRemove(username)
             });
         } catch (error) {
-            console.log(error);
+            console.log('Error blocking user. Please try again.', error);
         }
     }
 }
@@ -161,7 +196,7 @@ export const unblockFriend = ({ username, blockedUsername }: any) => {
                 blocked: arrayRemove(blockedUsername)
             })
         } catch (error) {
-            console.log(error);
+            console.log('Error unblocking user. Please try again.', error);
         }
     }
 }

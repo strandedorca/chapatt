@@ -23,39 +23,7 @@ import Underconstruction from "../Underconstruction";
 import AccountSettings from "./AccountSettings";
 import ProfileSettings from "./ProfileSettings";
 
-const Setting = () => {
-  const [selectedTab, setSelectedTab] = React.useState("Account");
-  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const dispatch = useDispatch();
-  const [user] = useAuthState(auth);
-  const theme: any = useTheme();
-  const navigate = useNavigate();
-
-  const settings = {
-    "USER SETTINGS": [
-      "Account",
-      "Profile",
-      "Privacy & Safety",
-      "Family Centre",
-      "Authorised Apps",
-      "Devices",
-      "Connections",
-      "Clips",
-      "Friend Requests",
-    ],
-    "APP SETTINGS": [
-      "Appearance",
-      "Accessibility",
-      "Voice & Video",
-      "Chat",
-      "Notifications",
-      "Keybinds",
-      "Language",
-      "Streamer Mode",
-      "Advanced",
-    ],
-  };
-  const CustomScrollbar = styled(Box)`
+const CustomScrollbar = styled(Box)`
     width: 350px;
     height: 100vh;
     color: #b5bac1;
@@ -85,20 +53,34 @@ const Setting = () => {
     }
   `;
 
-  const BoxModal = styled(Box)(({ theme }) => ({
-    position: "absolute",
-    top: `calc(50% - 50px)`,
-    left: "50%",
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[24],
-    opacity: 0.9,
-    maxWidth: 400,
-    padding: 24,
-    transform: "translate(-50%, -50%)",
-    "& .MuiDialogContent-root": {
-      padding: theme.spacing(2),
-    },
-  }));
+const BoxModal = styled(Box)(({ theme }) => ({
+  position: "absolute",
+
+  top: `calc(50% - 50px)`,
+  left: "50%",
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[24],
+  opacity: 0.9,
+  maxWidth: 400,
+  padding: 24,
+  transform: "translate(-50%, -50%)",
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+}));
+
+const Setting = () => {
+  const [selectedTab, setSelectedTab] = React.useState('Account');
+  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const [user] = useAuthState(auth);
+  const navigate = useNavigate();
+  const theme: any = useTheme();
+
+  const settings = {
+    'USER SETTINGS': ['Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
+    'APP SETTINGS': ['Appearance', 'Accessibility', 'Voice & Video', 'Chat', 'Notifications', 'Keybinds', 'Language', 'Streamer Mode', 'Advanced']
+  };
 
   const handleListItemClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -114,13 +96,13 @@ const Setting = () => {
     dispatch(deleteUserDocument(user?.uid ?? "") as any);
     setDeleteModalOpen(false);
   };
-    const handleCancelled = () => {
-        setDeleteModalOpen(false);
-    };
-    const handleLogOut = () => {
-        auth.signOut();
-        navigate('/login')
-    }
+  const handleCancelled = () => {
+    setDeleteModalOpen(false);
+  };
+  const handleLogOut = () => {
+    auth.signOut();
+    navigate('/login')
+  }
 
 
   let mainBody;

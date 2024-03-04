@@ -18,265 +18,255 @@ import { auth, db } from "../../../firebase/firebase";
 import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectAllFriends,
-  subscribeToFriendList,
+    selectAllFriends,
+    subscribeToFriendList,
 } from "../../../redux-slices/friendsSlice";
 import {
-  query,
-  collection,
-  where,
-  getDocs,
-  doc,
-  getDoc,
+    query,
+    collection,
+    where,
+    getDocs,
+    doc,
+    getDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 
 export const Button = styled("button")(({ theme }) => ({
-  fontFamily: "Inter",
-  border: "none",
-  borderRadius: "5px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-start",
-  backgroundColor: "transparent",
-  color: "#fff",
-  gap: "15px",
-  fontSize: "1rem",
-  width: "100%",
-  padding: "10px",
-  cursor: "pointer",
-  "&:hover": {
-    backgroundColor: theme.palette.background.default,
-  },
+    fontFamily: "Inter",
+    border: "none",
+    borderRadius: "5px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    backgroundColor: "transparent",
+    color: "#fff",
+    gap: "15px",
+    fontSize: "1rem",
+    width: "100%",
+    padding: "10px",
+    cursor: "pointer",
+    "&:hover": {
+        backgroundColor: theme.palette.background.default,
+    },
 }));
 
 const ServerSidebar = () => {
-  const theme: any = useTheme();
-  const currentUser = useSelector(selectCurrentUser);
-  const [user] = useAuthState(auth);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [usersInfo, setUsersInfo] = useState<any>([]);
-  const allFriends = useSelector(selectAllFriends);
-  const dispatch = useDispatch();
-  let content;
+    const theme: any = useTheme();
+    const currentUser = useSelector(selectCurrentUser);
+    const [user] = useAuthState(auth);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [usersInfo, setUsersInfo] = useState<any>([]);
+    const allFriends = useSelector(selectAllFriends);
+    const dispatch = useDispatch();
+    let content;
 
-  // Update friend list
-  useEffect(() => {
-    const unsubscriber = dispatch(
-      subscribeToFriendList(currentUser.username) as any
-    );
-    return () => unsubscriber;
-  }, [currentUser]);
-
-  useEffect(() => {
-    allFriends.map(async (friendUsername: any) => {
-      try {
-        const newUsersInfo = [];
-        const userQuery = query(
-          collection(db, "users"),
-          where("username", "==", friendUsername)
+    // Update friend list
+    useEffect(() => {
+        const unsubscriber = dispatch(
+            subscribeToFriendList(currentUser.username) as any
         );
-        const userSnap = await getDocs(userQuery);
-        if (!userSnap.empty) {
-          newUsersInfo.push({
-            displayName: userSnap.docs[0].data().displayName,
-            username: userSnap.docs[0].data().username,
-            photoURL: userSnap.docs[0].data().photoURL,
-          });
-        } else {
-          console.log("Username doesn't exist");
-        }
-        setUsersInfo(newUsersInfo);
-      } catch (error) {
-        console.error("Error retrieving user information.", error);
-      }
-    });
-    return () => {
-      setUsersInfo([]);
-    };
-  }, [user, allFriends]);
+        return () => unsubscriber;
+    }, [currentUser]);
 
-  // PLACEHOLDER
-  const channels: Channel[] = [
-    {
-      type: "voice",
-      name: "ABC",
-      id: "1",
-    },
-    {
-      type: "text",
-      name: "BCD",
-      id: "2",
-    },
-    {
-      type: "text",
-      name: "BCD",
-      id: "3",
-    },
-    {
-      type: "voice",
-      name: "BCD",
-      id: "4",
-    },
-  ];
-  const textChannels = channels.filter((channel) => channel.type === "text");
-  const voiceChannels = channels.filter((channel) => channel.type === "voice");
+    useEffect(() => {
+        allFriends.map(async (friendUsername: any) => {
+            try {
+                const newUsersInfo = [];
+                const userQuery = query(
+                    collection(db, "users"),
+                    where("username", "==", friendUsername)
+                );
+                const userSnap = await getDocs(userQuery);
+                if (!userSnap.empty) {
+                    newUsersInfo.push({
+                        displayName: userSnap.docs[0].data().displayName,
+                        username: userSnap.docs[0].data().username,
+                        photoURL: userSnap.docs[0].data().photoURL,
+                    });
+                } else {
+                    console.log("Username doesn't exist");
+                }
+                setUsersInfo(newUsersInfo);
+            } catch (error) {
+                console.error("Error retrieving user information.", error);
+            }
+        });
+        return () => {
+            setUsersInfo([]);
+        };
+    }, [user, allFriends]);
 
-  // Check pathname to show different UI
-  if (location.pathname.startsWith("/me")) {
-    content = (
-      <Box>
-        {/* SearchBar */}
-        <Box padding="10px">
-          <TextField
-            variant="standard"
-            placeholder="Find or start a conversation"
-            fullWidth
-            size="small"
-          />
-        </Box>
+    // PLACEHOLDER
+    const channels: Channel[] = [
+        {
+            type: "voice",
+            name: "ABC",
+            id: "1",
+        },
+        {
+            type: "text",
+            name: "BCD",
+            id: "2",
+        },
+        {
+            type: "text",
+            name: "BCD",
+            id: "3",
+        },
+        {
+            type: "voice",
+            name: "BCD",
+            id: "4",
+        },
+    ];
+    const textChannels = channels.filter((channel) => channel.type === "text");
+    const voiceChannels = channels.filter((channel) => channel.type === "voice");
 
-        <Box padding="10px">
-          {/* Friends Button */}
-          <Button
-            onClick={() => {
-              navigate("/me");
-            }}
-          >
-            <PeopleAltIcon />
-            Friends
-          </Button>
-          {/* Title + Add message button */}
-          <Box
+    // Check pathname to show different UI
+    if (location.pathname.startsWith("/me")) {
+        content = (
+            <Box>
+                <Box padding="10px">
+                    {/* Friends Button */}
+                    <Button
+                        onClick={() => {
+                            navigate("/me");
+                        }}
+                    >
+                        <PeopleAltIcon />
+                        Friends
+                    </Button>
+                    {/* Title + Add message button */}
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                    >
+                        <Title content="Direct messages" />
+                        <CustomTooltip title="Create DM">
+                            <Button style={{ width: "auto" }}>+</Button>
+                        </CustomTooltip>
+                    </Box>
+
+                    {/* Conversations */}
+                    <Box>
+                        {usersInfo.map((user: any) => (
+                            <ConversationsNavigationItem
+                                key={user.username}
+                                username={user.username}
+                                displayName={user.displayName}
+                                photoUrl={user.photoUrl}
+                                status={currentUser.status}
+                            />
+                        ))}
+                    </Box>
+                </Box>
+            </Box>
+        );
+    } else {
+        content = (
+            <Box padding="10px">
+                <Button
+                    onClick={() => {
+                        navigate("/i");
+                    }}
+                >
+                    <InfoRoundedIcon />
+                    <div>Information</div>
+                </Button>
+
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Title content="Text Channels" />
+                    <CustomTooltip title="New text channel">
+                        <Button style={{ width: "auto" }}>+</Button>
+                    </CustomTooltip>
+                </Box>
+                {textChannels.map((channel: Channel) => {
+                    return (
+                        <Button
+                            key={channel.id}
+                            onClick={() => {
+                                navigate(`${channel.id}`);
+                            }}
+                        >
+                            <TagRoundedIcon />
+                            <div>Information</div>
+                        </Button>
+                    );
+                })}
+
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Title content="Voice Channels" />
+                    <CustomTooltip title="New voice channel">
+                        <Button sx={{ width: "auto" }}>+</Button>
+                    </CustomTooltip>
+                </Box>
+                {voiceChannels.map((channel: Channel) => {
+                    return (
+                        <Button
+                            onClick={() => {
+                                navigate(`${channel.id}`);
+                            }}
+                        >
+                            <VolumeDownRoundedIcon />
+                            <div>{channel.name}</div>
+                        </Button>
+                    );
+                })}
+            </Box>
+        );
+    }
+
+    return (
+        <Box
+            height="100%"
             display="flex"
             justifyContent="space-between"
-            alignItems="center"
-          >
-            <Title content="Direct messages" />
-            <CustomTooltip title="Create DM">
-              <Button style={{ width: "auto" }}>+</Button>
-            </CustomTooltip>
-          </Box>
-
-          {/* Conversations */}
-          <Box>
-            {usersInfo.map((user: any) => (
-              <ConversationsNavigationItem
-                key={user.username}
-                username={user.username}
-                displayName={user.displayName}
-                photoUrl={user.photoUrl}
-                status={currentUser.status}
-              />
-            ))}
-          </Box>
-        </Box>
-      </Box>
-    );
-  } else {
-    content = (
-      <Box padding="10px">
-        <Button
-          onClick={() => {
-            navigate("/i");
-          }}
+            flexDirection="column"
+            sx={{
+                backgroundColor: theme.palette.background.paper,
+            }}
         >
-          <InfoRoundedIcon />
-          <div>Information</div>
-        </Button>
-
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Title content="Text Channels" />
-          <CustomTooltip title="New text channel">
-            <Button style={{ width: "auto" }}>+</Button>
-          </CustomTooltip>
-        </Box>
-        {textChannels.map((channel: Channel) => {
-          return (
-            <Button
-              key={channel.id}
-              onClick={() => {
-                navigate(`${channel.id}`);
-              }}
+            {/* Main */}
+            {content}
+            {/* Footer - always shown */}
+            <Box
+                sx={{
+                    paddingX: "10px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    backgroundColor: theme.palette.background.default,
+                    height: "60px",
+                }}
             >
-              <TagRoundedIcon />
-              <div>Information</div>
-            </Button>
-          );
-        })}
-
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Title content="Voice Channels" />
-          <CustomTooltip title="New voice channel">
-            <Button sx={{ width: "auto" }}>+</Button>
-          </CustomTooltip>
+                <Box
+                    display="flex"
+                    gap="10px"
+                    alignItems="center"
+                    sx={{ width: "170px" }}
+                >
+                    <Avatar
+                        sx={{ width: "32px", height: "32px" }}
+                        src={currentUser.photoURL as any}
+                    />
+                    <EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{currentUser.displayName}</EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>{currentUser.status}</EllipsisOverflowDiv>
+                    </EllipsisOverflowDiv>
+                </Box>
+                <IconButton
+                    onClick={() => {
+                        navigate("/settings");
+                    }}
+                >
+                    <SettingsRoundedIcon />
+                </IconButton>
+            </Box>
         </Box>
-        {voiceChannels.map((channel: Channel) => {
-          return (
-            <Button
-              onClick={() => {
-                navigate(`${channel.id}`);
-              }}
-            >
-              <VolumeDownRoundedIcon />
-              <div>{channel.name}</div>
-            </Button>
-          );
-        })}
-      </Box>
     );
-  }
-
-  return (
-    <Box
-      height="100%"
-      display="flex"
-      justifyContent="space-between"
-      flexDirection="column"
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-      }}
-    >
-      {/* Main */}
-      {content}
-      {/* Footer - always shown */}
-      <Box
-        sx={{
-          paddingX: "10px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: theme.palette.background.default,
-          height: "60px",
-        }}
-      >
-        <Box
-          display="flex"
-          gap="10px"
-          alignItems="center"
-          sx={{ width: "170px" }}
-        >
-          <Avatar
-            sx={{ width: "32px", height: "32px" }}
-            src={currentUser.photoURL as any}
-          />
-          <EllipsisOverflowDiv>
-            <EllipsisOverflowDiv>{currentUser.displayName}</EllipsisOverflowDiv>
-            <EllipsisOverflowDiv>{currentUser.status}</EllipsisOverflowDiv>
-          </EllipsisOverflowDiv>
-        </Box>
-        <IconButton
-          onClick={() => {
-            navigate("/settings");
-          }}
-        >
-          <SettingsRoundedIcon />
-        </IconButton>
-      </Box>
-    </Box>
-  );
 };
 
 export default ServerSidebar;
