@@ -6,7 +6,7 @@ Welcome to our Chapatt project repository!
 
 Our project aims to develop a web-based chat application inspired by popular platforms like Discord, Messenger, and Telegram. This application will facilitate real-time communication through text, allowing users to create, join, and manage personal and group chat channels.
 
-## Features
+## Main Features
 
 1. Real-Time Messaging: Users can send and receive messages instantly in personal chats or servers.
 2. Server Management: 
