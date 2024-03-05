@@ -1,10 +1,30 @@
-import { createSlice } from "@reduxjs/toolkit/react";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit/react";
 // import { User } from "../types";
 import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
-import { User, deleteUser, updateProfile } from "firebase/auth";
+import { User, UserCredential, deleteUser, updateProfile } from "firebase/auth";
+import { AppDispatch, RootState } from "../main";
 
-const initialState = {
+
+export interface CurrentUserState {
+    uid: string;
+    username: string;
+    email: string;
+    displayName: string;
+    photoURL: string;
+    createdAt: string;
+    status: string;
+    bannerColor: string;
+    bannerURL: string;
+    aboutMe: string;
+}
+
+interface UpdateCurrentUserPayload {
+    field: keyof CurrentUserState;
+    value: string;
+}
+
+const initialState: CurrentUserState = {
     uid: '',
     email: '',
     username: '',
@@ -21,7 +41,7 @@ const currentUserSlice = createSlice({
     name: 'currentUser',
     initialState,
     reducers: {
-        updateCurrentUser(state: any, action: any) {
+        updateCurrentUser(state: CurrentUserState, action: PayloadAction<UpdateCurrentUserPayload>) {
             const { field, value } = action.payload;
             state[field] = value;
         },
@@ -41,7 +61,7 @@ const currentUserSlice = createSlice({
 })
 
 export const getUserDocument = (user: User) => {
-    return async (dispatch: any) => {
+    return async (dispatch: AppDispatch) => {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
@@ -52,16 +72,15 @@ export const getUserDocument = (user: User) => {
     }
 }
 
-export const addUserDocument = (user: any) => {
+export const addUserDocument = (user: User) => {
     return async () => {
         const {
             uid,
             email,
             displayName,
             photoURL = '',
-            username = null,
         } = user;
-
+        let username = null;
         let dateObject;
         if (user.metadata?.creationTime) {
             dateObject = new Date(user.metadata.creationTime);
@@ -89,9 +108,16 @@ export const addUserDocument = (user: any) => {
     }
 }
 
-export const updateUserDocument = (payload: any) => {
+export interface UpdateUserPayload {
+    user: {
+        uid: string;
+    };
+    [key: string]: string | { uid: string };
+}
+
+export const updateUserDocument = (payload: UpdateUserPayload) => {
     // Parameters: { user, field: value, }
-    return async (dispatch: any) => {
+    return async (dispatch: AppDispatch) => {
         const user = payload.user;
         const userRef = doc(db, 'users', user.uid);
         const field = Object.keys(payload)[1];
@@ -110,7 +136,7 @@ export const updateUserDocument = (payload: any) => {
                 })
             }
         }
-        dispatch(getUserDocument(user));
+        dispatch(getUserDocument(user as User));
         console.log('User updated successfully');
     }
 }
@@ -134,7 +160,12 @@ export const deleteUserDocument = (uid: string) => {
     }
 }
 
-export const changePassword = ({ user, newPassword }: any) => {
+
+interface ExtendedUser extends User {
+    updatePassword: (newPassword: string) => Promise<UserCredential>;
+}
+
+export const changePassword = ({ user, newPassword }: { user: ExtendedUser, newPassword: string }) => {
     user.updatePassword(newPassword).then(() => {
         console.log('Password updated successfully');
     }).catch((error: Error) => {
@@ -143,6 +174,6 @@ export const changePassword = ({ user, newPassword }: any) => {
 }
 
 export const { setCurrentUser, updateCurrentUser } = currentUserSlice.actions;
-export const selectCurrentUser = (state: any): any => (state.currentUser);
-export const selectCurrentUserEmail = (state: any): any => (state.currentUser.email);
+export const selectCurrentUser = (state: RootState) => (state.currentUser);
+export const selectCurrentUserEmail = (state: RootState) => (state.currentUser.email);
 export default currentUserSlice.reducer

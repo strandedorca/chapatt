@@ -13,8 +13,8 @@ export const usernameExistsPromise = async (username: string) => {
             return Promise.reject('Username already exists');
         }
         return Promise.resolve('Username available');
-    } catch (error: any) {
-        console.log(error.code, error.message);
+    } catch (error) {
+        console.log(error);
     }
 }
 

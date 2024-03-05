@@ -66,7 +66,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const BackButton = styled(Button)(({ theme }) => ({
+const BackButton = styled(Button)(({ }) => ({
   outline: "none",
   border: "none",
   color: "white",

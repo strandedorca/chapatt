@@ -13,7 +13,6 @@ import {
   PushPin,
   WifiCalling3,
 } from "@mui/icons-material";
-import styles from "../../../App.module.css";
 import { darkTheme } from "../../../theme";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";

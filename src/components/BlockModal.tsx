@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Modal, Typography, Box, Button, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { blockFriend, sendFriendRequest } from '../redux-slices/friendsSlice';
-import { useTheme } from '@emotion/react';
+import { blockFriend } from '../redux-slices/friendsSlice';
 import { selectCurrentUser } from '../redux-slices/currentUserSlice';
 import { darkTheme } from '../theme';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { AppDispatch } from '../main';
 
 const style = {
     position: 'absolute',
@@ -23,11 +23,10 @@ const style = {
 
 const BlockModal = ({ modalOpen, handleClose }: { modalOpen: boolean, handleClose: () => void }) => {
     const [username, setUsername] = useState('');
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const [isValid, setisValid] = useState(false);
     const currentUser = useSelector(selectCurrentUser);
     const [showError, setShowError] = useState(false);
-    const theme: any = useTheme();
 
     const usernameExists = async (username: string) => {
         const usersCollectionRef = collection(db, 'users');
@@ -48,7 +47,7 @@ const BlockModal = ({ modalOpen, handleClose }: { modalOpen: boolean, handleClos
         };
         usernameExists(username)
             .then(() => {
-                dispatch(blockFriend(payload) as any);
+                dispatch(blockFriend(payload));
                 setUsername('');
                 setShowError(false);
                 handleClose();
@@ -88,7 +87,7 @@ const BlockModal = ({ modalOpen, handleClose }: { modalOpen: boolean, handleClos
                         fullWidth
                         sx={{ marginBottom: '20px' }}
                     />
-                    <Typography sx={{ marginBottom: '20px', fontStyle: 'italic', color: theme.palette.error.main }} display={showError ? 'block' : 'none'}>
+                    <Typography sx={{ marginBottom: '20px', fontStyle: 'italic', color: darkTheme.palette.error.main }} display={showError ? 'block' : 'none'}>
                         Username does not exist!
                     </Typography>
                     <Button

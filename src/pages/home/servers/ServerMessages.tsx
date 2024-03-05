@@ -1,26 +1,14 @@
-import { IconButton, TextField, FormControl } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import AddReactionRoundedIcon from "@mui/icons-material/AddReactionRounded";
 import GifBoxRoundedIcon from "@mui/icons-material/GifBoxRounded";
 import SendIcon from "@mui/icons-material/Send";
-import { useTheme } from "@emotion/react";
-import { FormEvent, MouseEventHandler, useEffect, useState } from "react";
-import { auth, db } from "../../../firebase/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { useAuthState } from "react-firebase-hooks/auth";
-import {
-    selectAllMessagesWithUser,
-    selectShow,
-    sendMessageToUser,
-    subscribeToMessages,
-} from "../../../redux-slices/messagesSlice";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Message } from "../../../types";
-import { unsubscribe } from "diagnostics_channel";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
-import { CircularProgress } from "@material-ui/core";
 import SingleMessage from "./../main-huyen/SingleMessage.tsx";
 import {
     selectMessagesFromServer,
@@ -29,10 +17,11 @@ import {
 } from "../../../redux-slices/serverSlice.tsx";
 import { Unsubscribe } from "firebase/auth";
 import styles from './../Home.module.css';
+import { AppDispatch } from "../../../main.tsx";
+import { darkTheme } from "../../../theme.ts";
 
 const ServerMessages = () => {
-    const dispatch = useDispatch();
-    const theme: any = useTheme();
+    const dispatch: AppDispatch = useDispatch();
     const [message, setMessage] = useState("");
     const messages = useSelector(selectMessagesFromServer);
 
@@ -42,16 +31,18 @@ const ServerMessages = () => {
 
     // Update messages real time
     useEffect(() => {
-        let unsubscriber: Unsubscribe;
+        let unsubscriber: Unsubscribe | undefined;
         const fetchMessages = async () => {
             try {
                 if (serverName) {
                     unsubscriber = await dispatch(
-                        subscribeToServer(serverName) as any
+                        subscribeToServer(serverName)
                     );
                     return () => {
                         // Unsubscribe from messages when the component unmounts
-                        unsubscriber();
+                        if (unsubscriber) {
+                            unsubscriber();
+                        }
                     };
                 }
             } catch (error) {
@@ -61,7 +52,7 @@ const ServerMessages = () => {
         fetchMessages();
     }, []);
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         if (message.trim() === "") {
             return;
@@ -70,7 +61,7 @@ const ServerMessages = () => {
             const from = currentUser.username;
             const to = serverName;
             const content = message;
-            dispatch(sendMessageToServer({ from, to, content }) as any);
+            dispatch(sendMessageToServer({ from, to, content }));
         }
         setMessage("");
     };
@@ -113,7 +104,7 @@ const ServerMessages = () => {
                 display="flex"
                 borderRadius="8px"
                 padding="10px"
-                sx={{ backgroundColor: theme.palette.background.paper }}
+                sx={{ backgroundColor: darkTheme.palette.background.paper }}
             >
                 {/* File Sharing Button */}
                 <IconButton>

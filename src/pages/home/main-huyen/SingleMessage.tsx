@@ -1,13 +1,16 @@
-import { Avatar, CircularProgress } from "@mui/material"
+import { Avatar } from "@mui/material"
 import { Box } from "@mui/system"
-import { collection, doc, getDoc, getDocs, limit, query, where } from "firebase/firestore";
+import { Timestamp, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
 import { useEffect, useState } from "react";
 
-// TO BE ADDED
-// interface
+interface MessageProp {
+    from: string,
+    content: string,
+    createdAt: Timestamp,
+}
 
-const Message = ({ from, content, createdAt }: any) => {
+const Message = ({ from, content, createdAt }: MessageProp) => {
     const [userInfo, setUserInfo] = useState({
         displayName: '',
         photoURL: '',
@@ -38,7 +41,7 @@ const Message = ({ from, content, createdAt }: any) => {
         getUserInfo();
     }, [from]);
 
-    const formatDate = (timestamp: any) => {
+    const formatDate = (timestamp: Timestamp) => {
         const date = timestamp.toDate();
         const now = new Date();
         const yesterday = new Date(now);

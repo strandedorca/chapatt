@@ -1,11 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit/react";
-import { addDoc, collection, doc, serverTimestamp, getDocs, query, orderBy, onSnapshot, limit } from "firebase/firestore";
+import { addDoc, collection, doc, query, orderBy, onSnapshot, limit, Unsubscribe } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Message } from "../types";
+import { AppDispatch, RootState } from "../main";
 
-const initialState: any = {
+interface messagesSliceType {
+    messages: Message[],
+    unsubscribe: Unsubscribe | undefined,
+    show: boolean,
+}
+
+const initialState: messagesSliceType = {
     messages: [],
-    unsubscribe: null,
+    unsubscribe: undefined,
     show: false,
 };
 
@@ -19,7 +26,13 @@ const messagesSlice = createSlice({
     }
 })
 
-export const sendMessageToUser = (payload: any) => {
+interface sendMessage {
+    from: string,
+    to: string | undefined,
+    content: string,
+}
+
+export const sendMessageToUser = (payload: sendMessage) => {
     // payload: from: username, to: username, content: string
     return async () => {
         const { from, to, content } = payload;
@@ -37,8 +50,8 @@ export const sendMessageToUser = (payload: any) => {
     }
 }
 
-export const subscribeToMessages = ({ username1, username2 }: any) => {
-    return async (dispatch: any) => {
+export const subscribeToMessages = ({ username1, username2 }: { username1: string, username2: string | undefined }) => {
+    return async (dispatch: AppDispatch) => {
         // Get ref to conversation
         const sortedUsernames = [username1, username2].sort();
         const conversationId = `${sortedUsernames[0]}_${sortedUsernames[1]}`;
@@ -65,6 +78,6 @@ export const subscribeToMessages = ({ username1, username2 }: any) => {
 }
 
 export const { setConversation } = messagesSlice.actions;
-export const selectAllMessagesWithUser = (state: any): any => (state.messages.messages);
-export const selectShow = (state: any): any => (state.messages.show);
+export const selectAllMessagesWithUser = (state: RootState) => (state.messages.messages);
+export const selectShow = (state: RootState) => (state.messages.show);
 export default messagesSlice.reducer;

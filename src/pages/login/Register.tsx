@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Button, TextField, Typography, Link, Container, useTheme } from "@mui/material";
 import styles from "./Login.module.css";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { User, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../firebase/firebase";
 import { useDispatch } from "react-redux";
-import { addUserDocument, updateUserDocument } from "../../redux-slices/currentUserSlice";
+import { addUserDocument } from "../../redux-slices/currentUserSlice";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addAnEmptyFriendsDoc } from "../../redux-slices/friendsSlice";
+import { AppDispatch } from "../../main";
 
 interface RegisterProps {
   onSwitch: () => void;
@@ -17,7 +17,7 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
   const theme = useTheme();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [showUsernameWarning, setShowUsernameWarning] = useState(false);
 
@@ -53,11 +53,11 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
               displayName,
               photoUrl: '',
             }
-            dispatch(addUserDocument(user) as any);
+            dispatch(addUserDocument(user as any));
             updateProfile(userCredential.user, {
               displayName,
             });
-            dispatch(addAnEmptyFriendsDoc(username) as any)
+            dispatch(addAnEmptyFriendsDoc(username))
             navigate('/');
           })
           .catch((error) => {
@@ -70,7 +70,7 @@ const Register: React.FC<RegisterProps> = ({ onSwitch }) => {
       })
   };
 
-  
+
 
   return (
     <>

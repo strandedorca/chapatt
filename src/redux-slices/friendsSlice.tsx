@@ -3,8 +3,16 @@ import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, onSnapshot, 
 import { db } from "../firebase/firebase";
 import { AppThunk } from "../types";
 import { Unsubscribe } from "firebase/auth";
+import { AppDispatch, RootState } from "../main";
 
-const initialState: any = {
+interface friendsSliceProp {
+    currentList: string,
+    pending: string[],
+    friends: string[],
+    blocked: string[],
+}
+
+const initialState: friendsSliceProp = {
     currentList: 'friends',
     pending: [],
     friends: [],
@@ -26,7 +34,7 @@ const friendsSlice = createSlice({
     }
 })
 
-export const addAnEmptyFriendsDoc = (username: any) => {
+export const addAnEmptyFriendsDoc = (username: string) => {
     return async () => {
         try {
             // Add to friendsCollectionRef
@@ -42,7 +50,7 @@ export const addAnEmptyFriendsDoc = (username: any) => {
 }
 
 // Need to implement check for existing friends/blocked
-export const sendFriendRequest = ({ senderUsername, username }: any) => {
+export const sendFriendRequest = ({ senderUsername, username }: { senderUsername: string, username: string }) => {
     return async () => {
         const docRef = doc(db, 'friends', username);
         try {
@@ -80,7 +88,7 @@ export const sendFriendRequest = ({ senderUsername, username }: any) => {
 };
 
 export const subscribeToFriendList = (username: string) => {
-    return async (dispatch: any) => {
+    return async (dispatch: AppDispatch) => {
         if (username) {
             // Get ref to friendlist of current user
             const documentRef = doc(db, 'friends', username);
@@ -103,7 +111,7 @@ export const subscribeToFriendList = (username: string) => {
     }
 }
 
-export const acceptFriendRequest = ({ username, senderUsername }: any) => {
+export const acceptFriendRequest = ({ username, senderUsername }: { username: string, senderUsername: string }) => {
     return async () => {
         try {
             if (username) {
@@ -147,7 +155,7 @@ export const deleteFriend = ({ username, friendUsername }: { username: string; f
     }
 }
 
-export const refuseFriendRequest = ({ username, senderUsername }: any) => {
+export const refuseFriendRequest = ({ username, senderUsername }: { username: string, senderUsername: string }) => {
     return async () => {
         try {
             if (username) {
@@ -163,7 +171,7 @@ export const refuseFriendRequest = ({ username, senderUsername }: any) => {
     }
 }
 
-export const blockFriend = ({ username, blockedUsername }: any) => {
+export const blockFriend = ({ username, blockedUsername }: { username: string, blockedUsername: string }) => {
     return async () => {
         const currentUserRef = doc(db, 'friends', username);
         const blockedUserRef = doc(db, 'friends', blockedUsername);
@@ -185,7 +193,7 @@ export const blockFriend = ({ username, blockedUsername }: any) => {
     }
 }
 
-export const unblockFriend = ({ username, blockedUsername }: any) => {
+export const unblockFriend = ({ username, blockedUsername }: { username: string, blockedUsername: string }) => {
     return async () => {
         const currentUserRef = doc(db, 'friends', username);
         try {
@@ -216,10 +224,10 @@ export const getFriendInfo = (username: string) => {
     }
 }
 
-export const selectAllFriends = (state: any) => (state.friends.friends);
-export const selectPending = (state: any) => (state.friends.pending);
-export const selectBlocked = (state: any) => (state.friends.blocked);
-export const selectCurrentList = (state: any) => (state.friends.currentList);
+export const selectAllFriends = (state: RootState) => (state.friends.friends);
+export const selectPending = (state: RootState) => (state.friends.pending);
+export const selectBlocked = (state: RootState) => (state.friends.blocked);
+export const selectCurrentList = (state: RootState) => (state.friends.currentList);
 
 export const { setFriendList, setCurrentList } = friendsSlice.actions;
 export default friendsSlice.reducer

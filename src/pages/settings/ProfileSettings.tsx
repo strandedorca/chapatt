@@ -1,6 +1,7 @@
 import { Box, styled } from "@mui/system";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  UpdateUserPayload,
   selectCurrentUser,
   updateUserDocument,
 } from "../../redux-slices/currentUserSlice";
@@ -10,14 +11,11 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Toast from "../../components/Toast";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db, storage } from "../../firebase/firebase";
-import { useTheme } from "@emotion/react";
-import { doc, collection, getDoc } from "firebase/firestore";
+import { auth, storage } from "../../firebase/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { isValidUsername } from "../../components/helper-functions";
-import { addNewServer } from "../../redux-slices/serverSlice";
 import { AppDispatch } from "../../main";
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import { darkTheme } from "../../theme";
 
 // Styled components
 const Card = styled(Box)(({ theme }) => ({
@@ -84,7 +82,6 @@ interface ProfileSettingsProp {
 const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
   const [user] = useAuthState(auth);
   const dispatch: AppDispatch = useDispatch();
-  const theme: any = useTheme();
   const currentUser = useSelector(selectCurrentUser);
   const [editStatus, setEditStatus] = useState(false);
   const [editAboutMe, setEditAboutMe] = useState(false);
@@ -130,7 +127,7 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
         user,
         photoURL,
       }
-      await dispatch(updateUserDocument(payload));
+      await dispatch(updateUserDocument(payload as UpdateUserPayload));
       notify('success');
     } catch (error) {
       console.log('Error updating profile. Please try again.', error);
@@ -140,7 +137,7 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
   const handleStatusUpdate = async () => {
     if (editStatus && status !== currentUser.status) {
       try {
-        dispatch(updateUserDocument({ user, status }) as any);
+        dispatch(updateUserDocument({ user, status } as UpdateUserPayload));
         notify("success");
       } catch (error) {
         notify("error");
@@ -152,7 +149,7 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
   const handleAboutMeUpdate = async () => {
     if (editAboutMe && aboutMe !== currentUser.aboutMe) {
       try {
-        dispatch(updateUserDocument({ user, aboutMe }) as any);
+        dispatch(updateUserDocument({ user, aboutMe } as UpdateUserPayload));
         notify("success");
       } catch (error) {
         notify("error");
@@ -193,7 +190,7 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
             sx={{
               width: 120,
               height: 120,
-              border: `8px ${theme.palette.background.default} solid`,
+              border: `8px ${darkTheme.palette.background.default} solid`,
               position: 'relative'
             }}
           >

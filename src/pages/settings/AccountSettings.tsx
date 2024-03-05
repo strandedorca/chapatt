@@ -1,6 +1,7 @@
-import { Box, styled, useTheme } from "@mui/system";
+import { Box, styled } from "@mui/system";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  UpdateUserPayload,
   selectCurrentUser,
   updateUserDocument,
 } from "../../redux-slices/currentUserSlice";
@@ -18,6 +19,7 @@ import { toast } from "react-toastify";
 import Toast from "../../components/Toast";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase/firebase";
+import { AppDispatch } from "../../main";
 
 // Styled components
 const StyledField = styled(Field)(({ theme }) => ({
@@ -60,7 +62,7 @@ const StyledButton = styled(Button)({
 
 const AccountSettings = () => {
   const [user] = useAuthState(auth);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const { username, email, displayName } = currentUser;
   const [showPassword, setShowPassword] = useState(false);
@@ -100,8 +102,19 @@ const AccountSettings = () => {
     }
     return error;
   };
-  const validatePassword = (values: any) => {
-    const errors: any = {};
+
+  interface FormValues {
+    newPassword: string,
+    confirmPassword: string
+  }
+
+  interface FormErrors {
+    newPassword?: string;
+    confirmPassword?: string;
+  }
+
+  const validatePassword = (values: FormValues): FormErrors => {
+    const errors: FormErrors = {};
     if (!values.newPassword) {
       errors.newPassword = "Required";
     } else if (!values.confirmPassword) {
@@ -131,33 +144,44 @@ const AccountSettings = () => {
   // Handlers
   const handleShowPassword = () => setShowPassword(true);
   const handleHidePassword = () => setShowPassword(false);
-  const handleUpdateAccount = async (values: any) => {
+  interface UpdateAccountValues {
+    username: string;
+    displayName: string;
+    email: string;
+  }
+  const handleUpdateAccount = async (values: UpdateAccountValues) => {
     try {
       await dispatch(
-        updateUserDocument({ user, username: values.username }) as any
+        updateUserDocument({ user, username: values.username } as UpdateUserPayload)
       );
       await dispatch(
-        updateUserDocument({ user, displayName: values.displayName }) as any
+        updateUserDocument({ user, displayName: values.displayName } as UpdateUserPayload)
       );
-      await dispatch(updateUserDocument({ user, email: values.email }) as any);
+      await dispatch(updateUserDocument({ user, email: values.email } as UpdateUserPayload));
       notify("success");
     } catch (error) {
       notify("error");
       console.log(error);
     }
   };
-  const handleChangePassword = async (values: any) => {
+  interface ChangePasswordValues {
+    newPassword: string;
+  }
+  const handleChangePassword = async (values: ChangePasswordValues) => {
     try {
       if (user) {
         await updatePassword(user, values.newPassword);
         notify("success");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       notify("error");
-      if (error.code === "auth/requires-recent-login") {
-        notify("login");
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        const typedError = error as { code: string; message?: string };
+        if (typedError.code === "auth/requires-recent-login") {
+          notify("login");
+        }
+        console.log(typedError.code, typedError.message);
       }
-      console.log(error.code, error.message);
     }
   };
 

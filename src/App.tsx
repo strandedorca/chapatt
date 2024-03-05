@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import "./App.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect } from "react";
 import { darkTheme } from "./theme";
 import Settings from "./pages/settings/Settings";
 import Home from "./pages/home/Home";
@@ -18,12 +18,13 @@ import {
 } from "./redux-slices/currentUserSlice";
 import { useDispatch } from "react-redux";
 import ServerMessages from "./pages/home/servers/ServerMessages";
+import { AppDispatch } from "./main";
 
 export const WidthContext = createContext("240px");
 
 function App() {
   const [user] = useAuthState(auth);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const modalWidth = "240px";
 
   // Create a user doc when signing in with Google for the first time
@@ -34,9 +35,9 @@ function App() {
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
-          dispatch(addUserDocument(user) as any);
+          dispatch(addUserDocument(user));
         }
-        dispatch(getUserDocument(user) as any);
+        dispatch(getUserDocument(user));
       };
       onChangeUser();
     }

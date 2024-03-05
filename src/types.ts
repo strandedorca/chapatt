@@ -29,6 +29,9 @@ export interface User {
     bannerColor: string,
     bannerURL: string,
     aboutMe: string,
+    metadata: {
+        creationTime: Timestamp
+    }
 }
 
 export interface Channel {

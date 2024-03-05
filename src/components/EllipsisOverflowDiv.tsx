@@ -1,8 +1,8 @@
 import { styled } from "@mui/system";
-import { ReactElement } from "react"
+import { ReactNode } from "react"
 
 interface EllipsisOverflowDivProp {
-  children: any;
+  children: ReactNode;
 }
 
 const EllipsisOverflowDiv = ({ children }: EllipsisOverflowDivProp) => {

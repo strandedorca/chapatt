@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Modal, Typography, Box, Button, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { useTheme } from '@emotion/react';
+import { doc, getDoc } from 'firebase/firestore';
 import Toast from '../../../../components/Toast';
 import { db } from '../../../../firebase/firebase';
 import { AppDispatch } from '../../../../main';
 import { selectCurrentUser } from '../../../../redux-slices/currentUserSlice';
-import { addMemberToServer, joinAServer } from '../../../../redux-slices/serverSlice';
+import { joinAServer } from '../../../../redux-slices/serverSlice';
 import { darkTheme } from '../../../../theme';
-import { useNavigate } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -37,8 +35,6 @@ const JoinServerModal = ({ notify, modalOpen, handleClose }: JoinServerModalProp
     const [isValidEmail, setIsValidEmail] = useState(false);
     const currentUser = useSelector(selectCurrentUser);
     const [showError, setShowError] = useState(false);
-    const theme: any = useTheme();
-    const navigate = useNavigate();
 
     const serverNameExists = async (serverName: string) => {
         try {
@@ -103,7 +99,7 @@ const JoinServerModal = ({ notify, modalOpen, handleClose }: JoinServerModalProp
                             fullWidth
                             sx={{ marginBottom: '20px' }}
                         />
-                        <Typography sx={{ marginBottom: '20px', fontStyle: 'italic', color: theme.palette.error.main }} display={showError ? 'block' : 'none'}>
+                        <Typography sx={{ marginBottom: '20px', fontStyle: 'italic', color: darkTheme.palette.error.main }} display={showError ? 'block' : 'none'}>
                             Server name does not exist!
                         </Typography>
                         <Button

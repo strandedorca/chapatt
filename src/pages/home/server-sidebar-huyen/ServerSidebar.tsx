@@ -6,13 +6,10 @@ import CustomTooltip from "../../../components/CustomTooltip";
 import { useLocation, useNavigate } from "react-router";
 import Title from "../../../components/Title";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import { Channel, User } from "../../../types";
+import { Channel } from "../../../types";
 import TagRoundedIcon from "@mui/icons-material/TagRounded";
 import VolumeDownRoundedIcon from "@mui/icons-material/VolumeDownRounded";
-import { useTheme } from "@emotion/react";
 import ConversationsNavigationItem from "./ConversationsNavigationItem";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../../firebase/firebase";
 import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,12 +18,6 @@ import {
     subscribeToFriendList,
 } from "../../../redux-slices/friendsSlice";
 import {
-    query,
-    collection,
-    where,
-    getDocs,
-    doc,
-    getDoc,
     Unsubscribe,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -34,6 +25,7 @@ import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 import { AppDispatch } from "../../../main";
 import styles from './../Home.module.css';
 import EmojiEmotionsRoundedIcon from '@mui/icons-material/EmojiEmotionsRounded';
+import { darkTheme } from "../../../theme";
 
 
 export const Button = styled("button")(({ theme }) => ({
@@ -55,14 +47,20 @@ export const Button = styled("button")(({ theme }) => ({
     },
 }));
 
+
+interface FriendInfo {
+    username: string;
+    displayName: string;
+    photoURL: string;
+    status: string;
+}
 const ServerSidebar = () => {
-    const theme: any = useTheme();
     const currentUser = useSelector(selectCurrentUser);
     const username = currentUser.username;
     const [showInfo, setShowInfo] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const [friendInfos, setFriendInfos] = useState<User[]>([]);
+    const [friendInfos, setFriendInfos] = useState<FriendInfo[]>([]);
     const allFriends = useSelector(selectAllFriends);
     const dispatch: AppDispatch = useDispatch();
     const clickMeStyle = {
@@ -96,7 +94,7 @@ const ServerSidebar = () => {
         const fetchFriendInfos = async () => {
             const friendInfoPromises = allFriends.map((username: string) => dispatch(getFriendInfo(username)));
             const responses = await Promise.all(friendInfoPromises);
-            const friendInfos = responses.filter(userInfo => userInfo !== undefined);
+            const friendInfos = responses.filter(userInfo => userInfo !== undefined) as FriendInfo[];
             setFriendInfos(friendInfos);
         };
 
@@ -162,7 +160,7 @@ const ServerSidebar = () => {
                         overflowY: "scroll"
                     }}
                         className={styles.hiddenScroll}>
-                        {friendInfos.map((user: User) => (
+                        {friendInfos.map((user: FriendInfo) => (
                             <ConversationsNavigationItem
                                 key={user.username}
                                 username={user.username}
@@ -191,7 +189,7 @@ const ServerSidebar = () => {
                     <EmojiEmotionsRoundedIcon sx={{ color: 'white' }} />
                     <div>Click Me!</div>
                 </Button>
-                <Box sx={{ fontSize: '.9em', my: '10px', color: theme.palette.primary.main }} display={showInfo ? 'block' : 'none'}>
+                <Box sx={{ fontSize: '.9em', my: '10px', color: darkTheme.palette.primary.main }} display={showInfo ? 'block' : 'none'}>
                     This UI component isn't finished, we don't know yet what to show here. But we're leaving it there just for the sake of the appearance.
                 </Box>
 
@@ -243,7 +241,7 @@ const ServerSidebar = () => {
             justifyContent="space-between"
             flexDirection="column"
             sx={{
-                backgroundColor: theme.palette.background.paper,
+                backgroundColor: darkTheme.palette.background.paper,
             }}
         >
             {/* Main */}
@@ -255,7 +253,7 @@ const ServerSidebar = () => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    backgroundColor: theme.palette.background.default,
+                    backgroundColor: darkTheme.palette.background.default,
                     height: "60px",
                 }}
             >
@@ -267,7 +265,7 @@ const ServerSidebar = () => {
                 >
                     <Avatar
                         sx={{ width: "32px", height: "32px" }}
-                        src={currentUser.photoURL as any}
+                        src={currentUser.photoURL as string}
                     />
                     <EllipsisOverflowDiv>
                         <EllipsisOverflowDiv>
@@ -275,7 +273,7 @@ const ServerSidebar = () => {
                         </EllipsisOverflowDiv>
                         <EllipsisOverflowDiv >
                             <Box
-                                sx={{ color: theme.palette.primary.main }}
+                                sx={{ color: darkTheme.palette.primary.main }}
                             >
                                 {currentUser.status}
                             </Box>

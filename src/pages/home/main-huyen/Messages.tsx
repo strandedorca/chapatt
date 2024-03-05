@@ -1,29 +1,25 @@
-import { IconButton, TextField, FormControl } from "@mui/material"
+import { IconButton, TextField } from "@mui/material"
 import { Box } from "@mui/system"
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddReactionRoundedIcon from '@mui/icons-material/AddReactionRounded';
 import GifBoxRoundedIcon from '@mui/icons-material/GifBoxRounded';
 import SendIcon from '@mui/icons-material/Send';
 import SingleMessage from "./SingleMessage";
-import { useTheme } from "@emotion/react";
-import { FormEvent, MouseEventHandler, useEffect, useState } from "react";
-import { auth, db } from "../../../firebase/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { FormEvent, useEffect, useState } from "react";
+import { Unsubscribe } from "firebase/firestore";
 import { selectAllMessagesWithUser, selectShow, sendMessageToUser, subscribeToMessages } from "../../../redux-slices/messagesSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Message } from "../../../types";
-import { unsubscribe } from "diagnostics_channel";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 import { CircularProgress } from "@material-ui/core";
 import styles from './../Home.module.css';
+import { AppDispatch } from "../../../main";
+import { darkTheme } from "../../../theme";
 
 
 const Messages = () => {
-    const [user] = useAuthState(auth);
-    const dispatch = useDispatch();
-    const theme: any = useTheme();
+    const dispatch: AppDispatch = useDispatch();
     const [message, setMessage] = useState('');
     const messages = useSelector(selectAllMessagesWithUser);
     const show = useSelector(selectShow);
@@ -33,15 +29,23 @@ const Messages = () => {
     const { username } = useParams();
 
     useEffect(() => {
-        const usernames = {
-            username1: currentUser.username,
-            username2: username,
-        }
-        const unsubscriber = dispatch(subscribeToMessages(usernames) as any);
-        return () => unsubscriber;
-    }, [currentUser, username])
+        const subscribe = async () => {
+            const usernames = {
+                username1: currentUser.username,
+                username2: username,
+            };
+            const unsubscriber = await dispatch(subscribeToMessages(usernames));
+            return unsubscriber as Unsubscribe;
+        };
 
-    const handleSubmit = async (e: any) => {
+        const unsubscriberPromise = subscribe();
+
+        return () => {
+            unsubscriberPromise.then(unsubscriber => unsubscriber());
+        };
+    }, [currentUser, username]);
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         if (message.trim() === '') {
             return;
@@ -50,7 +54,7 @@ const Messages = () => {
             const from = currentUser.username;
             const to = username;
             const content = message;
-            dispatch(sendMessageToUser({ from, to, content }) as any);
+            dispatch(sendMessageToUser({ from, to, content }));
         }
         setMessage('');
     }
@@ -96,7 +100,7 @@ const Messages = () => {
                 display="flex"
                 borderRadius="8px"
                 padding="10px"
-                sx={{ backgroundColor: theme.palette.background.paper }}
+                sx={{ backgroundColor: darkTheme.palette.background.paper }}
             >
                 {/* File Sharing Button */}
                 <IconButton>

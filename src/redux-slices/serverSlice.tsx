@@ -52,7 +52,7 @@ const serverSlice = createSlice({
 });
 
 export const addNewServer = ({ serverName, username, photoURL }: { serverName: string; username: string; photoURL: string | undefined }) => {
-  return async (dispatch: AppDispatch) => {
+  return async () => {
     try {
       if (serverName) {
         // Data preparation
@@ -144,7 +144,7 @@ export const subscribeToServer = (serverName: string) => {
 };
 
 export const joinAServer = ({ serverName, username }: { serverName: string; username: string }) => {
-  return async (dispatch: any) => {
+  return async () => {
     try {
       const serverRef = doc(db, "servers", serverName);
       await updateDoc(serverRef, {
@@ -185,22 +185,29 @@ export const addMemberToServer = ({ serverName, username }: { serverName: string
   }
 }
 
-export const sendMessageToServer = (payload: any) => {
+interface sendMessageToServerPayload {
+  from: string,
+  to: string | undefined,
+  content: string
+}
+export const sendMessageToServer = (payload: sendMessageToServerPayload) => {
   // payload: from: username, content: string
   return async () => {
     try {
       const { from, to, content } = payload;
-      // Get ref to server
-      const documentRef = doc(db, "servers", to);
-      const message = {
-        from,
-        content,
-        createdAt: new Date(),
-      };
-      // Add sender to pending friends
-      await updateDoc(documentRef, {
-        messages: arrayUnion(message),
-      });
+      if (to) {
+        // Get ref to server
+        const documentRef = doc(db, "servers", to);
+        const message = {
+          from,
+          content,
+          createdAt: new Date(),
+        };
+        // Add sender to pending friends
+        await updateDoc(documentRef, {
+          messages: arrayUnion(message),
+        });
+      }
     } catch (error) {
       console.log(error);
     }

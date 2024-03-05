@@ -143,7 +143,7 @@ const FriendsPage = () => {
     const handleDeleteFriendModalOpen = () => { setDeleteFriendModalOpen(true) }
     const handleDeleteFriendModalClose = () => { setDeleteFriendModalOpen(false) }
 
-    let mainContent = list.map((friendUsername: any) => {
+    let mainContent = list.map((friendUsername: string) => {
         return (
             <UserBox key={friendUsername}>
                 <Box display="flex" gap="10px" alignItems="center">

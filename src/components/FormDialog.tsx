@@ -1,14 +1,12 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addUserDocument, getUserDocument, selectCurrentUser, updateUserDocument } from "../redux-slices/currentUserSlice";
+import { UpdateUserPayload, getUserDocument, selectCurrentUser, updateUserDocument } from "../redux-slices/currentUserSlice";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../firebase/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { setUserId } from "firebase/analytics";
+import { auth } from "../firebase/firebase";
 import { addAnEmptyFriendsDoc } from "../redux-slices/friendsSlice";
 import { isValidUsername, usernameExistsPromise } from "./helper-functions";
+import { AppDispatch } from "../main";
 
 interface FormDialogProp {
 
@@ -21,12 +19,12 @@ const FormDialog = ({ }: FormDialogProp) => {
   const [open, setOpen] = useState(false);
   const [user] = useAuthState(auth);
   const theme = useTheme();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
 
   useEffect(() => {
     if (user) {
-      dispatch(getUserDocument(user) as any);
+      dispatch(getUserDocument(user));
     }
   }, [user, dispatch]);
 
@@ -51,8 +49,8 @@ const FormDialog = ({ }: FormDialogProp) => {
         // If available to set
         .then(() => {
           // Set username for the current user
-          dispatch(updateUserDocument({ user, username }) as any);
-          dispatch(addAnEmptyFriendsDoc(username) as any);
+          dispatch(updateUserDocument({ user, username } as UpdateUserPayload));
+          dispatch(addAnEmptyFriendsDoc(username));
           handleClose();
         })
         //  If unavailable to set

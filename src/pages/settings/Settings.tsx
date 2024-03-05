@@ -18,10 +18,10 @@ import { darkTheme } from "../../theme";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@emotion/react";
 import Underconstruction from "../Underconstruction";
 import AccountSettings from "./AccountSettings";
 import ProfileSettings from "./ProfileSettings";
+import { AppDispatch } from "../../main";
 
 const CustomScrollbar = styled(Box)`
     width: 350px;
@@ -72,10 +72,9 @@ const BoxModal = styled(Box)(({ theme }) => ({
 const Setting = () => {
   const [selectedTab, setSelectedTab] = React.useState('Account');
   const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
-  const theme: any = useTheme();
 
   const settings = {
     'USER SETTINGS': ['Account', 'Profile', 'Privacy & Safety', 'Family Centre', 'Authorised Apps', 'Devices', 'Connections', 'Clips', 'Friend Requests'],
@@ -83,7 +82,6 @@ const Setting = () => {
   };
 
   const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     newValue: React.SetStateAction<string>
   ) => {
     setSelectedTab(newValue);
@@ -93,7 +91,7 @@ const Setting = () => {
   };
 
   const handleDeleteConfirmed = () => {
-    dispatch(deleteUserDocument(user?.uid ?? "") as any);
+    dispatch(deleteUserDocument(user?.uid ?? ""));
     setDeleteModalOpen(false);
   };
   const handleCancelled = () => {
@@ -137,8 +135,8 @@ const Setting = () => {
                   button
                   key={text}
                   selected={selectedTab === text}
-                  onClick={(event) => {
-                    handleListItemClick(event, text);
+                  onClick={() => {
+                    handleListItemClick(text);
                   }}
                   sx={{
                     padding: 0,
@@ -176,7 +174,7 @@ const Setting = () => {
               mb: "2px",
               "&:hover": {
                 // bgcolor: '#35373c',
-                bgcolor: theme.palette.error.main,
+                bgcolor: darkTheme.palette.error.main,
               },
               "&.Mui-selected": {
                 bgcolor: "#404249",
@@ -249,7 +247,7 @@ const Setting = () => {
           ml: "350px",
           p: 2,
           height: "100vh",
-          backgroundColor: `${theme.palette.background.paper}`,
+          backgroundColor: `${darkTheme.palette.background.paper}`,
         }}
       >
         <Box sx={{ flexGrow: "1" }}>
