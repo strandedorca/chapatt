@@ -1,7 +1,6 @@
-# Discord Clone Project
+# Chapatt Project
 
-Welcome to our Discord Clone project repository!
-!!! DO NOT MODIFY USERS ON FIREBASE CONSOLE !!!
+Welcome to our Chapatt project repository!
 
 ## Overview
 
@@ -9,26 +8,39 @@ Our project aims to develop a web-based chat application inspired by popular pla
 
 ## Features
 
-1. Real-Time Messaging: Users can send and receive messages instantly in personal chats or channels.
-2. Channels Management: Users can create, join, and organize channels for various topics or groups.
-3. Audio/Message Rooms: Rooms for audio or text-based discussions in channels.
-4. Notifications: Notifications for new messages, mentions, and other events.
-5. Data Encryption: Ensures the security and privacy of user messages through encryption.
-6. Authentication: Secure user login and authentication for access to the application.
-7. Registrations: User registration and account management.
-8. Reply to Message: Users can reply to specific messages within a conversation.
-9. Delete and Edit Messages: Option to delete and edit messages sent.
-10. Conversation History/Search: Users can access message history and search for specific messages.
+1. Real-Time Messaging: Users can send and receive messages instantly in personal chats or servers.
+2. Server Management: 
+    * Users can create, join, delete, and organize servers for various topics or groups.
+    * Users can send and receive messages in servera in real time.
+3. Authentication: Secure user login and authentication for access to the application.
+4. Registrations: User registration and account management like deletion.
+5. Friends System: 
+    * Users can send, accept and refuse friend requests, as well as removing friends or blocking user.
+    * Users can see friend list, pending list and blocking list in real time.
+6. Account Settings: Users can change account-related information like username, password,...
+7. Customization: Users can set the image of  their account and servers.
+8. Color mode: Users can toggle between light and dark mode.
 
 ## Technologies Used
 
-* Frontend: Developed with React, leveraging Redux for state management and React Router for navigation. We will write our code in TypeScript to ensure type safety and better developer experience.
+* Frontend: Developed with React, leveraging Redux & Redux toolkit for state management and React Router for navigation. We will write our code in TypeScript to ensure type safety and better developer experience.
 * Backend: Prepared with Firebase.
-* Styling: Material UI (MUI) for React components andTailwind CSS for utility-first styling. 
+* Styling: Material UI (MUI) for React components and CSS module for customization.
 * Other Technologies:
     * Formik: To handle forms and user inputs efficiently.
-    * Axios: For making HTTP requests to our backend services.
-    *  Font Awesome: For icons and enhanced UI elements.
+    * Redux thunk: For making HTTP requests to our backend services.
+    * Toastify: For making toasts to show to users.
+
+## Latest Changes
+* 5/3/2024: 
+    * Add server feature: create with image, join, add member, show members, leave & delete servers.
+    * Right sidebar shows server information when navigated to a server.
+    * Add changing account's photoURL.
+    * Add hidden scrollbars.
+    * Fix wrong user display bug.
+* 24/2/2024:
+    * Set up authentication with email/password and google.
+    * Database
 
 ## Installation
 
@@ -41,7 +53,7 @@ To run our Discord Clone project locally, follow these steps:
 5. Open your web browser and navigate to http://localhost:5173 to view the application.
 
 ## Contributors
-
+links
 
 ## Acknowledgements
 
