@@ -1,51 +1,77 @@
 import { createSlice } from "@reduxjs/toolkit/react";
 import {
-  addDoc,
+  DocumentSnapshot,
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
-  getDoc,
   onSnapshot,
   query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { setConversation } from "./messagesSlice";
-import { usernameExistsPromise } from "../components/helper-functions";
+import { AppDispatch, RootState } from "../main";
+import { ServerListItem } from "../types";
 
-const initialState: any = {
-  serverName: "",
+interface ServerSliceValue {
+  serverName: string,
+  photoURL: string,
   members: [],
-  message: [],
+  messages: [],
+  serverList: ServerListItem[],
+  createdAt: string,
+}
+
+const initialState: ServerSliceValue = {
+  serverName: "",
+  photoURL: "",
+  members: [],
+  messages: [],
+  serverList: [],
+  createdAt: "",
 };
 
 const serverSlice = createSlice({
   name: "server",
   initialState,
   reducers: {
-    setServer(state, action) {
-      state.serverName = action.payload[0].serverName;
-      state.members = action.payload[0].members;
-      state.messages = action.payload[0].messages;
-      console.log(action.payload);
+    setCurrentServer(state, action) {
+      state.serverName = action.payload.id;
+      state.members = action.payload.members;
+      state.messages = action.payload.messages;
+      state.photoURL = action.payload.photoURL;
+      state.createdAt = action.payload.createdAt;
     },
+    setServerList(state, action) {
+      state.serverList = action.payload;
+    }
   },
 });
 
-export const addNewServer = (payload: any) => {
-  // payload: serverName + username
-  return async (dispatch: any) => {
+export const addNewServer = ({ serverName, username, photoURL }: { serverName: string; username: string; photoURL: string | undefined }) => {
+  return async (dispatch: AppDispatch) => {
     try {
-      const { serverName, username } = payload;
       if (serverName) {
+        // Data preparation
+        if (!photoURL) {
+          photoURL = '';
+        }
+        let dateObject = new Date();
+        let createdAt = dateObject.toLocaleDateString('en-US', {
+          month: 'short',
+          day: '2-digit',
+          year: 'numeric'
+        });
         const serverCollectionRef = collection(db, "servers");
-
         // Add a new server to collection `servers`
         await setDoc(doc(serverCollectionRef, serverName), {
+          photoURL,
           members: [username],
           messages: [],
+          createdAt,
         });
       }
     } catch (error) {
@@ -54,34 +80,59 @@ export const addNewServer = (payload: any) => {
   };
 };
 
-export const fetchServerData = (serverName: string) => {
-  return async (dispatch: any) => {
-    const serverRef = doc(db, "servers", serverName);
-    const snap = await getDoc(serverRef);
-    if (snap.exists()) {
-      console.log(snap.data());
-      dispatch(setServer(snap.data()));
-    }
-  };
-};
+export const subscribeToServerList = (username: string) => {
+  return async (dispatch: AppDispatch) => {
+    if (username) {
+      try {
+        const unsubscriber = onSnapshot(query(collection(db, "servers"),
+          where("members", "array-contains", username)
+        ), (snap) => {
+          let newList: ServerListItem[] = [];
+          snap.forEach((doc: DocumentSnapshot) => {
+            if (doc.exists()) {
+              const serverInfo = {
+                serverName: doc.id,
+                photoURL: doc.data().photoURL,
+              }
+              newList = [
+                ...newList,
+                serverInfo
+              ];
+            } else {
+              console.log(`Server ${doc.id} document doesn't exist`);
+            }
+          });
+          dispatch(setServerList(newList));
+        })
 
-export const subscribeToServerMessages = (serverName: string) => {
-  return async (dispatch: any) => {
+        // To unsubscribe later
+        return unsubscriber;
+      } catch (error) {
+        console.log("Failed to subscribe to server list.", error);
+      }
+    }
+  }
+}
+
+export const subscribeToServer = (serverName: string) => {
+  return async (dispatch: AppDispatch) => {
     if (serverName) {
       // Get ref to server
       const documentRef = doc(db, "servers", serverName);
       // Subscribe to the server document
       try {
-        let data;
         const unsubscriber = await onSnapshot(documentRef, (doc) => {
+          let data;
           if (doc.exists()) {
-            console.log(doc.data());
-            data = doc.data();
+            data = {
+              id: doc.id,
+              ...doc.data(),
+            };
           } else {
             console.log("Server document doesn't exist");
           }
+          dispatch(setCurrentServer(data));
         });
-        dispatch(setServer(data));
 
         // To unsubscribe later
         return unsubscriber;
@@ -92,10 +143,8 @@ export const subscribeToServerMessages = (serverName: string) => {
   };
 };
 
-export const joinAServer = (payload: any) => {
-  // payload: serverName + username
+export const joinAServer = ({ serverName, username }: { serverName: string; username: string }) => {
   return async (dispatch: any) => {
-    const { serverName, username } = payload;
     try {
       const serverRef = doc(db, "servers", serverName);
       await updateDoc(serverRef, {
@@ -107,10 +156,8 @@ export const joinAServer = (payload: any) => {
   };
 };
 
-export const leaveServer = (payload: any) => {
-  // payload: serverName + username
+export const leaveServer = ({ serverName, username }: { serverName: string; username: string }) => {
   return async () => {
-    const { serverName, username } = payload;
     try {
       const serverRef = doc(db, "servers", serverName);
       await updateDoc(serverRef, {
@@ -121,6 +168,22 @@ export const leaveServer = (payload: any) => {
     }
   };
 };
+
+export const addMemberToServer = ({ serverName, username }: { serverName: string; username: string }) => {
+  return async () => {
+    if (username) {
+      try {
+        // Get ref to server
+        const serverRef = doc(db, "servers", serverName);
+        await updateDoc(serverRef, {
+          members: arrayUnion(username),
+        });
+      } catch (error) {
+        console.log('Error adding member to server.', error);
+      }
+    }
+  }
+}
 
 export const sendMessageToServer = (payload: any) => {
   // payload: from: username, content: string
@@ -144,8 +207,24 @@ export const sendMessageToServer = (payload: any) => {
   };
 };
 
-export const selectMembersFromServer = (state: any) => state.server.members;
-export const selectMessagesFromServer = (state: any) => state.server.messages;
+export const deleteServer = (serverName: string) => {
+  return async () => {
+    if (serverName) {
+      try {
+        // Get ref to server
+        const serverRef = doc(db, "servers", serverName);
+        await deleteDoc(serverRef);
+      } catch (error) {
+        console.log('Error deleting server.', error);
+      }
+    }
+  }
+}
 
-export const { setServer } = serverSlice.actions;
+export const selectMembersFromServer = (state: RootState) => state.server.members;
+export const selectMessagesFromServer = (state: RootState) => state.server.messages;
+export const selectServerList = (state: RootState) => state.server.serverList;
+export const selectCurrentServer = (state: RootState) => state.server;
+
+export const { setCurrentServer, setServerList } = serverSlice.actions;
 export default serverSlice.reducer;

@@ -10,8 +10,14 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Toast from "../../components/Toast";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase/firebase";
+import { auth, db, storage } from "../../firebase/firebase";
 import { useTheme } from "@emotion/react";
+import { doc, collection, getDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { isValidUsername } from "../../components/helper-functions";
+import { addNewServer } from "../../redux-slices/serverSlice";
+import { AppDispatch } from "../../main";
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 
 // Styled components
 const Card = styled(Box)(({ theme }) => ({
@@ -77,13 +83,18 @@ interface ProfileSettingsProp {
 
 const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
   const [user] = useAuthState(auth);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const theme: any = useTheme();
   const currentUser = useSelector(selectCurrentUser);
   const [editStatus, setEditStatus] = useState(false);
   const [editAboutMe, setEditAboutMe] = useState(false);
   const [status, setStatus] = useState(currentUser.status);
   const [aboutMe, setAboutMe] = useState(currentUser.aboutMe);
+  const [avatarIsHovered, setAvatarIsHovered] = useState(false);
+  const [showSaveAvatar, setShowSaveAvatar] = useState(false);
+  const [uploadedPhoto, setUploadedPhoto] = useState<File | null>(null);
+  // const [avatar, setAvatar] = useState(null);
+  // const [banner, setBanner] = useState(null);
 
   // Manage Toast
   const notify = (input: string) => {
@@ -99,6 +110,33 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
   };
 
   // Handlers
+  const handleUploadAvatar = async () => {
+    try {
+      if (uploadedPhoto !== null) {
+        const imageRef = ref(storage, `/avatar/users/${currentUser.username}`);
+        const snapshot = await uploadBytes(imageRef, uploadedPhoto);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+    } catch (error) {
+      console.log('Error uploading file', error);
+      throw error;
+    }
+  }
+  const handleUpdateAvatar = async () => {
+    try {
+      const photoURL = await handleUploadAvatar();
+      const payload = {
+        user,
+        photoURL,
+      }
+      await dispatch(updateUserDocument(payload));
+      notify('success');
+    } catch (error) {
+      console.log('Error updating profile. Please try again.', error);
+      notify('error');
+    }
+  }
   const handleStatusUpdate = async () => {
     if (editStatus && status !== currentUser.status) {
       try {
@@ -127,8 +165,17 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Toast />
-      <Card>
+      <Card sx={{ position: 'relative' }}>
         <Banner sx={{ backgroundColor: `${currentUser.bannerColor}` }}></Banner>
+        <Button sx={{
+          display: showSaveAvatar ? 'block' : 'none',
+          marginTop: '20px',
+          position: 'absolute',
+          right: '40px'
+        }} variant="contained"
+          onClick={handleUpdateAvatar}>
+          Save Avatar
+        </Button>
 
         {/* Avatar */}
         <Box
@@ -136,18 +183,67 @@ const ProfileSettings = ({ setSelectedTab }: ProfileSettingsProp) => {
             position: "absolute",
             top: "100px",
             transform: "translate(40px, -40%)",
+            display: 'inline-block',
           }}
+          onMouseEnter={() => setAvatarIsHovered(true)}
+          onMouseLeave={() => setAvatarIsHovered(false)}
         >
           <Avatar
-            src={currentUser.photoURL}
+            src={uploadedPhoto ? URL.createObjectURL(uploadedPhoto) : currentUser.photoURL}
             sx={{
               width: 120,
               height: 120,
               border: `8px ${theme.palette.background.default} solid`,
+              position: 'relative'
             }}
           >
             {currentUser.displayName}
           </Avatar>
+          {avatarIsHovered && (
+            <Box sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              borderRadius: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+              '&:hover': {
+                opacity: 1,
+              },
+            }}>
+              <label htmlFor="avatar-input">
+                <EditRoundedIcon fontSize="large" />
+              </label>
+              <input
+                multiple={false}
+                type="file"
+                id="avatar-input"
+                accept="image/png, image/jpeg"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  opacity: 0,
+                  cursor: 'pointer',
+                }}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setUploadedPhoto(e.target.files[0]);
+                  }
+                  setShowSaveAvatar(true);
+                }}
+              />
+            </Box>
+          )}
+
         </Box>
         <Section paddingX="15px" paddingY="18px">
           {/* Name */}

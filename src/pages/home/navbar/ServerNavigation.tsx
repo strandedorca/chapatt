@@ -16,50 +16,55 @@ import {
   where,
 } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
-import { setServer } from "../../../redux-slices/serverSlice";
+import { selectServerList, setCurrentServer, subscribeToServerList } from "../../../redux-slices/serverSlice";
+import { AppDispatch } from "../../../main";
+import { Unsubscribe } from "firebase/auth";
+import { ServerListItem } from "../../../types";
+import styles from './../Home.module.css';
+
 
 const NavigationSidebar = () => {
-  const [user] = useAuthState(auth);
   const currentUser = useSelector(selectCurrentUser);
   const username = currentUser.username;
-  const [servers, setServers] = useState<any>([]);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+  const serverList = useSelector(selectServerList);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "servers"),
-        where("members", "array-contains", username)
-      ),
-      (snapshot) => {
-        const updatedServers: any = [];
-        snapshot.forEach((doc) => {
-          const serverData = {
-            serverName: doc.id,
-            members: doc.data().members,
-            messages: doc.data().messages,
-          };
-          updatedServers.push(serverData);
-        });
-        setServers(updatedServers);
-        dispatch(setServer(updatedServers) as any);
-      },
-      (error) => {
-        console.error("Error getting real-time server data:", error);
+    let unsubscriber: Unsubscribe | undefined;
+    const updateServerList = async () => {
+      try {
+        unsubscriber = await dispatch(subscribeToServerList(username));
+        // console.log('Subscribe to server list successfully');
+      } catch (error) {
+        console.log(error);
       }
-    );
+    }
+    updateServerList();
+    return () => {
+      if (unsubscriber) {
+        unsubscriber();
+      }
+      // console.log('Unsubscribed from server list successfully');
+    }
+  }, [currentUser, subscribeToServerList, dispatch])
 
-    // Clean up the listener
-    return () => unsubscribe();
-  }, [user, currentUser]);
-
-  const boxStyle = {
+  const containerStyle = {
     height: "100%",
     display: "flex",
     alignItems: "center",
     paddingTop: "10px",
     flexDirection: "column",
+  }
+
+  const boxStyle = {
+    flexGrow: "1",
+    display: "flex",
+    alignItems: "center",
+    paddingTop: "10px",
+    flexDirection: "column",
     gap: "10px",
+    overflowY: "scroll",
+    paddingBottom: "10px"
   };
 
   const handleLogOut = () => {
@@ -67,32 +72,31 @@ const NavigationSidebar = () => {
   };
 
   return (
-    <Box sx={boxStyle}>
-      {/* Navigate to direct messages */}
-      <ServerNavigationItem id="me" name="Me" imgUrl={user?.photoURL} />
-
-      <Divider
-        variant="middle"
-        orientation="horizontal"
-        flexItem
-        sx={{ border: "1px solid #404249" }}
-      />
-
-      {/* Navigate to servers */}
-      {servers.map((server: any) => (
-        <ServerNavigationItem
-          key={server.serverName}
-          id={server.serverName}
-          name={server.serverName}
-          // imgUrl={server.imgUrl}
+    <Box sx={containerStyle}>
+      <Box sx={boxStyle} className={styles.hiddenScroll}>
+        {/* Navigate to direct messages */}
+        <ServerNavigationItem id="me" name="Me" photoURL={currentUser.photoURL} />
+        <Divider
+          variant="middle"
+          orientation="horizontal"
+          flexItem
+          sx={{ border: "1px solid #404249" }}
         />
-      ))}
-
-      {/* Add New Server Button */}
-      <AddNewServer />
+        {/* Navigate to servers */}
+        {serverList.map((server: ServerListItem) => (
+          <ServerNavigationItem
+            key={server.serverName}
+            id={server.serverName}
+            name={server.serverName}
+            photoURL={server.photoURL}
+          />
+        ))}
+        {/* Add New Server Button */}
+        <AddNewServer />
+      </Box>
 
       {/* Logout Button */}
-      <LogOutButton handleLogOut={handleLogOut} bottom="0" />
+      <LogOutButton handleLogOut={handleLogOut} />
     </Box>
   );
 };

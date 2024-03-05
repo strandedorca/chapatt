@@ -22,8 +22,9 @@ import { Timestamp } from "firebase/firestore";
 export interface User {
     uid: string,
     email: string,
-    displayName?: string | null,
-    photoURL?: string | null,
+    username: string,
+    displayName: string | null | undefined,
+    photoURL: string | null | undefined,
     createdAt: string,
     bannerColor: string,
     bannerURL: string,
@@ -41,4 +42,17 @@ export interface Message {
     from: string,
     createdAt: Timestamp,
     content: string,
+}
+
+export interface Server {
+    id: string,
+    name: string,
+    photoURL: string,
+    members: string[],
+    messages: Message[],
+}
+
+export interface ServerListItem {
+    serverName: string;
+    photoURL: string | undefined;
 }

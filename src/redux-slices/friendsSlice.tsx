@@ -1,10 +1,7 @@
-import { ThunkAction, UnknownAction, createSlice, current } from "@reduxjs/toolkit/react";
-import { arrayRemove, arrayUnion, collection, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
+import { createSlice } from "@reduxjs/toolkit/react";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { setConversation } from "./messagesSlice";
-import { usernameExistsPromise } from "../components/helper-functions";
 import { AppThunk } from "../types";
-import { RootState } from "../main";
 import { Unsubscribe } from "firebase/auth";
 
 const initialState: any = {
@@ -197,6 +194,24 @@ export const unblockFriend = ({ username, blockedUsername }: any) => {
             })
         } catch (error) {
             console.log('Error unblocking user. Please try again.', error);
+        }
+    }
+}
+
+export const getFriendInfo = (username: string) => {
+    return async () => {
+        try {
+            const userQuery = query(collection(db, 'users'), where('username', '==', username));
+            const userQuerySnapshot = await getDocs(userQuery);
+            if (!userQuerySnapshot.empty) {
+                const userData = userQuerySnapshot.docs[0].data();
+                const { username, displayName, photoURL, status } = userData;
+                return { username, displayName, photoURL, status };
+            } else {
+                console.log("User with username", username, "not found.");
+            }
+        } catch (error) {
+            console.log("Error retrieving userdata from server", error);
         }
     }
 }

@@ -1,0 +1,31 @@
+.hiddenScroll {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+}
+
+.hiddenScroll::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* .customScroll {
+    scrollbar-width: thin;
+    scrollbar-color: blue orange;
+}
+
+.customScroll::-webkit-scrollbar {
+    width: 12px;
+}
+
+.customScroll::-webkit-scrollbar-track {
+    background: orange;
+}
+
+.customScroll::-webkit-scrollbar-thumb {
+    background-color: blue;
+    border-radius: 20px;
+    border: 3px solid orange;
+} */

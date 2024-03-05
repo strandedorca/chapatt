@@ -18,23 +18,11 @@ const LogOutButtonStyled = styled(Button)(({ theme }) => ({
 
 type LogOutButtonProps = {
     handleLogOut: () => void;
-    top?: string;
-    bottom?: string;
-    right?: string;
-    left?: string;
 };
 
-const LogOutButton: React.FC<LogOutButtonProps> = ({ handleLogOut, top, bottom, right, left }) => {
-    const buttonStyle: React.CSSProperties = {
-        position: 'absolute',
-        top,
-        bottom,
-        right,
-        left,
-    };
-
+const LogOutButton: React.FC<LogOutButtonProps> = ({ handleLogOut }) => {
     return (
-        <LogOutButtonStyled onClick={handleLogOut} style={buttonStyle}>
+        <LogOutButtonStyled onClick={handleLogOut}>
             <PowerSettingsNew />
         </LogOutButtonStyled>
     );

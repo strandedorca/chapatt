@@ -6,18 +6,17 @@ import CustomTooltip from "../../../components/CustomTooltip";
 import { useLocation, useNavigate } from "react-router";
 import Title from "../../../components/Title";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import { Channel } from "../../../types";
+import { Channel, User } from "../../../types";
 import TagRoundedIcon from "@mui/icons-material/TagRounded";
 import VolumeDownRoundedIcon from "@mui/icons-material/VolumeDownRounded";
 import { useTheme } from "@emotion/react";
-import { TextField } from "@mui/material";
-
 import ConversationsNavigationItem from "./ConversationsNavigationItem";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../../firebase/firebase";
 import EllipsisOverflowDiv from "../../../components/EllipsisOverflowDiv";
 import { useDispatch, useSelector } from "react-redux";
 import {
+    getFriendInfo,
     selectAllFriends,
     subscribeToFriendList,
 } from "../../../redux-slices/friendsSlice";
@@ -28,9 +27,14 @@ import {
     getDocs,
     doc,
     getDoc,
+    Unsubscribe,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
+import { AppDispatch } from "../../../main";
+import styles from './../Home.module.css';
+import EmojiEmotionsRoundedIcon from '@mui/icons-material/EmojiEmotionsRounded';
+
 
 export const Button = styled("button")(({ theme }) => ({
     fontFamily: "Inter",
@@ -54,49 +58,52 @@ export const Button = styled("button")(({ theme }) => ({
 const ServerSidebar = () => {
     const theme: any = useTheme();
     const currentUser = useSelector(selectCurrentUser);
-    const [user] = useAuthState(auth);
+    const username = currentUser.username;
+    const [showInfo, setShowInfo] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const [usersInfo, setUsersInfo] = useState<any>([]);
+    const [friendInfos, setFriendInfos] = useState<User[]>([]);
     const allFriends = useSelector(selectAllFriends);
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
+    const clickMeStyle = {
+        fontWeight: '500',
+    }
     let content;
 
-    // Update friend list
-    useEffect(() => {
-        const unsubscriber = dispatch(
-            subscribeToFriendList(currentUser.username) as any
-        );
-        return () => unsubscriber;
-    }, [currentUser]);
 
+    // Update friend list (subscribe)
     useEffect(() => {
-        allFriends.map(async (friendUsername: any) => {
+        let unsubscriber: Unsubscribe | undefined;
+        const updateFriendList = async () => {
             try {
-                const newUsersInfo = [];
-                const userQuery = query(
-                    collection(db, "users"),
-                    where("username", "==", friendUsername)
-                );
-                const userSnap = await getDocs(userQuery);
-                if (!userSnap.empty) {
-                    newUsersInfo.push({
-                        displayName: userSnap.docs[0].data().displayName,
-                        username: userSnap.docs[0].data().username,
-                        photoURL: userSnap.docs[0].data().photoURL,
-                    });
-                } else {
-                    console.log("Username doesn't exist");
-                }
-                setUsersInfo(newUsersInfo);
+                unsubscriber = await dispatch(subscribeToFriendList(username));
+                // console.log('Subscribe to friend list successfully');
             } catch (error) {
-                console.error("Error retrieving user information.", error);
+                console.log(error);
             }
-        });
+        }
+        updateFriendList();
         return () => {
-            setUsersInfo([]);
+            if (unsubscriber) {
+                unsubscriber();
+            }
+            // console.log('Unsubscribed from friend list successfully');
+        }
+    }, [currentUser, subscribeToFriendList, dispatch])
+
+    // Fetch user info
+    useEffect(() => {
+        const fetchFriendInfos = async () => {
+            const friendInfoPromises = allFriends.map((username: string) => dispatch(getFriendInfo(username)));
+            const responses = await Promise.all(friendInfoPromises);
+            const friendInfos = responses.filter(userInfo => userInfo !== undefined);
+            setFriendInfos(friendInfos);
         };
-    }, [user, allFriends]);
+
+        if (allFriends.length > 0) {
+            fetchFriendInfos();
+        }
+    }, [allFriends]);
 
     // PLACEHOLDER
     const channels: Channel[] = [
@@ -151,13 +158,16 @@ const ServerSidebar = () => {
                     </Box>
 
                     {/* Conversations */}
-                    <Box>
-                        {usersInfo.map((user: any) => (
+                    <Box sx={{
+                        overflowY: "scroll"
+                    }}
+                        className={styles.hiddenScroll}>
+                        {friendInfos.map((user: User) => (
                             <ConversationsNavigationItem
                                 key={user.username}
                                 username={user.username}
                                 displayName={user.displayName}
-                                photoUrl={user.photoUrl}
+                                photoURL={user.photoURL}
                                 status={currentUser.status}
                             />
                         ))}
@@ -169,27 +179,34 @@ const ServerSidebar = () => {
         content = (
             <Box padding="10px">
                 <Button
-                    onClick={() => {
-                        navigate("/i");
-                    }}
+                    onClick={() => setShowInfo((prev) => !prev)}
                 >
                     <InfoRoundedIcon />
                     <div>Information</div>
                 </Button>
+                <Button
+                    onClick={() => setShowInfo((prev) => !prev)}
+                    style={clickMeStyle}
+                >
+                    <EmojiEmotionsRoundedIcon sx={{ color: 'white' }} />
+                    <div>Click Me!</div>
+                </Button>
+                <Box sx={{ fontSize: '.9em', my: '10px', color: theme.palette.primary.main }} display={showInfo ? 'block' : 'none'}>
+                    This UI component isn't finished, we don't know yet what to show here. But we're leaving it there just for the sake of the appearance.
+                </Box>
 
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title content="Text Channels" />
                     <CustomTooltip title="New text channel">
-                        <Button style={{ width: "auto" }}>+</Button>
+                        <Button style={{ width: "auto" }}
+                            onClick={() => setShowInfo((prev) => !prev)}
+                        >+</Button>
                     </CustomTooltip>
                 </Box>
                 {textChannels.map((channel: Channel) => {
                     return (
-                        <Button
-                            key={channel.id}
-                            onClick={() => {
-                                navigate(`${channel.id}`);
-                            }}
+                        <Button key={channel.id}
+                            onClick={() => setShowInfo((prev) => !prev)}
                         >
                             <TagRoundedIcon />
                             <div>Information</div>
@@ -200,15 +217,15 @@ const ServerSidebar = () => {
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Title content="Voice Channels" />
                     <CustomTooltip title="New voice channel">
-                        <Button sx={{ width: "auto" }}>+</Button>
+                        <Button sx={{ width: "auto" }}
+                            onClick={() => setShowInfo((prev) => !prev)}
+                        >+</Button>
                     </CustomTooltip>
                 </Box>
                 {voiceChannels.map((channel: Channel) => {
                     return (
-                        <Button
-                            onClick={() => {
-                                navigate(`${channel.id}`);
-                            }}
+                        <Button key={channel.id}
+                            onClick={() => setShowInfo((prev) => !prev)}
                         >
                             <VolumeDownRoundedIcon />
                             <div>{channel.name}</div>
@@ -253,8 +270,16 @@ const ServerSidebar = () => {
                         src={currentUser.photoURL as any}
                     />
                     <EllipsisOverflowDiv>
-                        <EllipsisOverflowDiv>{currentUser.displayName}</EllipsisOverflowDiv>
-                        <EllipsisOverflowDiv>{currentUser.status}</EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv>
+                            {currentUser.displayName}
+                        </EllipsisOverflowDiv>
+                        <EllipsisOverflowDiv >
+                            <Box
+                                sx={{ color: theme.palette.primary.main }}
+                            >
+                                {currentUser.status}
+                            </Box>
+                        </EllipsisOverflowDiv>
                     </EllipsisOverflowDiv>
                 </Box>
                 <IconButton

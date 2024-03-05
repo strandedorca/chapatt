@@ -28,6 +28,7 @@ import ConfirmationDialog from "../../../components/ConfirmationDialog.tsx";
 import { toast } from "react-toastify";
 import Toast from "../../../components/Toast.tsx";
 import { Unsubscribe } from "firebase/auth";
+import styles from './../Home.module.css';
 
 const SearchBar = styled("input")(({ theme }) => ({
     width: "100%",
@@ -41,6 +42,7 @@ const SearchBar = styled("input")(({ theme }) => ({
 const boxStyle = {
     display: "flex",
     flexDirection: "column",
+    overflowY: "scroll"
 };
 const UserBox = styled(Box)({
     display: "flex",
@@ -70,10 +72,10 @@ const FriendsPage = () => {
                 toast.error("Failed to block. Please try again");
                 break;
             case 'ADD_SUCCESS':
-                toast.success("Add friend successfully");
+                toast.success("Friend request sent successfully");
                 break;
             case 'ADD_FAILED':
-                toast.error("Failed to add friend. Please try again");
+                toast.error("Failed to send friend request. Please try again");
                 break;
             case 'DELETE_SUCCESS':
                 toast.success("Delete friend successfully");
@@ -105,7 +107,7 @@ const FriendsPage = () => {
         }
     }
 
-    // Update friend list
+    // Update friend list (subscribe)
     useEffect(() => {
         let unsubscriber: Unsubscribe | undefined;
         const updateFriendList = async () => {
@@ -271,7 +273,7 @@ const FriendsPage = () => {
             </Box>
 
             {/* Main */}
-            <Box sx={boxStyle}>
+            <Box sx={boxStyle} className={styles.hiddenScroll}>
                 {mainContent}
             </Box>
         </Box>

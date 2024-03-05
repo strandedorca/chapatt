@@ -26,6 +26,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../../firebase/firebase";
 import AddFriendModal from "./AddFriendModal";
 import { useTheme } from "@mui/system";
+import { selectCurrentServer } from "../../../redux-slices/serverSlice";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -92,6 +93,8 @@ export default function Header() {
   const location = useLocation();
   const theme = useTheme();
   const { pathname } = location;
+  const currentServer = useSelector(selectCurrentServer);
+  const serverName = currentServer.serverName;
 
   // State management for add friend feature
   const dispatch = useDispatch();
@@ -215,7 +218,7 @@ export default function Header() {
               ) : (
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography
-                    variant="h4"
+                    variant="h5"
                     color={darkTheme.palette.grey[600]}
                     component="div"
                   >
@@ -225,9 +228,9 @@ export default function Header() {
                     variant="h6"
                     noWrap
                     component="div"
-                    sx={{ px: 1.5, fontSize: "1rem", cursor: "pointer" }}
+                    sx={{ px: 1, fontSize: "1rem" }}
                   >
-                    general
+                    {serverName}
                   </Typography>
                 </Box>
               )}

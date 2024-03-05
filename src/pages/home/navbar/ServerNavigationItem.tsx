@@ -4,11 +4,11 @@ import ServerButton from "../../../components/ServerButton"
 
 interface ServerNavigationItemProps {
     id: string,
-    imgUrl?: string | null,
+    photoURL?: string | null,
     name: string,
 }
 
-const ServerNavigationItem = ({ id, imgUrl, name }: ServerNavigationItemProps) => {
+const ServerNavigationItem = ({ id, photoURL, name }: ServerNavigationItemProps) => {
     return (
         <CustomTooltip title={name}>
             {/* NavLink to personal conversations / a group */}
@@ -16,7 +16,7 @@ const ServerNavigationItem = ({ id, imgUrl, name }: ServerNavigationItemProps) =
                 to={id === "me" ? 'me' : `servers/${id}`}
                 style={{ textDecoration: "none" }}
             >
-                <ServerButton imgUrl={imgUrl}>
+                <ServerButton photoURL={photoURL}>
                     <div>{name[0].toUpperCase()}</div>
                 </ServerButton>
             </NavLink>

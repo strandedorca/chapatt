@@ -4,15 +4,15 @@ import { Button } from "./ServerSidebar";
 
 interface ConversationsNavigationItemProp {
   username: string;
-  displayName: string;
-  photoUrl: string;
+  displayName: string | null | undefined;
+  photoURL: string | null | undefined;
   status: string;
 }
 
 const ConversationsNavigationItem = ({
   username,
   displayName,
-  photoUrl,
+  photoURL,
   status,
 }: ConversationsNavigationItemProp) => {
   const navigate = useNavigate();
@@ -22,8 +22,8 @@ const ConversationsNavigationItem = ({
         navigate(`/me/${username}`);
       }}
     >
-      <Avatar src={photoUrl ? photoUrl : ""} sx={{ width: 32, height: 32 }}>
-        {!photoUrl ? displayName[0].toUpperCase() : null}
+      <Avatar src={photoURL ? photoURL : ""} sx={{ width: 32, height: 32 }}>
+        {(!photoURL && displayName) ? displayName[0].toUpperCase() : null}
       </Avatar>
       <div
         style={{

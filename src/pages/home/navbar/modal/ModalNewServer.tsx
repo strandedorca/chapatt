@@ -10,11 +10,18 @@ import {
   TextField,
 } from "@mui/material";
 import { AddAPhoto, ArrowForwardIos, Close } from "@mui/icons-material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../../redux-slices/currentUserSlice";
 import { addNewServer } from "../../../../redux-slices/serverSlice";
 import { isValidUsername } from "../../../../components/helper-functions";
+import { db, storage } from "../../../../firebase/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { AppDispatch } from "../../../../main";
+import { doc, getDoc, collection } from "firebase/firestore";
+import JoinServerModal from "./JoinServerModal";
+import { toast } from "react-toastify";
+import Toast from "../../../../components/Toast";
 
 const BoxModalSerVer = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -132,25 +139,49 @@ const ModalServer: React.FC<ModalServerProps> = ({
   goToPreviousStep,
   handleModalClose,
 }) => {
-  const [uploadedPhoto, setUploadedPhoto] = useState(null);
+  const [uploadedPhoto, setUploadedPhoto] = useState<File | null>(null);
   const [serverNameError, setServerNameError] = useState("");
-  const handleFileUpload = (event: any) => {
-    const file = event.target.files[0];
-    // Assuming you're storing the file in state
-    setUploadedPhoto(URL.createObjectURL(file) as any);
-    // You can also send the file to the server for further processing
-  };
-  const handleCreateServer = (event: any) => {
-    event.preventDefault();
-    if (!serverName) {
-      setServerNameError("Server name is required");
-    } else if (!isValidUsername(serverName)) {
-      setServerNameError("Must not contain special character.");
-    } else {
-      dispatch(addNewServer({ serverName, username }) as any);
-      handleModalClose();
+
+  const handleUploadPhoto = async () => {
+    try {
+      if (uploadedPhoto !== null) {
+        const imageRef = ref(storage, `/avatar/servers/${serverName}`);
+        const snapshot = await uploadBytes(imageRef, uploadedPhoto);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+    } catch (error) {
+      console.log('Error uploading file', error);
+      throw error;
     }
   };
+
+  const handleCreateServer = async () => {
+    try {
+
+      if (!serverName) {
+        setServerNameError("Server name is required");
+      } else if (!isValidUsername(serverName)) {
+        setServerNameError("Must not contain special character.");
+      } else {
+        // Check if servername already exists
+        const serverRef = doc(collection(db, "servers"), serverName);
+        const serverDoc = await getDoc(serverRef);
+        if (serverDoc.exists()) {
+          setServerNameError(`Server ${serverName} already exists. Please choose another name`);
+        } else {
+          // If not, proceed to create a new server
+          const photoURL = await handleUploadPhoto();
+          console.log('Photo URL', photoURL);
+          dispatch(addNewServer({ serverName, username, photoURL }));
+          handleModalClose();
+        }
+      }
+    } catch (error) {
+      console.log('Error creating server. Please try again.');
+    }
+  };
+
   const renderStepContent = (step: number) => {
     // Dynamically create buttons based on the current step
     return (
@@ -175,14 +206,18 @@ const ModalServer: React.FC<ModalServerProps> = ({
               id="avatar"
               name="avatar"
               accept="image/png, image/jpeg"
-              onChange={handleFileUpload}
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setUploadedPhoto(e.target.files[0]);
+                }
+              }}
             />
             <AddAPhoto fontSize="large" />
 
             {uploadedPhoto && (
               <PhotoContainer>
                 <img
-                  src={uploadedPhoto}
+                  src={URL.createObjectURL(uploadedPhoto)}
                   alt="Uploaded"
                   style={{ maxWidth: "100%", objectFit: "cover" }}
                 />
@@ -222,103 +257,126 @@ const ModalServer: React.FC<ModalServerProps> = ({
   const currentUser = useSelector(selectCurrentUser);
   const username = currentUser.username;
   const [serverName, setServerName] = useState(`${currentUser.username}server`);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const navigate = useNavigate();
+  const notify = (input: string) => {
+    if (input === 'JOIN_SUCCESS') {
+      toast.success('Join server successfully.')
+    } else if (input === 'JOIN_FAILED') {
+      toast.error('Failed to join server.')
+    }
+  }
+
   return (
-    <Slide direction="left" in={currentStep > 0} mountOnEnter unmountOnExit>
-      <BoxModalSerVer>
-        <IconButton
-          aria-label="close"
-          onClick={handleModalClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
-        <Typography
-          id="create-server-modal-title"
-          variant="h6"
-          component="h2"
-          textAlign="center"
-          py={2}
-        >
-          {currentStep === 1
-            ? "Create Your Server"
-            : currentStep === 2
-            ? "Tell Us More About Your Server"
-            : "Customise Your Server"}
-        </Typography>
-        <Typography component="div">
-          {currentStep === 1
-            ? "Your server is where you and your friends hang out. Make yours and start talking."
-            : currentStep === 2
-            ? "In order to help you with your setup, is your new server for just a few friends or a larger community?"
-            : "Give your new server a personality with a name and an icon. You can always change it later."}
-        </Typography>
-        <BoxModal
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            mt: 2,
-            overflow: "auto",
-            maxHeight: 250,
-          }}
-        >
-          {renderStepContent(currentStep)}
-        </BoxModal>
-        {currentStep === 1 ? (
-          <>
-            <Typography sx={{ mt: 2, textAlign: "center" }}>
-              {/* Already have an invite? */}
-            </Typography>
-            <Button
-              variant="text"
-              sx={{
-                width: "100%",
-                mt: 1,
-                backgroundColor: theme.palette.grey[800],
-                color: "white",
-                "&:hover": { backgroundColor: theme.palette.grey[700] },
-              }}
-            >
-              Join a Server
-            </Button>
-          </>
-        ) : currentStep === 2 ? (
-          <Typography sx={{ mt: 2, textAlign: "center" }}>
-            {/* Not sure? You can <NavLink to={''} style={{ color: theme.palette.info.dark }}>skip question</NavLink> for now. */}
-            <BackButton variant="outlined" onClick={goToPreviousStep}>
-              Back
-            </BackButton>
-          </Typography>
-        ) : (
-          <Box
+    <>
+      <Toast />
+      <JoinServerModal
+        modalOpen={showJoinModal}
+        handleClose={() => {
+          setShowJoinModal(false);
+          handleModalClose();
+          navigate(`/servers/${serverName}`);
+        }}
+        notify={notify}
+      />
+      <Slide direction="left" in={currentStep > 0} mountOnEnter unmountOnExit>
+        <BoxModalSerVer>
+          <IconButton
+            aria-label="close"
+            onClick={handleModalClose}
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              mt: 4,
-              color: "white",
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
             }}
           >
-            <BackButton variant="text" onClick={goToPreviousStep}>
-              Back
-            </BackButton>
-            <Button
-              variant="contained"
-              color="inherit"
-              sx={{ backgroundColor: theme.palette.info.dark }}
-              onClick={handleCreateServer}
+            <Close />
+          </IconButton>
+          <Typography
+            id="create-server-modal-title"
+            variant="h6"
+            component="h2"
+            textAlign="center"
+            py={2}
+          >
+            {currentStep === 1
+              ? "Create Your Server"
+              : currentStep === 2
+                ? "Tell Us More About Your Server"
+                : "Customise Your Server"}
+          </Typography>
+          <Typography component="div">
+            {currentStep === 1
+              ? "Your server is where you and your friends hang out. Make yours and start talking."
+              : currentStep === 2
+                ? "In order to help you with your setup, is your new server for just a few friends or a larger community?"
+                : "Give your new server a personality with a name and an icon. You can always change it later."}
+          </Typography>
+          <BoxModal
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              mt: 2,
+              overflow: "auto",
+              maxHeight: 250,
+            }}
+          >
+            {renderStepContent(currentStep)}
+          </BoxModal>
+          {currentStep === 1 ? (
+            <>
+              <Typography sx={{ mt: 2, textAlign: "center" }}>
+                {/* Already have an invite? */}
+              </Typography>
+              <Button
+                variant="text"
+                sx={{
+                  width: "100%",
+                  mt: 1,
+                  backgroundColor: theme.palette.grey[800],
+                  color: "white",
+                  "&:hover": { backgroundColor: theme.palette.grey[700] },
+                }}
+                onClick={() => setShowJoinModal(true)}
+              >
+                Join a Server
+              </Button>
+            </>
+          ) : currentStep === 2 ? (
+            <Typography sx={{ mt: 2, textAlign: "center" }}>
+              {/* Not sure? You can <NavLink to={''} style={{ color: theme.palette.info.dark }}>skip question</NavLink> for now. */}
+              <BackButton variant="outlined" onClick={goToPreviousStep}>
+                Back
+              </BackButton>
+            </Typography>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+                mt: 4,
+                color: "white",
+              }}
             >
-              Create
-            </Button>
-          </Box>
-        )}
-      </BoxModalSerVer>
-    </Slide>
+              <BackButton variant="text" onClick={goToPreviousStep}>
+                Back
+              </BackButton>
+              <Button
+                variant="contained"
+                color="inherit"
+                sx={{ backgroundColor: theme.palette.info.dark }}
+                onClick={handleCreateServer}
+              >
+                Create
+              </Button>
+            </Box>
+          )}
+        </BoxModalSerVer>
+      </Slide>
+    </>
   );
 };
 

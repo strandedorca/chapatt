@@ -1,12 +1,12 @@
 import { styled, useTheme } from "@mui/system";
 
 interface ServerButtonProp {
-    imgUrl?: string | null,
+    photoURL?: string | null,
     children?: React.ReactElement,
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const ServerButton = ({ imgUrl, children, onClick }: ServerButtonProp) => {
+const ServerButton = ({ photoURL, children, onClick }: ServerButtonProp) => {
     const theme = useTheme();
     const Button = styled('button')(({ theme }) => ({
         cursor: "pointer",
@@ -17,7 +17,7 @@ const ServerButton = ({ imgUrl, children, onClick }: ServerButtonProp) => {
         color: theme.palette.text.primary,
         borderRadius: "24px",
         backgroundColor: theme.palette.background.paper,
-        backgroundImage: `url(${imgUrl})`,
+        backgroundImage: `url(${photoURL})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         "&:hover": {
@@ -33,7 +33,7 @@ const ServerButton = ({ imgUrl, children, onClick }: ServerButtonProp) => {
     return (
         <div>
             <Button onClick={onClick}>
-                {!imgUrl ? children : null}
+                {!photoURL ? children : null}
             </Button>
         </div>
     )

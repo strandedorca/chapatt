@@ -17,6 +17,8 @@ import { Message } from "../../../types";
 import { unsubscribe } from "diagnostics_channel";
 import { selectCurrentUser } from "../../../redux-slices/currentUserSlice";
 import { CircularProgress } from "@material-ui/core";
+import styles from './../Home.module.css';
+
 
 const Messages = () => {
     const [user] = useAuthState(auth);
@@ -67,7 +69,9 @@ const Messages = () => {
                 flexGrow: "1",
                 overflowY: "scroll",
                 mb: "15px",
-            }}>
+            }}
+                className={styles.customScroll}
+            >
                 {show && <CircularProgress />}
                 {messages.map((message: Message) => {
                     let sender = message.from;
