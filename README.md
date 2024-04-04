@@ -19,6 +19,7 @@ Our project aims to develop a web-based chat application inspired by popular pla
     * Users can see friend list, pending list and blocking list in real time.
 6. Account Settings: Users can change account-related information like username, password,...
 7. Customization: Users can set the image of  their account and servers.
+   
 ~~8. Color mode: Users can toggle between light and dark mode.~~
 
 ## Technologies Used
