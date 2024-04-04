@@ -44,7 +44,7 @@ Our project aims to develop a web-based chat application inspired by popular pla
 
 ## Installation
 
-To run our Discord Clone project locally, follow these steps:
+To run our ChapAtt project locally, follow these steps:
 
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
