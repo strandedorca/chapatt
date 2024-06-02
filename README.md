@@ -54,7 +54,11 @@ To run our ChapAtt project locally, follow these steps:
 5. Open your web browser and navigate to http://localhost:5173 to view the application.
 
 ## Contributors
-links
+- [Tran Dang Duong](https://github.com/Henry-Tran-7198).
+- [Bui Minh Hieu](https://github.com/hieubui17b8).
+- [Vu Van Dat](https://github.com/DatVu121).
+- [Vu Thi Huyen](https://github.com/HuyenVu121100).
+- [Ha Quang Doanh](https://github.com/HakimJeck).
 
 ## Acknowledgements
 
